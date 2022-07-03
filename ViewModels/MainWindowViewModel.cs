@@ -46,7 +46,7 @@ namespace ChessDotNET.ViewModels
 
             StartGame("white");
 
-            MoveChessPiece(7,8,1,2);
+            //MoveChessPiece(7,8,1,2);
         }
         #endregion Constuctors
 
@@ -56,7 +56,8 @@ namespace ChessDotNET.ViewModels
         private Image currentlyDraggedChessPiece;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
         private int currentlyDraggedChessPieceOriginalCanvasTop;
-        private Point dragOverPosition;
+        private Point dragOverCanvasPosition;
+        private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
         #endregion Fields
 
@@ -115,20 +116,21 @@ namespace ChessDotNET.ViewModels
         {
             MouseEventArgs e = o as MouseEventArgs;
 
-            dragOverPosition = e.GetPosition(canvas);
+            dragOverCanvasPosition = e.GetPosition(canvas);
             if (currentlyDraggedChessPiece != null)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
+                    if (!isMouseMoving)
+                    {
+                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
+                    }
                     isMouseMoving = true;
-                    dragOverPosition = e.GetPosition(canvas);
+                    dragOverCanvasPosition = e.GetPosition(canvas);
                     currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
 
-                    double X = dragOverPosition.X - 25;
-                    double Y = dragOverPosition.Y - 25;
-
-                    Canvas.SetLeft(currentlyDraggedChessPiece, X);
-                    Canvas.SetTop(currentlyDraggedChessPiece, Y);
+                    Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                    Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
                 }
             }
 
@@ -157,7 +159,7 @@ namespace ChessDotNET.ViewModels
             if (isMouseMoving && currentlyDraggedChessPiece != null)
             {
                 isMouseMoving = false;
-                if (dragOverPosition.X < 0 || dragOverPosition.X > 400 || dragOverPosition.Y < 0 || dragOverPosition.Y > 400)
+                if (dragOverCanvasPosition.X < 0 || dragOverCanvasPosition.X > 400 || dragOverCanvasPosition.Y < 0 || dragOverCanvasPosition.Y > 400)
                 {
                     Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
                     Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
@@ -166,10 +168,10 @@ namespace ChessDotNET.ViewModels
                 }
                 else
                 {
-                    double X = dragOverPosition.X - dragOverPosition.X % 50;
-                    double Y = dragOverPosition.Y - dragOverPosition.Y % 50;
+                    double X = dragOverCanvasPosition.X - dragOverCanvasPosition.X % 50;
+                    double Y = dragOverCanvasPosition.Y - dragOverCanvasPosition.Y % 50;
 
-                    Coords coords = CanvasPositionToCoords(dragOverPosition);
+                    Coords coords = CanvasPositionToCoords(dragOverCanvasPosition);
 
                     if (coords.Col >= 0 && coords.Col <= 7 && coords.Row >= 0 && coords.Row <= 7)
                     {
