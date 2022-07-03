@@ -9,7 +9,7 @@
         <Setter Property="BorderThickness" Value="6"/>
         <Setter Property="CornerRadius" Value="0"/>
     </Style>
-    <Style x:Key="StyleGridWhiteCell" TargetType="Rectangle">
+    <Style x:Key="StyleGridWhiteTile" TargetType="Rectangle">
         <Setter Property="Fill" Value="#ffce9e"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
@@ -18,7 +18,7 @@
         <Setter Property="Width" Value="50"/>
         <Setter Property="Height" Value="50"/>
     </Style>
-    <Style x:Key="StyleGridBlackCell" TargetType="Rectangle">
+    <Style x:Key="StyleGridBlackTile" TargetType="Rectangle">
         <Setter Property="Fill" Value="#d18b47"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>

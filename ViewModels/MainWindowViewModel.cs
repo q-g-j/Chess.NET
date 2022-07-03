@@ -9,10 +9,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using ChessDotNET.Helpers;
 using CommunityToolkit.Mvvm.Input;
+
+using ChessDotNET.GameLogic;
+using ChessDotNET.Helpers;
 using static ChessDotNET.Helpers.Rows;
 
 namespace ChessDotNET.ViewModels
@@ -23,8 +23,8 @@ namespace ChessDotNET.ViewModels
         public MainWindowViewModel()
         {
             chessPieces = new ChessPieces();
-            cellImageList = new List<List<ImageSource>>();
-            cellImageStringList = new List<List<string>>();
+            tileImageList = new List<List<ImageSource>>();
+            tileImageStringList = new List<List<string>>();
             for (int col = 0; col < 8; col++)
             {
                 List<ImageSource> tempList = new List<ImageSource>();
@@ -34,8 +34,8 @@ namespace ChessDotNET.ViewModels
                     tempList.Add(chessPieces.Empty);
                     tempStringList.Add("");
                 }
-                cellImageList.Add(tempList);
-                cellImageStringList.Add(tempStringList);
+                tileImageList.Add(tempList);
+                tileImageStringList.Add(tempStringList);
             }
 
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
@@ -60,47 +60,48 @@ namespace ChessDotNET.ViewModels
         private Point dragOverCanvasPosition;
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
+        private string bottomColor;
         #endregion Fields
 
         #region Property-Values
-        private List<List<ImageSource>> cellImageList;
-        private List<List<string>> cellImageStringList;
-        private ImageSource cellImage;
+        private List<List<ImageSource>> tileImageList;
+        private List<List<string>> tileImageStringList;
+        private ImageSource tileImage;
         #endregion Property-Values
 
         #region Properties
-        public List<List<ImageSource>> CellImageList
+        public List<List<ImageSource>> TileImageList
         {
             get
             {
-                return cellImageList;
+                return tileImageList;
             }
             set
             {
-                cellImageList = value;
+                tileImageList = value;
                 OnPropertyChanged();
             }
         }
-        public List<List<string>> CellImageStringList
+        public List<List<string>> TileImageStringList
         {
             get
             {
-                return cellImageStringList;
+                return tileImageStringList;
             }
             set
             {
-                cellImageStringList = value;
+                tileImageStringList = value;
             }
         }
-        public ImageSource CellImage
+        public ImageSource TileImage
         {
             get
             {
-                return cellImage;
+                return tileImage;
             }
             set
             {
-                cellImage = value;
+                tileImage = value;
                 OnPropertyChanged();
             }
         }
@@ -172,18 +173,21 @@ namespace ChessDotNET.ViewModels
                     double X = dragOverCanvasPosition.X - dragOverCanvasPosition.X % 50;
                     double Y = dragOverCanvasPosition.Y - dragOverCanvasPosition.Y % 50;
 
-                    Coords coords = CanvasPositionToCoords(dragOverCanvasPosition);
+                    Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
 
-                    if (coords.Col >= 0 && coords.Col <= 7 && coords.Row >= 0 && coords.Row <= 7)
+                    if (newCoords.Col >= 0 && newCoords.Col <= 7 && newCoords.Row >= 0 && newCoords.Row <= 7)
                     {
-                        if (cellImageStringList[coords.Col][coords.Row] == "")
+                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
+                        Coords oldCoords = CanvasPositionToCoords(oldPoint);
+
+                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileImageStringList, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
+
+                        if (isValidMove)
                         {
                             Canvas.SetLeft(currentlyDraggedChessPiece, X);
                             Canvas.SetTop(currentlyDraggedChessPiece, Y);
-                            Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
-                            Coords oldCoords = CanvasPositionToCoords(oldPoint);
-                            cellImageStringList[coords.Col][coords.Row] = currentlyDraggedChessPiece.ToString();
-                            cellImageStringList[oldCoords.Col][oldCoords.Row] = "";
+                            tileImageStringList[newCoords.Col][newCoords.Row] = currentlyDraggedChessPiece.ToString();
+                            tileImageStringList[oldCoords.Col][oldCoords.Row] = "";
                         }
                         else
                         {
@@ -209,27 +213,28 @@ namespace ChessDotNET.ViewModels
         #region Methods
         internal void PlaceChessPiece(int col, int row, ImageSource chessPiece)
         {
-            cellImageList[col - 1][row - 1] = chessPiece;
-            cellImageStringList[col - 1][row - 1] = chessPiece.ToString().Contains("png") ? chessPiece.ToString() : "";
-            CellImageList = CellImageList;
+            tileImageList[col - 1][row - 1] = chessPiece;
+            tileImageStringList[col - 1][row - 1] = chessPiece.ToString().Contains("png") ? chessPiece.ToString() : "";
+            TileImageList = TileImageList;
         }
         internal bool MoveChessPiece(int oldCol, int oldRow, int newCol, int newRow)
         {
-            if (cellImageStringList[oldCol - 1][oldRow - 1] == "")
+            if (tileImageStringList[oldCol - 1][oldRow - 1] == "")
             {
                 return false;
             }
             else
             {
-                PlaceChessPiece(newCol, newRow, cellImageList[oldCol - 1][oldRow - 1]);
+                PlaceChessPiece(newCol, newRow, tileImageList[oldCol - 1][oldRow - 1]);
                 PlaceChessPiece(oldCol, oldRow, chessPieces.Empty);
             }
             return true;
         }
-        internal void StartGame(string colorAtBottom)
+        internal void StartGame(string color)
         {
-            if (colorAtBottom == "white")
+            if (color == "white")
             {
+                bottomColor = "white";
                 for (int col = 1; col < 9; col++)
                 {
                     PlaceChessPiece(col, 2, chessPieces.WhitePawn);
@@ -260,6 +265,7 @@ namespace ChessDotNET.ViewModels
             }
             else
             {
+                bottomColor = "black";
                 for (int col = 1; col < 9; col++)
                 {
                     PlaceChessPiece(col, 2, chessPieces.BlackPawn);

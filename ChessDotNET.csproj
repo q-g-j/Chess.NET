@@ -137,6 +137,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
     <Compile Include="Helpers\AdvancedInvokeCommandAction.cs" />
     <Compile Include="Helpers\ChessPieces.cs" />
     <Compile Include="Helpers\CompositeCommandParameter.cs" />
@@ -165,7 +166,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ChessDotNET_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
