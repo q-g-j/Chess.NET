@@ -8,11 +8,14 @@
         xmlns:helpers="clr-namespace:ChessDotNET.Helpers"
         xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
         mc:Ignorable="d"
-        Width="601"
-        SizeToContent="Height"
         RenderOptions.BitmapScalingMode="HighQuality"
         SnapsToDevicePixels="True"
-        Title="MainWindow">
+        ResizeMode="CanResize"
+        Width="651"
+        MinHeight="300"
+        MinWidth="300"
+        SizeToContent="Height"
+        Title="Chess.NET">
     
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="PreviewMouseMove">
@@ -48,69 +51,67 @@
                 Style="{StaticResource StyleBorderOutermost}">
                 <Canvas
                     x:Name="chessFieldCanvas"
-                    Width="400"
-                    Height="400"
                     Background="Transparent">
 
                     <!-- Row 1 -->
-                    <Rectangle x:Name="rect00" Canvas.Left="0"   Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect10" Canvas.Left="50"  Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect20" Canvas.Left="100" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect30" Canvas.Left="150" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect40" Canvas.Left="200" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect50" Canvas.Left="250" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect60" Canvas.Left="300" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect70" Canvas.Left="350" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
-                    <Image     x:Name="img00"  Canvas.Left="0"   Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][0]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="0"   Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="0"   Style="{StaticResource StyleGridBlackCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img10"  Canvas.Left="50"  Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img20"  Canvas.Left="100" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img30"  Canvas.Left="150" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img40"  Canvas.Left="200" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img50"  Canvas.Left="250" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img60"  Canvas.Left="300" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img70"  Canvas.Left="350" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][0]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="0"   Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][7]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -119,64 +120,64 @@
                     </Image>
 
                     <!-- Row 2 -->
-                    <Rectangle x:Name="rect01" Canvas.Left="0"   Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect11" Canvas.Left="50"  Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect21" Canvas.Left="100" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect31" Canvas.Left="150" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect41" Canvas.Left="200" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect51" Canvas.Left="250" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect61" Canvas.Left="300" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect71" Canvas.Left="350" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Image     x:Name="img01"  Canvas.Left="0"   Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][1]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="50"  Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="50"  Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img11"  Canvas.Left="50"  Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img21"  Canvas.Left="100" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img31"  Canvas.Left="150" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img41"  Canvas.Left="200" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img51"  Canvas.Left="250" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img61"  Canvas.Left="300" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img71"  Canvas.Left="350" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][1]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="50"  Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][6]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -185,64 +186,64 @@
                     </Image>
 
                     <!-- Row 3 -->
-                    <Rectangle x:Name="rect02" Canvas.Left="0"   Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect12" Canvas.Left="50"  Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect22" Canvas.Left="100" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect32" Canvas.Left="150" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect42" Canvas.Left="200" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect52" Canvas.Left="250" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect62" Canvas.Left="300" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect72" Canvas.Left="350" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Image     x:Name="img02"  Canvas.Left="0"   Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][2]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="100" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="100" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img12"  Canvas.Left="50"  Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img22"  Canvas.Left="100" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img32"  Canvas.Left="150" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img42"  Canvas.Left="200" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img52"  Canvas.Left="250" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img62"  Canvas.Left="300" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img72"  Canvas.Left="350" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][2]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="100" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][5]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -251,64 +252,64 @@
                     </Image>
 
                     <!-- Row 4 -->
-                    <Rectangle x:Name="rect03" Canvas.Left="0"   Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect13" Canvas.Left="50"  Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect23" Canvas.Left="100" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect33" Canvas.Left="150" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect43" Canvas.Left="200" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect53" Canvas.Left="250" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect63" Canvas.Left="300" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect73" Canvas.Left="350" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Image     x:Name="img03"  Canvas.Left="0"   Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][3]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="150" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="150" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img13"  Canvas.Left="50"  Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img23"  Canvas.Left="100" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img33"  Canvas.Left="150" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img43"  Canvas.Left="200" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img53"  Canvas.Left="250" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img63"  Canvas.Left="300" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img73"  Canvas.Left="350" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][3]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="150" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][4]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -317,64 +318,64 @@
                     </Image>
 
                     <!-- Row 5 -->
-                    <Rectangle x:Name="rect04" Canvas.Left="0"   Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect14" Canvas.Left="50"  Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect24" Canvas.Left="100" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect34" Canvas.Left="150" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect44" Canvas.Left="200" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect54" Canvas.Left="250" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect64" Canvas.Left="300" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect74" Canvas.Left="350" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Image     x:Name="img04"  Canvas.Left="0"   Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][4]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="200" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="200" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img14"  Canvas.Left="50"  Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img24"  Canvas.Left="100" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img34"  Canvas.Left="150" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img44"  Canvas.Left="200" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img54"  Canvas.Left="250" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img64"  Canvas.Left="300" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img74"  Canvas.Left="350" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][4]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="200" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][3]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -383,64 +384,64 @@
                     </Image>
 
                     <!-- Row 6 -->
-                    <Rectangle x:Name="rect05" Canvas.Left="0"   Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect15" Canvas.Left="50"  Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect25" Canvas.Left="100" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect35" Canvas.Left="150" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect45" Canvas.Left="200" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect55" Canvas.Left="250" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect65" Canvas.Left="300" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect75" Canvas.Left="350" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Image     x:Name="img05"  Canvas.Left="0"   Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][5]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="250" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="250" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img15"  Canvas.Left="50"  Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img25"  Canvas.Left="100" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img35"  Canvas.Left="150" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img45"  Canvas.Left="200" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img55"  Canvas.Left="250" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img65"  Canvas.Left="300" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img75"  Canvas.Left="350" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][5]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="250" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][2]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -449,64 +450,64 @@
                     </Image>
 
                     <!-- Row 7 -->
-                    <Rectangle x:Name="rect06" Canvas.Left="0"   Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect16" Canvas.Left="50"  Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect26" Canvas.Left="100" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect36" Canvas.Left="150" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect46" Canvas.Left="200" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect56" Canvas.Left="250" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect66" Canvas.Left="300" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect76" Canvas.Left="350" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Image     x:Name="img06"  Canvas.Left="0"   Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][6]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="300" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="300" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img16"  Canvas.Left="50"  Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img26"  Canvas.Left="100" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img36"  Canvas.Left="150" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img46"  Canvas.Left="200" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img56"  Canvas.Left="250" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img66"  Canvas.Left="300" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img76"  Canvas.Left="350" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][6]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="300" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][1]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
@@ -515,64 +516,64 @@
                     </Image>
 
                     <!-- Row 8 -->
-                    <Rectangle x:Name="rect07" Canvas.Left="0"   Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect17" Canvas.Left="50"  Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect27" Canvas.Left="100" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect37" Canvas.Left="150" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect47" Canvas.Left="200" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect57" Canvas.Left="250" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Rectangle x:Name="rect67" Canvas.Left="300" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
-                    <Rectangle x:Name="rect77" Canvas.Left="350" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
-                    <Image     x:Name="img07"  Canvas.Left="0"   Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][7]}" Panel.ZIndex="10">
+                    <Rectangle Canvas.Left="0"   Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="50"  Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="100" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="150" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="200" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="250" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Rectangle Canvas.Left="300" Canvas.Top="350" Style="{StaticResource StyleGridBlackCell}"/>
+                    <Rectangle Canvas.Left="350" Canvas.Top="350" Style="{StaticResource StyleGridWhiteCell}"/>
+                    <Image     Canvas.Left="0"   Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[0][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img17"  Canvas.Left="50"  Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="50"  Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[1][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img27"  Canvas.Left="100" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="100" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[2][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img37"  Canvas.Left="150" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="150" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[3][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img47"  Canvas.Left="200" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="200" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[4][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img57"  Canvas.Left="250" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="250" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[5][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img67"  Canvas.Left="300" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="300" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[6][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </Image>
-                    <Image     x:Name="img77"  Canvas.Left="350" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][7]}" Panel.ZIndex="10">
+                    <Image     Canvas.Left="350" Canvas.Top="350" Style="{StaticResource StyleImageChessPiece}" Source="{Binding CellImageList[7][0]}" Panel.ZIndex="10">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
                                 <helpers:AdvancedInvokeCommandAction Command="{Binding ChessPieceMouseLeftDownCommand}" PassEventArgsToCommand="True" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Image}}}"/>

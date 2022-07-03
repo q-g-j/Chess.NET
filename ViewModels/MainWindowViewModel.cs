@@ -46,11 +46,12 @@ namespace ChessDotNET.ViewModels
 
             StartGame("white");
 
-            //MoveChessPiece(7,8,1,2);
+            MoveChessPiece(G, 8, A, 2);
         }
         #endregion Constuctors
 
         #region Fields
+        internal readonly int A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8;
         private readonly ChessPieces chessPieces;
         private Canvas canvas;
         private Image currentlyDraggedChessPiece;
@@ -208,38 +209,19 @@ namespace ChessDotNET.ViewModels
         #region Methods
         internal void PlaceChessPiece(int col, int row, ImageSource chessPiece)
         {
-            if      (row == 1) row = 8;
-            else if (row == 2) row = 7;
-            else if (row == 3) row = 6;
-            else if (row == 4) row = 5;
-            else if (row == 5) row = 4;
-            else if (row == 6) row = 3;
-            else if (row == 7) row = 2;
-            else if (row == 8) row = 1;
-
             cellImageList[col - 1][row - 1] = chessPiece;
             cellImageStringList[col - 1][row - 1] = chessPiece.ToString().Contains("png") ? chessPiece.ToString() : "";
             CellImageList = CellImageList;
         }
         internal bool MoveChessPiece(int oldCol, int oldRow, int newCol, int newRow)
         {
-            int row = -1;
-            if      (oldRow == 1) row = 8;
-            else if (oldRow == 2) row = 7;
-            else if (oldRow == 3) row = 6;
-            else if (oldRow == 4) row = 5;
-            else if (oldRow == 5) row = 4;
-            else if (oldRow == 6) row = 3;
-            else if (oldRow == 7) row = 2;
-            else if (oldRow == 8) row = 1;
-
-            if (cellImageStringList[oldCol - 1][row - 1] == "")
+            if (cellImageStringList[oldCol - 1][oldRow - 1] == "")
             {
                 return false;
             }
             else
             {
-                PlaceChessPiece(newCol, newRow, cellImageList[oldCol - 1][row - 1]);
+                PlaceChessPiece(newCol, newRow, cellImageList[oldCol - 1][oldRow - 1]);
                 PlaceChessPiece(oldCol, oldRow, chessPieces.Empty);
             }
             return true;
