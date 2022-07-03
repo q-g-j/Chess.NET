@@ -46,7 +46,7 @@ namespace ChessDotNET.ViewModels
 
             StartGame("white");
 
-            MoveChessPiece(G, 8, A, 2);
+            //MoveChessPiece(G, 8, A, 2);
         }
         #endregion Constuctors
 
