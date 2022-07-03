@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ChessDotNET.Helpers;
 using CommunityToolkit.Mvvm.Input;
+using static ChessDotNET.Helpers.Rows;
 
 namespace ChessDotNET.ViewModels
 {
@@ -51,7 +52,6 @@ namespace ChessDotNET.ViewModels
         #endregion Constuctors
 
         #region Fields
-        internal readonly int A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8;
         private readonly ChessPieces chessPieces;
         private Canvas canvas;
         private Image currentlyDraggedChessPiece;
