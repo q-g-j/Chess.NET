@@ -1,0 +1,57 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="StyleBorderOutermost" TargetType="Border">
+        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderBrush" Value="SaddleBrown"/>
+        <Setter Property="BorderThickness" Value="6"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    <Style x:Key="StyleGridWhiteCell" TargetType="Rectangle">
+        <Setter Property="Fill" Value="#ffce9e"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+    </Style>
+    <Style x:Key="StyleGridBlackCell" TargetType="Rectangle">
+        <Setter Property="Fill" Value="#d18b47"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+    </Style>
+    <Style x:Key="StyleImageChessPiece" TargetType="Image">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Stretch" Value="Fill"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+    </Style>
+    <Style x:Key="StyleLabelBorderCoordsHorizontal" TargetType="Label">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style x:Key="StyleLabelBorderCoordsVertical" TargetType="Label">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+</ResourceDictionary>
