@@ -216,7 +216,7 @@ namespace ChessDotNET.ViewModels
             else if (row == 8) row = 1;
 
             cellImageList[col - 1][row - 1] = chessPiece;
-            cellImageStringList[col - 1][row - 1] = chessPiece.ToString();
+            cellImageStringList[col - 1][row - 1] = chessPiece.ToString().Contains("png") ? chessPiece.ToString() : "";
             CellImageList = CellImageList;
         }
         internal bool MoveChessPiece(int oldCol, int oldRow, int newCol, int newRow)
