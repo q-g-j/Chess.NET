@@ -67,9 +67,13 @@ namespace ChessDotNET.GameLogic
                         }
                     }
                 }
+                else
+                {
+                    return false;
+                }
             }
             // if it's not the pawn's first move:
-            if (oldCoords.Row != 2)
+            else if (oldCoords.Row != 2)
             {
                 // if it's a straight move:
                 if (oldCoords.Col == newCoords.Col)
@@ -84,6 +88,10 @@ namespace ChessDotNET.GameLogic
                     {
                         return false;
                     }
+                }
+                else
+                {
+                    return false;
                 }
             }
             return true;

@@ -160,8 +160,14 @@ namespace ChessDotNET.ViewModels
                             Canvas.SetTop(currentlyDraggedChessPiece, Y);
                             tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceImage = currentlyDraggedChessPiece.Source;
                             tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceImage = ChessPieceImages.Empty;
+                            tileDict[Coords.CoordsToString(newCoords)].ChessPiece.UpdateColorAndType();
+                            tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.UpdateColorAndType();
                             tileDict[Coords.CoordsToString(oldCoords)].IsOccupied = false;
                             tileDict[Coords.CoordsToString(newCoords)].IsOccupied = true;
+
+                            Console.WriteLine("Old Coords: " + "Is occupied? " + tileDict[Coords.CoordsToString(oldCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(oldCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("New Coords: " + "Is occupied? " + tileDict[Coords.CoordsToString(newCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(newCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine();
                         }
                         else
                         {

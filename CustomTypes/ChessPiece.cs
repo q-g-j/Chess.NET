@@ -9,7 +9,7 @@ namespace ChessDotNET.CustomTypes
 {
     public class ChessPiece
     {
-        public ChessPiece(ImageSource chessPieceImage, ChessPieceColor chessPieceColor, ChessPieceType chessPieceType)
+        internal ChessPiece(ImageSource chessPieceImage, ChessPieceColor chessPieceColor, ChessPieceType chessPieceType)
         {
             ChessPieceImage = chessPieceImage;
             ChessPieceColor = chessPieceColor;
@@ -17,16 +17,37 @@ namespace ChessDotNET.CustomTypes
         }
 
         public ImageSource ChessPieceImage { get; set; }
-        public ChessPieceColor ChessPieceColor { get; set; }
-        public ChessPieceType ChessPieceType { get; set; }
+        internal ChessPieceColor ChessPieceColor { get; set; }
+        internal ChessPieceType ChessPieceType { get; set; }
+
+        internal void UpdateColorAndType()
+        {
+            if (ChessPieceImages.IsEmpty(ChessPieceImage))
+            {
+                ChessPieceColor = ChessPieceColor.Empty;
+                ChessPieceType = ChessPieceType.Empty;
+            }
+            else
+            {
+                string imageFileName = System.IO.Path.GetFileName(ChessPieceImage.ToString());
+                ChessPieceColor = imageFileName.Contains("white") ? ChessPieceColor = ChessPieceColor.White : ChessPieceColor = ChessPieceColor.Black;
+
+                if      (imageFileName.Contains("pawn")) ChessPieceType = ChessPieceType.Pawn;
+                else if (imageFileName.Contains("rook")) ChessPieceType = ChessPieceType.Rook;
+                else if (imageFileName.Contains("knight")) ChessPieceType = ChessPieceType.Knight;
+                else if (imageFileName.Contains("bishop")) ChessPieceType = ChessPieceType.Bishop;
+                else if (imageFileName.Contains("queen")) ChessPieceType = ChessPieceType.Queen;
+                else if (imageFileName.Contains("king")) ChessPieceType = ChessPieceType.King;
+            }
+        }
     }
-    public enum ChessPieceColor
+    internal enum ChessPieceColor
     {
         White,
         Black,
         Empty
     }
-    public enum ChessPieceType
+    internal enum ChessPieceType
     {
         Pawn,
         Rook,
