@@ -12,8 +12,8 @@ using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
 
 using ChessDotNET.GameLogic;
-using ChessDotNET.Helpers;
-using static ChessDotNET.Helpers.Rows;
+using ChessDotNET.CustomTypes;
+using ChessDotNET.ViewHelpers;
 
 namespace ChessDotNET.ViewModels
 {
@@ -22,22 +22,6 @@ namespace ChessDotNET.ViewModels
         #region Constructors
         public MainWindowViewModel()
         {
-            chessPieces = new ChessPieces();
-            tileImageList = new List<List<ImageSource>>();
-            tileImageStringList = new List<List<string>>();
-            for (int col = 0; col < 8; col++)
-            {
-                List<ImageSource> tempList = new List<ImageSource>();
-                List<string> tempStringList = new List<string>();
-                for (int row = 0; row < 8; row++)
-                {
-                    tempList.Add(chessPieces.Empty);
-                    tempStringList.Add("");
-                }
-                tileImageList.Add(tempList);
-                tileImageStringList.Add(tempStringList);
-            }
-
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftUpCommand = new RelayCommand(WindowMouseLeftUpAction);
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
@@ -45,14 +29,13 @@ namespace ChessDotNET.ViewModels
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            StartGame("white");
+            tileDict = new TileDict();
 
-            //MoveChessPiece(G, 8, A, 2);
+            StartGame("white");
         }
         #endregion Constuctors
 
         #region Fields
-        private readonly ChessPieces chessPieces;
         private Canvas canvas;
         private Image currentlyDraggedChessPiece;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
@@ -64,33 +47,22 @@ namespace ChessDotNET.ViewModels
         #endregion Fields
 
         #region Property-Values
-        private List<List<ImageSource>> tileImageList;
-        private List<List<string>> tileImageStringList;
         private ImageSource tileImage;
+
+        private Dictionary<string, Tile> tileDict;
         #endregion Property-Values
 
         #region Properties
-        public List<List<ImageSource>> TileImageList
+        public Dictionary<string, Tile> TileDict
         {
             get
             {
-                return tileImageList;
+                return tileDict;
             }
             set
             {
-                tileImageList = value;
+                tileDict = value;
                 OnPropertyChanged();
-            }
-        }
-        public List<List<string>> TileImageStringList
-        {
-            get
-            {
-                return tileImageStringList;
-            }
-            set
-            {
-                tileImageStringList = value;
             }
         }
         public ImageSource TileImage
@@ -175,19 +147,21 @@ namespace ChessDotNET.ViewModels
 
                     Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
 
-                    if (newCoords.Col >= 0 && newCoords.Col <= 7 && newCoords.Row >= 0 && newCoords.Row <= 7)
+                    if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8)
                     {
                         Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = CanvasPositionToCoords(oldPoint);
 
-                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileImageStringList, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
+                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileDict, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
 
                         if (isValidMove)
                         {
                             Canvas.SetLeft(currentlyDraggedChessPiece, X);
                             Canvas.SetTop(currentlyDraggedChessPiece, Y);
-                            tileImageStringList[newCoords.Col][newCoords.Row] = currentlyDraggedChessPiece.ToString();
-                            tileImageStringList[oldCoords.Col][oldCoords.Row] = "";
+                            tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceImage = currentlyDraggedChessPiece.Source;
+                            tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceImage = ChessPieceImages.Empty;
+                            tileDict[Coords.CoordsToString(oldCoords)].IsOccupied = false;
+                            tileDict[Coords.CoordsToString(newCoords)].IsOccupied = true;
                         }
                         else
                         {
@@ -211,22 +185,26 @@ namespace ChessDotNET.ViewModels
         #endregion Command-Actions
 
         #region Methods
-        internal void PlaceChessPiece(int col, int row, ImageSource chessPiece)
+        internal void PlaceChessPiece(Coords coords, ImageSource chessPieceImage)
         {
-            tileImageList[col - 1][row - 1] = chessPiece;
-            tileImageStringList[col - 1][row - 1] = chessPiece.ToString().Contains("png") ? chessPiece.ToString() : "";
-            TileImageList = TileImageList;
+            tileDict[Coords.CoordsToString(coords)].ChessPiece.ChessPieceImage = chessPieceImage;
+            tileDict[Coords.CoordsToString(coords)].IsOccupied = ChessPieceImages.IsEmpty(chessPieceImage);
+            TileDict = tileDict;
         }
-        internal bool MoveChessPiece(int oldCol, int oldRow, int newCol, int newRow)
+        internal bool MoveChessPiece(Coords oldCoords, Coords newCoords)
         {
-            if (tileImageStringList[oldCol - 1][oldRow - 1] == "")
+            ImageSource oldCoordsImage = tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceImage;
+
+            if (!ChessPieceImages.IsEmpty(oldCoordsImage))
             {
                 return false;
             }
             else
             {
-                PlaceChessPiece(newCol, newRow, tileImageList[oldCol - 1][oldRow - 1]);
-                PlaceChessPiece(oldCol, oldRow, chessPieces.Empty);
+                PlaceChessPiece(newCoords, oldCoordsImage);
+                PlaceChessPiece(oldCoords, ChessPieceImages.Empty);
+                tileDict[Coords.CoordsToString(oldCoords)].IsOccupied = false;
+                tileDict[Coords.CoordsToString(newCoords)].IsOccupied = true;
             }
             return true;
         }
@@ -237,68 +215,80 @@ namespace ChessDotNET.ViewModels
                 bottomColor = "white";
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(col, 2, chessPieces.WhitePawn);
+                    PlaceChessPiece(new Coords(col, 2), ChessPieceImages.WhitePawn);
                 }
 
-                PlaceChessPiece(1, 1, chessPieces.WhiteRook);
-                PlaceChessPiece(2, 1, chessPieces.WhiteKnight);
-                PlaceChessPiece(3, 1, chessPieces.WhiteBishop);
-                PlaceChessPiece(4, 1, chessPieces.WhiteQueen);
-                PlaceChessPiece(5, 1, chessPieces.WhiteKing);
-                PlaceChessPiece(6, 1, chessPieces.WhiteBishop);
-                PlaceChessPiece(7, 1, chessPieces.WhiteKnight);
-                PlaceChessPiece(8, 1, chessPieces.WhiteRook);
+                PlaceChessPiece(new Coords(1, 1), ChessPieceImages.WhiteRook);
+                PlaceChessPiece(new Coords(2, 1), ChessPieceImages.WhiteKnight);
+                PlaceChessPiece(new Coords(3, 1), ChessPieceImages.WhiteBishop);
+                PlaceChessPiece(new Coords(4, 1), ChessPieceImages.WhiteQueen);
+                PlaceChessPiece(new Coords(5, 1), ChessPieceImages.WhiteKing);
+                PlaceChessPiece(new Coords(6, 1), ChessPieceImages.WhiteBishop);
+                PlaceChessPiece(new Coords(7, 1), ChessPieceImages.WhiteKnight);
+                PlaceChessPiece(new Coords(8, 1), ChessPieceImages.WhiteRook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(col, 7, chessPieces.BlackPawn);
+                    PlaceChessPiece(new Coords(col, 7), ChessPieceImages.BlackPawn);
                 }
 
-                PlaceChessPiece(1, 8, chessPieces.BlackRook);
-                PlaceChessPiece(2, 8, chessPieces.BlackKnight);
-                PlaceChessPiece(3, 8, chessPieces.BlackBishop);
-                PlaceChessPiece(4, 8, chessPieces.BlackQueen);
-                PlaceChessPiece(5, 8, chessPieces.BlackKing);
-                PlaceChessPiece(6, 8, chessPieces.BlackBishop);
-                PlaceChessPiece(7, 8, chessPieces.BlackKnight);
-                PlaceChessPiece(8, 8, chessPieces.BlackRook);
+                PlaceChessPiece(new Coords(1, 8), ChessPieceImages.BlackRook);
+                PlaceChessPiece(new Coords(2, 8), ChessPieceImages.BlackKnight);
+                PlaceChessPiece(new Coords(3, 8), ChessPieceImages.BlackBishop);
+                PlaceChessPiece(new Coords(4, 8), ChessPieceImages.BlackQueen);
+                PlaceChessPiece(new Coords(5, 8), ChessPieceImages.BlackKing);
+                PlaceChessPiece(new Coords(6, 8), ChessPieceImages.BlackBishop);
+                PlaceChessPiece(new Coords(7, 8), ChessPieceImages.BlackKnight);
+                PlaceChessPiece(new Coords(8, 8), ChessPieceImages.BlackRook);
             }
             else
             {
                 bottomColor = "black";
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(col, 2, chessPieces.BlackPawn);
+                    PlaceChessPiece(new Coords(col, 2), ChessPieceImages.BlackPawn);
                 }
 
-                PlaceChessPiece(1, 1, chessPieces.BlackRook);
-                PlaceChessPiece(2, 1, chessPieces.BlackKnight);
-                PlaceChessPiece(3, 1, chessPieces.BlackBishop);
-                PlaceChessPiece(4, 1, chessPieces.BlackKing);
-                PlaceChessPiece(5, 1, chessPieces.BlackQueen);
-                PlaceChessPiece(6, 1, chessPieces.BlackBishop);
-                PlaceChessPiece(7, 1, chessPieces.BlackKnight);
-                PlaceChessPiece(8, 1, chessPieces.BlackRook);
+                PlaceChessPiece(new Coords(1, 1), ChessPieceImages.BlackRook);
+                PlaceChessPiece(new Coords(2, 1), ChessPieceImages.BlackKnight);
+                PlaceChessPiece(new Coords(3, 1), ChessPieceImages.BlackBishop);
+                PlaceChessPiece(new Coords(4, 1), ChessPieceImages.BlackQueen);
+                PlaceChessPiece(new Coords(5, 1), ChessPieceImages.BlackKing);
+                PlaceChessPiece(new Coords(6, 1), ChessPieceImages.BlackBishop);
+                PlaceChessPiece(new Coords(7, 1), ChessPieceImages.BlackKnight);
+                PlaceChessPiece(new Coords(8, 1), ChessPieceImages.BlackRook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(col, 7, chessPieces.WhitePawn);
-                }
+                    {
+                        PlaceChessPiece(new Coords(col, 2), ChessPieceImages.WhitePawn);
+                    }
 
-                PlaceChessPiece(1, 8, chessPieces.WhiteRook);
-                PlaceChessPiece(2, 8, chessPieces.WhiteKnight);
-                PlaceChessPiece(3, 8, chessPieces.WhiteBishop);
-                PlaceChessPiece(4, 8, chessPieces.WhiteKing);
-                PlaceChessPiece(5, 8, chessPieces.WhiteQueen);
-                PlaceChessPiece(6, 8, chessPieces.WhiteBishop);
-                PlaceChessPiece(7, 8, chessPieces.WhiteKnight);
-                PlaceChessPiece(8, 8, chessPieces.WhiteRook);
+                    PlaceChessPiece(new Coords(1, 1), ChessPieceImages.WhiteRook);
+                    PlaceChessPiece(new Coords(2, 1), ChessPieceImages.WhiteKnight);
+                    PlaceChessPiece(new Coords(3, 1), ChessPieceImages.WhiteBishop);
+                    PlaceChessPiece(new Coords(4, 1), ChessPieceImages.WhiteQueen);
+                    PlaceChessPiece(new Coords(5, 1), ChessPieceImages.WhiteKing);
+                    PlaceChessPiece(new Coords(6, 1), ChessPieceImages.WhiteBishop);
+                    PlaceChessPiece(new Coords(7, 1), ChessPieceImages.WhiteKnight);
+                    PlaceChessPiece(new Coords(8, 1), ChessPieceImages.WhiteRook);
+                }
             }
         }
         internal Coords CanvasPositionToCoords(Point point)
         {
-            int col = (int)((point.X - point.X % 50) / 50);
-            int row = (int)((point.Y - point.Y % 50) / 50);
+            int col = (int)((point.X - point.X % 50) / 50) + 1;
+            int row = (int)((point.Y - point.Y % 50) / 50) + 1;
+
+            if      (row == 1) row = 8;
+            else if (row == 2) row = 7;
+            else if (row == 3) row = 6;
+            else if (row == 4) row = 5;
+            else if (row == 5) row = 4;
+            else if (row == 6) row = 3;
+            else if (row == 7) row = 2;
+            else if (row == 8) row = 1;
+
             return new Coords(col, row);
         }
 

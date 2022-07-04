@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using ChessDotNET.Helpers;
-using static ChessDotNET.Helpers.Coords;
+using ChessDotNET.CustomTypes;
+using static ChessDotNET.CustomTypes.Coords;
 
 namespace ChessDotNET.GameLogic
 {
@@ -15,50 +15,53 @@ namespace ChessDotNET.GameLogic
         {
         }
 
-        public static bool ValidateCurrentMove(List<List<string>> tileImageStringList, Image currentlyMovedChessPiece, string bottomColor, Coords oldCoords, Coords newCoords)
+        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, Image currentlyMovedChessPiece, string bottomColor, Coords oldCoords, Coords newCoords)
         {
-            ChessPieces chessPieces = new ChessPieces();
+            string newCoordsString = CoordsToString(newCoords);
+
             // only process white pawn's moves (if bottom color is white):
-            if (currentlyMovedChessPiece.Source.ToString() == chessPieces.WhitePawn.ToString())
+            if (ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhitePawn))
             {
                 if (bottomColor == "white")
                 {
-                    return PawnBottom(tileImageStringList, oldCoords, newCoords);
+                    return PawnBottom(tileDict, oldCoords, newCoords);
                 }
                 else
                 {
                     return false;
                 }
             }
-            else if (tileImageStringList[newCoords.Col][newCoords.Row] != "")
+            else if (!ChessPieceImages.IsEmpty(tileDict[newCoordsString].ChessPiece.ChessPieceImage))
             {
                 return false;
             }
             return true;
         }
 
-        private static bool PawnBottom(List<List<string>> tileImageStringList, Coords oldCoords, Coords newCoords)
+        private static bool PawnBottom(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
         {
+            string newCoordsString = Coords.CoordsToString(newCoords);
             // don't allow to move backwards:
-            if (newCoords.Row > oldCoords.Row)
+            if (newCoords.Row < oldCoords.Row)
             {
                 return false;
             }
             // if it's the pawn's first move:
-            if (oldCoords.Row == 6)
+            if (oldCoords.Row == 2)
             {
                 // if it's a straight move:
                 if (oldCoords.Col == newCoords.Col)
                 {
                     // don't allow to move up more than 2 tiles:
-                    if (newCoords.Row + 2 < oldCoords.Row)
+                    if (newCoords.Row - 2 > oldCoords.Row)
                     {
                         return false;
                     }
                     // check if something is in the way:
-                    for (int row = oldCoords.Row - 1; row > oldCoords.Row - 2; row--)
+                    for (int row = oldCoords.Row + 1; row < oldCoords.Row + 2; row++)
                     {
-                        if (tileImageStringList[newCoords.Col][row] != "")
+                        string tempCoordsString = Coords.CoordsToString(new Coords(newCoords.Col, row));
+                        if (!ChessPieceImages.IsEmpty(tileDict[tempCoordsString].ChessPiece.ChessPieceImage))
                         {
                             return false;
                         }
@@ -66,18 +69,18 @@ namespace ChessDotNET.GameLogic
                 }
             }
             // if it's not the pawn's first move:
-            if (oldCoords.Row != 6)
+            if (oldCoords.Row != 2)
             {
                 // if it's a straight move:
                 if (oldCoords.Col == newCoords.Col)
                 {
                     // don't allow to move up more than 1 tile:
-                    if (newCoords.Row + 1 < oldCoords.Row)
+                    if (newCoords.Row - 1 > oldCoords.Row)
                     {
                         return false;
                     }
                     // check if something is in the way:
-                    if (tileImageStringList[newCoords.Col][newCoords.Row] != "")
+                    if (!ChessPieceImages.IsEmpty(tileDict[newCoordsString].ChessPiece.ChessPieceImage))
                     {
                         return false;
                     }

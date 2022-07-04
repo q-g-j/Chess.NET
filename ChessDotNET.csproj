@@ -100,6 +100,9 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Threading.Channels, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Channels.6.0.0\lib\net461\System.Threading.Channels.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -137,11 +140,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomTypes\ChessPiece.cs" />
+    <Compile Include="CustomTypes\TileDict.cs" />
     <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
-    <Compile Include="Helpers\AdvancedInvokeCommandAction.cs" />
-    <Compile Include="Helpers\ChessPieces.cs" />
-    <Compile Include="Helpers\CompositeCommandParameter.cs" />
-    <Compile Include="Helpers\Coords.cs" />
+    <Compile Include="ViewHelpers\AdvancedInvokeCommandAction.cs" />
+    <Compile Include="CustomTypes\ChessPieceImages.cs" />
+    <Compile Include="ViewHelpers\CompositeCommandParameter.cs" />
+    <Compile Include="CustomTypes\Coords.cs" />
+    <Compile Include="CustomTypes\Tile.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -176,7 +182,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Folder Include="Converters\" />
     <Folder Include="Resources\Fonts\" />
   </ItemGroup>
   <ItemGroup>
