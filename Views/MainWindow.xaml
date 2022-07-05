@@ -22,7 +22,7 @@
             <behaviors:InvokeCommandAction Command="{Binding WindowMouseMoveCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
-            <behaviors:InvokeCommandAction Command="{Binding WindowMouseLeftUpCommand}"/>
+            <behaviors:InvokeCommandAction Command="{Binding WindowMouseLeftUpCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
     </behaviors:Interaction.Triggers>
 

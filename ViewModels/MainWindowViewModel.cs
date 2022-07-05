@@ -24,7 +24,7 @@ namespace ChessDotNET.ViewModels
         public MainWindowViewModel()
         {
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
-            WindowMouseLeftUpCommand = new RelayCommand(WindowMouseLeftUpAction);
+            WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
 
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
@@ -68,7 +68,7 @@ namespace ChessDotNET.ViewModels
 
         #region Commands
         public RelayCommand<object> WindowMouseMoveCommand { get; }
-        public RelayCommand WindowMouseLeftUpCommand { get; }
+        public RelayCommand<object> WindowMouseLeftUpCommand { get; }
         public RelayCommand<object> ChessPieceMouseLeftDownCommand { get; }
         #endregion Commands
 
@@ -76,23 +76,20 @@ namespace ChessDotNET.ViewModels
         private void WindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
-
-            dragOverCanvasPosition = e.GetPosition(canvas);
-            if (currentlyDraggedChessPiece != null)
+            if (currentlyDraggedChessPiece == null) return;
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
+                if (!isMouseMoving)
                 {
-                    if (!isMouseMoving)
-                    {
-                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
-                    }
-                    isMouseMoving = true;
                     dragOverCanvasPosition = e.GetPosition(canvas);
-                    currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
-
-                    Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                    Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                    dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
                 }
+                isMouseMoving = true;
+                dragOverCanvasPosition = e.GetPosition(canvas);
+                currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
+
+                Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
             }
 
             e.Handled = true;
@@ -101,7 +98,6 @@ namespace ChessDotNET.ViewModels
         {
             object param = ((CompositeCommandParameter)o).Parameter;
             MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-
             currentlyDraggedChessPiece = param as Image;
             if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPiece.Source))
             {
@@ -116,9 +112,13 @@ namespace ChessDotNET.ViewModels
             }
             e.Handled = true;
         }
-        private void WindowMouseLeftUpAction()
+        private void WindowMouseLeftUpAction(object o)
         {
-            if (isMouseMoving && currentlyDraggedChessPiece != null)
+            MouseEventArgs e = o as MouseEventArgs;
+            if (currentlyDraggedChessPiece == null) return;
+            if (currentlyDraggedChessPiece.IsMouseCaptured) currentlyDraggedChessPiece.ReleaseMouseCapture();
+
+            if (isMouseMoving)
             {
                 isMouseMoving = false;
                 if (dragOverCanvasPosition.X < 0 || dragOverCanvasPosition.X > 400 || dragOverCanvasPosition.Y < 0 || dragOverCanvasPosition.Y > 400)
@@ -130,8 +130,6 @@ namespace ChessDotNET.ViewModels
                 }
                 else
                 {
-                    double X = dragOverCanvasPosition.X - dragOverCanvasPosition.X % 50;
-                    double Y = dragOverCanvasPosition.Y - dragOverCanvasPosition.Y % 50;
                     Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
                     Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
                     Coords oldCoords = CanvasPositionToCoords(oldPoint);
@@ -172,9 +170,9 @@ namespace ChessDotNET.ViewModels
                 currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                 currentlyDraggedChessPieceOriginalCanvasTop = -1000;
                 currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 10);
-                currentlyDraggedChessPiece.ReleaseMouseCapture();
-                //currentlyDraggedChessPiece = null;
             }
+            currentlyDraggedChessPiece = null;
+            e.Handled = true;
         }
         #endregion Command-Actions
 
