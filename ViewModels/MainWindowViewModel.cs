@@ -117,16 +117,18 @@ namespace ChessDotNET.ViewModels
             MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
 
             currentlyDraggedChessPiece = param as Image;
-            canvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
-
-            if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
+            if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPiece.Source))
             {
-                currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.LeftProperty).ToString());
-                currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.TopProperty).ToString());
+                canvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
+
+                if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
+                {
+                    currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.LeftProperty).ToString());
+                    currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.TopProperty).ToString());
+                }
+
+                currentlyDraggedChessPiece.CaptureMouse();
             }
-
-            currentlyDraggedChessPiece.CaptureMouse();
-
             e.Handled = true;
         }
         private void WindowMouseLeftUpAction()
@@ -154,7 +156,6 @@ namespace ChessDotNET.ViewModels
 
                         bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileDict, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
 
-                        Console.WriteLine(tileDict[Coords.CoordsToString(newCoords)].IsOccupied);
                         if (isValidMove && !tileDict[Coords.CoordsToString(newCoords)].IsOccupied)
                         {
                             Canvas.SetLeft(currentlyDraggedChessPiece, X);

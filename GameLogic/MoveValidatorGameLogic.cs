@@ -28,7 +28,18 @@ namespace ChessDotNET.GameLogic
                 }
                 else
                 {
-                    return false;
+                    return PawnTop(tileDict, oldCoords, newCoords);
+                }
+            }
+            else if (ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackPawn))
+            {
+                if (bottomColor == "white")
+                {
+                    return PawnTop(tileDict, oldCoords, newCoords);
+                }
+                else
+                {
+                    return PawnBottom(tileDict, oldCoords, newCoords);
                 }
             }
             else if (!ChessPieceImages.IsEmpty(tileDict[newCoordsString].ChessPiece.ChessPieceImage))
@@ -87,6 +98,68 @@ namespace ChessDotNET.GameLogic
                     if (!ChessPieceImages.IsEmpty(tileDict[newCoordsString].ChessPiece.ChessPieceImage))
                     {
                         return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        private static bool PawnTop(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        {
+            string newCoordsString = Coords.CoordsToString(newCoords);
+            // don't allow to move backwards:
+            if (newCoords.Row > oldCoords.Row)
+            {
+                return false;
+            }
+            // if it's the pawn's first move:
+            if (oldCoords.Row == 7)
+            {
+                // if it's a straight move:
+                if (oldCoords.Col == newCoords.Col)
+                {
+                    // don't allow to move down more than 2 tiles:
+                    if (newCoords.Row + 2 < oldCoords.Row)
+                    {
+                        return false;
+                    }
+                    // check if something is in the way:
+                    for (int row = oldCoords.Row - 1; row > oldCoords.Row - 2; row--)
+                    {
+                        string tempCoordsString = Coords.CoordsToString(new Coords(newCoords.Col, row));
+                        if (!ChessPieceImages.IsEmpty(tileDict[tempCoordsString].ChessPiece.ChessPieceImage))
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            // if it's not the pawn's first move:
+            if (oldCoords.Row != 7)
+            {
+                // if it's a straight move:
+                if (oldCoords.Col == newCoords.Col)
+                {
+                    // don't allow to move down more than 2 tiles:
+                    if (newCoords.Row + 1 < oldCoords.Row)
+                    {
+                        return false;
+                    }
+                    // check if something is in the way:
+                    for (int row = oldCoords.Row - 1; row > oldCoords.Row - 1; row--)
+                    {
+                        string tempCoordsString = Coords.CoordsToString(new Coords(newCoords.Col, row));
+                        if (!ChessPieceImages.IsEmpty(tileDict[tempCoordsString].ChessPiece.ChessPieceImage))
+                        {
+                            return false;
+                        }
                     }
                 }
                 else
