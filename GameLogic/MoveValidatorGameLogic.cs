@@ -27,6 +27,60 @@ namespace ChessDotNET.GameLogic
 
                 return ValidatePawn(tileDict, oldCoords, newCoords, isBottom);
             }
+            else if (ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhiteBishop)
+                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackBishop)
+                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhiteQueen)
+                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackQueen))
+            {
+                return ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private static bool ValidateBishopAndQueenDiagonal(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        {
+            ChessPieceColor oldCoordsColor = tileDict[CoordsToString(oldCoords)].ChessPiece.ChessPieceColor;
+            ChessPieceColor newCoordsColor = tileDict[CoordsToString(newCoords)].ChessPiece.ChessPieceColor;
+            string newCoordsString = CoordsToString(newCoords);
+
+            // don't allow to capture same color:
+            if (tileDict[newCoordsString].IsOccupied && oldCoordsColor == newCoordsColor) return false;
+
+            // check if the path towards top right is free:
+            if (newCoords.Col > oldCoords.Col && newCoords.Row > oldCoords.Row)
+            {
+                for (int i = oldCoords.Col + 1, j = oldCoords.Row + 1; i < newCoords.Col && j < newCoords.Row; i++, j++)
+                {
+                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards top left is free:
+            else if (newCoords.Col < oldCoords.Col && newCoords.Row > oldCoords.Row)
+            {
+                for (int i = oldCoords.Col - 1, j = oldCoords.Row + 1; i > newCoords.Col && j < newCoords.Row; i--, j++)
+                {
+                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards bottom right is free:
+            else if (newCoords.Col > oldCoords.Col && newCoords.Row < oldCoords.Row)
+            {
+                for (int i = oldCoords.Col + 1, j = oldCoords.Row - 1; i < newCoords.Col && j > newCoords.Row; i++, j--)
+                {
+                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards bottom left is free:
+            else if (newCoords.Col < oldCoords.Col && newCoords.Row < oldCoords.Row)
+            {
+                for (int i = oldCoords.Col - 1, j = oldCoords.Row - 1; i > newCoords.Col && j > newCoords.Row; i--, j--)
+                {
+                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
             return true;
         }
 
