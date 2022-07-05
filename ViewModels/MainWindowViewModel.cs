@@ -48,8 +48,6 @@ namespace ChessDotNET.ViewModels
         #endregion Fields
 
         #region Property-Values
-        private ImageSource tileImage;
-
         private Dictionary<string, Tile> tileDict;
         #endregion Property-Values
 
