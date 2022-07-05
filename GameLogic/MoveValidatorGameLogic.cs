@@ -54,7 +54,7 @@ namespace ChessDotNET.GameLogic
             {
                 for (int i = oldCoords.Col + 1, j = oldCoords.Row + 1; i < newCoords.Col && j < newCoords.Row; i++, j++)
                 {
-                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                    if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
                 }
             }
             // check if the path towards top left is free:
@@ -62,7 +62,7 @@ namespace ChessDotNET.GameLogic
             {
                 for (int i = oldCoords.Col - 1, j = oldCoords.Row + 1; i > newCoords.Col && j < newCoords.Row; i--, j++)
                 {
-                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                    if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
                 }
             }
             // check if the path towards bottom right is free:
@@ -70,7 +70,7 @@ namespace ChessDotNET.GameLogic
             {
                 for (int i = oldCoords.Col + 1, j = oldCoords.Row - 1; i < newCoords.Col && j > newCoords.Row; i++, j--)
                 {
-                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                    if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
                 }
             }
             // check if the path towards bottom left is free:
@@ -78,7 +78,7 @@ namespace ChessDotNET.GameLogic
             {
                 for (int i = oldCoords.Col - 1, j = oldCoords.Row - 1; i > newCoords.Col && j > newCoords.Row; i--, j--)
                 {
-                    if (tileDict[CoordsToString(new Coords(i, j))].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                    if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
                 }
             }
             return true;
@@ -101,7 +101,7 @@ namespace ChessDotNET.GameLogic
                     // don't allow to move forward more than 2 tiles, 
                     if (newCoords.Col == oldCoords.Col && newCoords.Row - 2 > oldCoords.Row) return false;
                     // don't allow to jump over another piece:
-                    if (newCoords.Row == oldCoords.Row + 2 && tileDict[CoordsToString(new Coords(oldCoords.Col, oldCoords.Row + 1))].IsOccupied) return false; 
+                    if (newCoords.Row == oldCoords.Row + 2 && tileDict[IntsToCoordsString(oldCoords.Col, oldCoords.Row + 1)].IsOccupied) return false; 
                 }
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Row != 2 && newCoords.Col == oldCoords.Col && newCoords.Row - 1 > oldCoords.Row) return false;
@@ -117,7 +117,6 @@ namespace ChessDotNET.GameLogic
                 // don't allow to move other than vertical:
                 else if (oldCoords.Col != newCoords.Col) return false;
             }
-
             else
             {
                 // don't allow to move backwards:
@@ -130,7 +129,7 @@ namespace ChessDotNET.GameLogic
                     // don't allow to move forward more than 2 tiles, 
                     if (newCoords.Col == oldCoords.Col && newCoords.Row + 2 < oldCoords.Row) return false;
                     // don't allow to jump over another piece:
-                    if (newCoords.Row == oldCoords.Row - 2 && tileDict[CoordsToString(new Coords(oldCoords.Col, oldCoords.Row - 1))].IsOccupied) return false;
+                    if (newCoords.Row == oldCoords.Row - 2 && tileDict[IntsToCoordsString(oldCoords.Col, oldCoords.Row - 1)].IsOccupied) return false;
                 }
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Row != 7 && newCoords.Col == oldCoords.Col && newCoords.Row + 1 < oldCoords.Row) return false;

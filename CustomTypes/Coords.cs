@@ -33,6 +33,11 @@ namespace ChessDotNET.CustomTypes
         {
             return Enum.GetName(typeof(Columns), row).ToString();
         }
+
+        internal static string IntsToCoordsString(int col, int row)
+        {
+            return Enum.GetName(typeof(Columns), col).ToString() + row.ToString();
+        }
     }
 
     internal enum Columns
