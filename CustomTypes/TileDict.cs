@@ -18,7 +18,7 @@ namespace ChessDotNET.CustomTypes
                 for (int row = 8; row > 0; row--)
                 {
                     Coords coords = new Coords(col, row);
-                    this[Coords.CoordsToString(coords)] = new Tile(col, row, true, new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty));
+                    this[Coords.CoordsToString(coords)] = new Tile(col, row, false, new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty));
                 }
             }
         }

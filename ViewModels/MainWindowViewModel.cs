@@ -13,6 +13,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using ChessDotNET.GameLogic;
 using ChessDotNET.CustomTypes;
+using static ChessDotNET.CustomTypes.Columns;
 using ChessDotNET.ViewHelpers;
 
 namespace ChessDotNET.ViewModels
@@ -144,21 +145,24 @@ namespace ChessDotNET.ViewModels
                 {
                     double X = dragOverCanvasPosition.X - dragOverCanvasPosition.X % 50;
                     double Y = dragOverCanvasPosition.Y - dragOverCanvasPosition.Y % 50;
-
                     Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
+                    Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
+                    Coords oldCoords = CanvasPositionToCoords(oldPoint);
 
                     if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8)
                     {
-                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
-                        Coords oldCoords = CanvasPositionToCoords(oldPoint);
 
                         bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileDict, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
 
-                        if (isValidMove)
+                        Console.WriteLine(tileDict[Coords.CoordsToString(newCoords)].IsOccupied);
+                        if (isValidMove && !tileDict[Coords.CoordsToString(newCoords)].IsOccupied)
                         {
+                            Canvas.SetLeft(currentlyDraggedChessPiece, X);
+                            Canvas.SetTop(currentlyDraggedChessPiece, Y);
+                            tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceImage = currentlyDraggedChessPiece.Source;
+                            tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceImage = ChessPieceImages.Empty;
                             tileDict[Coords.CoordsToString(newCoords)].SetChessPiece(currentlyDraggedChessPiece.Source);
                             tileDict[Coords.CoordsToString(oldCoords)].SetChessPiece(ChessPieceImages.Empty);
-                            TileDict = tileDict;
 
                             Console.WriteLine("Old Coords: " + "Is occupied? " + tileDict[Coords.CoordsToString(oldCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(oldCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceType.ToString());
                             Console.WriteLine("New Coords: " + "Is occupied? " + tileDict[Coords.CoordsToString(newCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(newCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceType.ToString());
