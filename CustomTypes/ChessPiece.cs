@@ -14,11 +14,15 @@ namespace ChessDotNET.CustomTypes
             ChessPieceImage = chessPieceImage;
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;
+            HasMoved = false;
+            MoveCount = 0;            
         }
 
         public ImageSource ChessPieceImage { get; set; }
         internal ChessPieceColor ChessPieceColor { get; set; }
         internal ChessPieceType ChessPieceType { get; set; }
+        internal bool HasMoved { get; set; }
+        internal int MoveCount { get; set; }
     }
     internal enum ChessPieceColor
     {

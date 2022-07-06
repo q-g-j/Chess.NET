@@ -9,45 +9,93 @@ using static ChessDotNET.CustomTypes.Coords;
 
 namespace ChessDotNET.GameLogic
 {
-    internal class MoveValidatorGameLogic
+    internal static class MoveValidatorGameLogic
     {
-        public MoveValidatorGameLogic()
-        {
-        }
-
-        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, Image currentlyMovedChessPiece, string bottomColor, Coords oldCoords, Coords newCoords)
+        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, string bottomColor, Coords oldCoords, Coords newCoords)
         {
             // validate pawn's move:
-            if (ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhitePawn)
-                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackPawn))
+            if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
                 bool isBottom = false;
-                if (bottomColor == "white") isBottom = tileDict[CoordsToString(oldCoords)].ChessPiece.ChessPieceColor == ChessPieceColor.White;
-                if (bottomColor == "black") isBottom = tileDict[CoordsToString(oldCoords)].ChessPiece.ChessPieceColor == ChessPieceColor.Black;
+                if (bottomColor == "white") isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.White;
+                if (bottomColor == "black") isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.Black;
 
                 return ValidatePawn(tileDict, oldCoords, newCoords, isBottom);
             }
-            else if (ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhiteBishop)
-                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackBishop)
-                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.WhiteQueen)
-                || ChessPieceImages.Equals(currentlyMovedChessPiece.Source, ChessPieceImages.BlackQueen))
+            else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
             {
-                return ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+                if (oldCoords.Col == newCoords.Col || oldCoords.Row == newCoords.Row) return false;
+                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+                return isValidDiagonal;
+
+
+            }
+            else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Queen)
+            {
+                bool isValidStraight = ValidateRookAndKingStraight(tileDict, oldCoords, newCoords);
+                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+                return isValidStraight && isValidDiagonal;
+            }
+            else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Rook)
+            {
+                if (oldCoords.Col != newCoords.Col && oldCoords.Row != newCoords.Row) return false;
+                bool isValidStraight = ValidateRookAndKingStraight(tileDict, oldCoords, newCoords);
+                return isValidStraight;
             }
             else
             {
                 return true;
             }
         }
-
-        private static bool ValidateBishopAndQueenDiagonal(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidateRookAndKingStraight(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
         {
-            ChessPieceColor oldCoordsColor = tileDict[CoordsToString(oldCoords)].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[CoordsToString(newCoords)].ChessPiece.ChessPieceColor;
-            string newCoordsString = CoordsToString(newCoords);
+            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
+            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
 
             // don't allow to capture same color:
-            if (tileDict[newCoordsString].IsOccupied && oldCoordsColor == newCoordsColor) return false;
+            if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
+            // check if the path towards top is free:
+            if (newCoords.Col == oldCoords.Col && newCoords.Row > oldCoords.Row)
+            {
+                for (int i = oldCoords.Row + 1; i < newCoords.Row; i++)
+                {
+                    if (tileDict[IntsToCoordsString(oldCoords.Col, i)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards bottom is free:
+            if (newCoords.Col == oldCoords.Col && newCoords.Row < oldCoords.Row)
+            {
+                for (int i = oldCoords.Row - 1; i > newCoords.Row; i--)
+                {
+                    if (tileDict[IntsToCoordsString(oldCoords.Col, i)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards right is free:
+            if (newCoords.Col > oldCoords.Col && newCoords.Row == oldCoords.Row)
+            {
+                for (int i = oldCoords.Col + 1; i < newCoords.Col; i++)
+                {
+                    if (tileDict[IntsToCoordsString(i, oldCoords.Row)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+            // check if the path towards left is free:
+            if (newCoords.Col < oldCoords.Col && newCoords.Row == oldCoords.Row)
+            {
+                for (int i = oldCoords.Col - 1; i > newCoords.Col; i--)
+                {
+                    if (tileDict[IntsToCoordsString(i, oldCoords.Row)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
+                }
+            }
+
+            return true;
+        }
+        private static bool ValidateBishopAndQueenDiagonal(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        {
+            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
+            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
+
+            // don't allow to capture same color:
+            if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
             // check if the path towards top right is free:
             if (newCoords.Col > oldCoords.Col && newCoords.Row > oldCoords.Row)
@@ -91,11 +139,10 @@ namespace ChessDotNET.GameLogic
             }
             return true;
         }
-
         private static bool ValidatePawn(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords, bool isBottom)
         {
-            ChessPieceColor oldCoordsColor = tileDict[CoordsToString(oldCoords)].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[CoordsToString(newCoords)].ChessPiece.ChessPieceColor;
+            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
+            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
 
             if (isBottom)
             {
