@@ -218,15 +218,22 @@ namespace ChessDotNET.GameLogic
             // don't allow to capture same color:
             if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
-            if (oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == +1) return true; // -2 + 1
-            else if (oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == -1) return true; // -2 - 1
-            else if (oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == +1) return true; // +2 + 1
-            else if (oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == -1) return true; // +2 -1
-            else if (oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == +2) return true; // -1 +2
-            else if (oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == -2) return true; // -1 -2
-            else if (oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == +2) return true; // +1 +2
-            else if (oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == -2) return true; // +1 -2
-            else return false;
+            // check each possible move:
+            if (
+                   !(oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == +1) // -2 +1
+                && !(oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == -1) // -2 -1
+                && !(oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == +1) // +2 +1
+                && !(oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == -1) // +2 -1
+                && !(oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == +2) // -1 +2
+                && !(oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == -2) // -1 -2
+                && !(oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == +2) // +1 +2
+                && !(oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == -2) // +1 -2
+                )
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
