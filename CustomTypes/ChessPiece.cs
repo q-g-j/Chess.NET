@@ -15,7 +15,7 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;
             HasMoved = false;
-            MoveCount = 0;            
+            MoveCount = 0;
         }
 
         public ImageSource ChessPieceImage { get; set; }

@@ -9,13 +9,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.IO;
+using OpenPop.Pop3;
 using CommunityToolkit.Mvvm.Input;
 
 using ChessDotNET.GameLogic;
 using ChessDotNET.CustomTypes;
-using static ChessDotNET.CustomTypes.Columns;
 using ChessDotNET.ViewHelpers;
-using System.IO;
+using ChessDotNET.Settings;
+using OpenPop.Mime;
 
 namespace ChessDotNET.ViewModels
 {
@@ -24,7 +26,9 @@ namespace ChessDotNET.ViewModels
         #region Constructors
         public MainWindowViewModel()
         {
-            folderSettings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
+            appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
+            appSettings = new AppSettings(appSettingsFolder);
+
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
@@ -34,14 +38,49 @@ namespace ChessDotNET.ViewModels
 
             tileDict = new TileDict();
 
-            StartGame("white");
+            if (!Directory.Exists(appSettingsFolder))
+            {
+                Directory.CreateDirectory(appSettingsFolder);
+            }
+
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+
+            //Console.Write("Password: ");
+            //string password = Console.ReadLine().Replace("\\", "\\\\");
+
+            //AppSettingsStruct appSettingsStruct = new AppSettingsStruct()
+            //{
+            //    EmailServer = new Dictionary<string, string>()
+            //    {
+            //        ["email"] = "j.emken@gmx.net",
+            //        ["server"] = "pop.gmx.net",
+            //        ["pop3_port"] = "995",
+            //        ["smtp_port"] = "587",
+            //        ["username"] = "j.emken@gmx.net",
+            //        ["password"] = password
+            //    }
+            //};
+
+            //Dictionary<string, string> emailServer = appSettingsStruct.EmailServer;
+
+            //Console.WriteLine(@emailServer["password"].Replace("\\\\", "\\"));
+
+            //var client = new Pop3Client();
+            //client.Connect(emailServer["server"], int.Parse(emailServer["pop3_port"]), true);
+            //client.Authenticate(emailServer["username"], @emailServer["password"].Replace("\\\\", "\\"));
+            //var count = client.GetMessageCount();
+            //Message message = client.GetMessage(count);
+            //Console.WriteLine(message.Headers.Subject);
+
+            StartGame("black");
         }
         #endregion Constuctors
 
         #region Fields
-        private readonly string folderSettings;
+        private readonly string appSettingsFolder;
+        private AppSettings appSettings;
         private Canvas canvas;
-        private Image currentlyDraggedChessPiece;
+        private Image currentlyDraggedChessPieceImage;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
         private int currentlyDraggedChessPieceOriginalCanvasTop;
         private Point dragOverCanvasPosition;
@@ -86,21 +125,21 @@ namespace ChessDotNET.ViewModels
         private void WindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
-            if (currentlyDraggedChessPiece != null)
+            if (currentlyDraggedChessPieceImage != null)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
                     if (!isMouseMoving)
                     {
                         dragOverCanvasPosition = e.GetPosition(canvas);
-                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
+                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
                     }
                     isMouseMoving = true;
                     dragOverCanvasPosition = e.GetPosition(canvas);
-                    currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
+                    currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
 
-                    Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                    Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                    Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                    Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
                 }
             }
 
@@ -110,36 +149,36 @@ namespace ChessDotNET.ViewModels
         {
             object param = ((CompositeCommandParameter)o).Parameter;
             MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-            currentlyDraggedChessPiece = null;
+            currentlyDraggedChessPieceImage = null;
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-            currentlyDraggedChessPiece = param as Image;
-            if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPiece.Source))
+            currentlyDraggedChessPieceImage = param as Image;
+            if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
             {
                 canvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
                 if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
                 {
-                    currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.LeftProperty).ToString());
-                    currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.TopProperty).ToString());
+                    currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
+                    currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
                 }
-                currentlyDraggedChessPiece.CaptureMouse();
+                currentlyDraggedChessPieceImage.CaptureMouse();
             }
             e.Handled = true;
         }
         private void WindowMouseLeftUpAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
-            if (currentlyDraggedChessPiece == null) return;
-            if (currentlyDraggedChessPiece.IsMouseCaptured) currentlyDraggedChessPiece.ReleaseMouseCapture();
+            if (currentlyDraggedChessPieceImage == null) return;
+            if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
 
             if (isMouseMoving)
             {
                 isMouseMoving = false;
                 if (dragOverCanvasPosition.X < 0 || dragOverCanvasPosition.X > 400 || dragOverCanvasPosition.Y < 0 || dragOverCanvasPosition.Y > 400)
                 {
-                    Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
-                    Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
+                    Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                    Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                     currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                     currentlyDraggedChessPieceOriginalCanvasTop = -1000;
                 }
@@ -157,64 +196,69 @@ namespace ChessDotNET.ViewModels
 
                         if (isValidMove)
                         {
-                            Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
-                            Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
+                            Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                            Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                             Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
                             Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
 
-                            tileDict[oldCoords.ToString()].SetChessPiece(ChessPieceImages.Empty);
-                            tileDict[newCoords.ToString()].SetChessPiece(currentlyDraggedChessPiece.Source);
+                            tileDict[newCoords.ToString()].ChessPiece = tileDict[oldCoords.ToString()].ChessPiece;
+                            tileDict[oldCoords.ToString()].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
+                            tileDict[oldCoords.ToString()].IsOccupied = false;
+                            tileDict[newCoords.ToString()].IsOccupied = true;
+                            tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
                             TileDict = tileDict;
 
                             Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
                             Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("MoveCount: " + tileDict[newCoords.ToString()].ChessPiece.MoveCount);
                             Console.WriteLine();
                         }
                         else
                         {
-                            Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
-                            Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
+                            Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                            Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                         }
                     }
                     else
                     {
-                        Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
-                        Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                     }
                 }
                 currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                 currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 10);
+                currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
             }
-            currentlyDraggedChessPiece = null;
+            currentlyDraggedChessPieceImage = null;
             e.Handled = true;
         }
         #endregion Command-Actions
 
         #region Methods
-        internal void PlaceChessPiece(Coords coords, ImageSource chessPieceImage)
+        internal void PlaceChessPiece(Coords coords, ChessPieceColor color, ChessPieceType type)
         {
-            tileDict[coords.ToString()].ChessPiece.ChessPieceImage = chessPieceImage;
-            tileDict[coords.ToString()].SetChessPiece(chessPieceImage);
-
-            TileDict = tileDict;
-        }
-        internal bool MoveChessPiece(Coords oldCoords, Coords newCoords)
-        {
-            ImageSource oldCoordsImage = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceImage;
-
-            if (!ChessPieceImages.IsEmpty(oldCoordsImage))
+            ImageSource image = ChessPieceImages.Empty;
+            if (color == ChessPieceColor.White)
             {
-                return false;
+                if      (type == ChessPieceType.Pawn)   image = ChessPieceImages.WhitePawn;
+                else if (type == ChessPieceType.Rook)   image = ChessPieceImages.WhiteRook;
+                else if (type == ChessPieceType.Knight) image = ChessPieceImages.WhiteKnight;
+                else if (type == ChessPieceType.Bishop) image = ChessPieceImages.WhiteBishop;
+                else if (type == ChessPieceType.Queen)  image = ChessPieceImages.WhiteQueen;
+                else if (type == ChessPieceType.King)   image = ChessPieceImages.WhiteKing;
             }
             else
             {
-                PlaceChessPiece(newCoords, oldCoordsImage);
-                PlaceChessPiece(oldCoords, ChessPieceImages.Empty);
-                tileDict[oldCoords.ToString()].IsOccupied = false;
-                tileDict[newCoords.ToString()].IsOccupied = true;
+                if      (type == ChessPieceType.Pawn)   image = ChessPieceImages.BlackPawn;
+                else if (type == ChessPieceType.Rook)   image = ChessPieceImages.BlackRook;
+                else if (type == ChessPieceType.Knight) image = ChessPieceImages.BlackKnight;
+                else if (type == ChessPieceType.Bishop) image = ChessPieceImages.BlackBishop;
+                else if (type == ChessPieceType.Queen)  image = ChessPieceImages.BlackQueen;
+                else if (type == ChessPieceType.King)   image = ChessPieceImages.BlackKing;
             }
-            return true;
+            tileDict[coords.ToString()].ChessPiece = new ChessPiece(image, color, type);
+            tileDict[coords.ToString()].IsOccupied = true;
+            TileDict = tileDict;
         }
         internal void StartGame(string color)
         {
@@ -223,64 +267,62 @@ namespace ChessDotNET.ViewModels
                 bottomColor = "white";
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 2), ChessPieceImages.WhitePawn);
+                    PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 1), ChessPieceImages.WhiteRook);
-                PlaceChessPiece(new Coords(2, 1), ChessPieceImages.WhiteKnight);
-                PlaceChessPiece(new Coords(3, 1), ChessPieceImages.WhiteBishop);
-                PlaceChessPiece(new Coords(4, 1), ChessPieceImages.WhiteQueen);
-                PlaceChessPiece(new Coords(5, 1), ChessPieceImages.WhiteKing);
-                PlaceChessPiece(new Coords(6, 1), ChessPieceImages.WhiteBishop);
-                PlaceChessPiece(new Coords(7, 1), ChessPieceImages.WhiteKnight);
-                PlaceChessPiece(new Coords(8, 1), ChessPieceImages.WhiteRook);
+                PlaceChessPiece(new Coords(1, 1), ChessPieceColor.White, ChessPieceType.Rook);
+                PlaceChessPiece(new Coords(2, 1), ChessPieceColor.White, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(3, 1), ChessPieceColor.White, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(4, 1), ChessPieceColor.White, ChessPieceType.Queen);
+                PlaceChessPiece(new Coords(5, 1), ChessPieceColor.White, ChessPieceType.King);
+                PlaceChessPiece(new Coords(6, 1), ChessPieceColor.White, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(7, 1), ChessPieceColor.White, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(8, 1), ChessPieceColor.White, ChessPieceType.Rook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 7), ChessPieceImages.BlackPawn);
+                    PlaceChessPiece(new Coords(col, 7), ChessPieceColor.Black, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 8), ChessPieceImages.BlackRook);
-                PlaceChessPiece(new Coords(2, 8), ChessPieceImages.BlackKnight);
-                PlaceChessPiece(new Coords(3, 8), ChessPieceImages.BlackBishop);
-                PlaceChessPiece(new Coords(4, 8), ChessPieceImages.BlackQueen);
-                PlaceChessPiece(new Coords(5, 8), ChessPieceImages.BlackKing);
-                PlaceChessPiece(new Coords(6, 8), ChessPieceImages.BlackBishop);
-                PlaceChessPiece(new Coords(7, 8), ChessPieceImages.BlackKnight);
-                PlaceChessPiece(new Coords(8, 8), ChessPieceImages.BlackRook);
+                PlaceChessPiece(new Coords(1, 8), ChessPieceColor.Black, ChessPieceType.Rook);
+                PlaceChessPiece(new Coords(2, 8), ChessPieceColor.Black, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(3, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(4, 8), ChessPieceColor.Black, ChessPieceType.Queen);
+                PlaceChessPiece(new Coords(5, 8), ChessPieceColor.Black, ChessPieceType.King);
+                PlaceChessPiece(new Coords(6, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook);
             }
             else
             {
                 bottomColor = "black";
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 2), ChessPieceImages.BlackPawn);
+                    PlaceChessPiece(new Coords(col, 2), ChessPieceColor.Black, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 1), ChessPieceImages.BlackRook);
-                PlaceChessPiece(new Coords(2, 1), ChessPieceImages.BlackKnight);
-                PlaceChessPiece(new Coords(3, 1), ChessPieceImages.BlackBishop);
-                PlaceChessPiece(new Coords(4, 1), ChessPieceImages.BlackKing);
-                PlaceChessPiece(new Coords(5, 1), ChessPieceImages.BlackQueen);
-                PlaceChessPiece(new Coords(6, 1), ChessPieceImages.BlackBishop);
-                PlaceChessPiece(new Coords(7, 1), ChessPieceImages.BlackKnight);
-                PlaceChessPiece(new Coords(8, 1), ChessPieceImages.BlackRook);
+                PlaceChessPiece(new Coords(1, 1), ChessPieceColor.Black, ChessPieceType.Rook);
+                PlaceChessPiece(new Coords(2, 1), ChessPieceColor.Black, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(3, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(4, 1), ChessPieceColor.Black, ChessPieceType.King);
+                PlaceChessPiece(new Coords(5, 1), ChessPieceColor.Black, ChessPieceType.Queen);
+                PlaceChessPiece(new Coords(6, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(7, 1), ChessPieceColor.Black, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(8, 1), ChessPieceColor.Black, ChessPieceType.Rook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    {
-                        PlaceChessPiece(new Coords(col, 7), ChessPieceImages.WhitePawn);
-                    }
-
-                    PlaceChessPiece(new Coords(1, 8), ChessPieceImages.WhiteRook);
-                    PlaceChessPiece(new Coords(2, 8), ChessPieceImages.WhiteKnight);
-                    PlaceChessPiece(new Coords(3, 8), ChessPieceImages.WhiteBishop);
-                    PlaceChessPiece(new Coords(4, 8), ChessPieceImages.WhiteKing);
-                    PlaceChessPiece(new Coords(5, 8), ChessPieceImages.WhiteQueen);
-                    PlaceChessPiece(new Coords(6, 8), ChessPieceImages.WhiteBishop);
-                    PlaceChessPiece(new Coords(7, 8), ChessPieceImages.WhiteKnight);
-                    PlaceChessPiece(new Coords(8, 8), ChessPieceImages.WhiteRook);
+                    PlaceChessPiece(new Coords(col, 7), ChessPieceColor.White, ChessPieceType.Pawn);
                 }
+
+                PlaceChessPiece(new Coords(1, 8), ChessPieceColor.White, ChessPieceType.Rook);
+                PlaceChessPiece(new Coords(2, 8), ChessPieceColor.White, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(3, 8), ChessPieceColor.White, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(4, 8), ChessPieceColor.White, ChessPieceType.King);
+                PlaceChessPiece(new Coords(5, 8), ChessPieceColor.White, ChessPieceType.Queen);
+                PlaceChessPiece(new Coords(6, 8), ChessPieceColor.White, ChessPieceType.Bishop);
+                PlaceChessPiece(new Coords(7, 8), ChessPieceColor.White, ChessPieceType.Knight);
+                PlaceChessPiece(new Coords(8, 8), ChessPieceColor.White, ChessPieceType.Rook);
             }
         }
         internal Coords CanvasPositionToCoords(Point point)

@@ -46,7 +46,7 @@ namespace ChessDotNET.GameLogic
             // validate knight's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Knight)
             {
-                bool isValidStraight = ValdiateKnight(tileDict, oldCoords, newCoords);
+                bool isValidStraight = ValidateKnight(tileDict, oldCoords, newCoords);
                 return isValidStraight;
             }
             else
@@ -210,7 +210,7 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValdiateKnight(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidateKnight(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
         {
             ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
             ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
