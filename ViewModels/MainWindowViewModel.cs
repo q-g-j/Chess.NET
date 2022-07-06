@@ -15,6 +15,7 @@ using ChessDotNET.GameLogic;
 using ChessDotNET.CustomTypes;
 using static ChessDotNET.CustomTypes.Columns;
 using ChessDotNET.ViewHelpers;
+using System.IO;
 
 namespace ChessDotNET.ViewModels
 {
@@ -23,6 +24,7 @@ namespace ChessDotNET.ViewModels
         #region Constructors
         public MainWindowViewModel()
         {
+            folderSettings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
@@ -37,6 +39,7 @@ namespace ChessDotNET.ViewModels
         #endregion Constuctors
 
         #region Fields
+        private readonly string folderSettings;
         private Canvas canvas;
         private Image currentlyDraggedChessPiece;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
@@ -64,6 +67,13 @@ namespace ChessDotNET.ViewModels
                 OnPropertyChanged();
             }
         }
+        private Dictionary<string, Tile> TileDictReadOnly
+        {
+            get
+            {
+                return tileDict;
+            }
+        }
         #endregion Properties
 
         #region Commands
@@ -76,20 +86,22 @@ namespace ChessDotNET.ViewModels
         private void WindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
-            if (currentlyDraggedChessPiece == null) return;
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (currentlyDraggedChessPiece != null)
             {
-                if (!isMouseMoving)
+                if (e.LeftButton == MouseButtonState.Pressed)
                 {
+                    if (!isMouseMoving)
+                    {
+                        dragOverCanvasPosition = e.GetPosition(canvas);
+                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
+                    }
+                    isMouseMoving = true;
                     dragOverCanvasPosition = e.GetPosition(canvas);
-                    dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPiece);
-                }
-                isMouseMoving = true;
-                dragOverCanvasPosition = e.GetPosition(canvas);
-                currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
+                    currentlyDraggedChessPiece.SetValue(Panel.ZIndexProperty, 20);
 
-                Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                    Canvas.SetLeft(currentlyDraggedChessPiece, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                    Canvas.SetTop(currentlyDraggedChessPiece, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                }
             }
 
             e.Handled = true;
@@ -98,6 +110,9 @@ namespace ChessDotNET.ViewModels
         {
             object param = ((CompositeCommandParameter)o).Parameter;
             MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
+            currentlyDraggedChessPiece = null;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
             currentlyDraggedChessPiece = param as Image;
             if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPiece.Source))
             {
@@ -134,25 +149,25 @@ namespace ChessDotNET.ViewModels
                     Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
                     Coords oldCoords = CanvasPositionToCoords(oldPoint);
 
-                    if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8 
+                    if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8
                         && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
                     {
 
-                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(tileDict, currentlyDraggedChessPiece, bottomColor, oldCoords, newCoords);
+                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(TileDictReadOnly, bottomColor, oldCoords, newCoords);
 
                         if (isValidMove)
                         {
                             Canvas.SetLeft(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasLeft);
                             Canvas.SetTop(currentlyDraggedChessPiece, currentlyDraggedChessPieceOriginalCanvasTop);
-                            Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[Coords.CoordsToString(oldCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(oldCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceType.ToString());
-                            Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[Coords.CoordsToString(newCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(newCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
 
-                            tileDict[Coords.CoordsToString(oldCoords)].SetChessPiece(ChessPieceImages.Empty);
-                            tileDict[Coords.CoordsToString(newCoords)].SetChessPiece(currentlyDraggedChessPiece.Source);
+                            tileDict[oldCoords.ToString()].SetChessPiece(ChessPieceImages.Empty);
+                            tileDict[newCoords.ToString()].SetChessPiece(currentlyDraggedChessPiece.Source);
                             TileDict = tileDict;
 
-                            Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[Coords.CoordsToString(oldCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(oldCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceType.ToString());
-                            Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[Coords.CoordsToString(newCoords)].IsOccupied.ToString() + "\t| Coords: " + Coords.CoordsToString(newCoords) + "\t| Color = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[Coords.CoordsToString(newCoords)].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
+                            Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
                             Console.WriteLine();
                         }
                         else
@@ -179,14 +194,14 @@ namespace ChessDotNET.ViewModels
         #region Methods
         internal void PlaceChessPiece(Coords coords, ImageSource chessPieceImage)
         {
-            tileDict[Coords.CoordsToString(coords)].ChessPiece.ChessPieceImage = chessPieceImage;
-            tileDict[Coords.CoordsToString(coords)].SetChessPiece(chessPieceImage);
+            tileDict[coords.ToString()].ChessPiece.ChessPieceImage = chessPieceImage;
+            tileDict[coords.ToString()].SetChessPiece(chessPieceImage);
 
             TileDict = tileDict;
         }
         internal bool MoveChessPiece(Coords oldCoords, Coords newCoords)
         {
-            ImageSource oldCoordsImage = tileDict[Coords.CoordsToString(oldCoords)].ChessPiece.ChessPieceImage;
+            ImageSource oldCoordsImage = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceImage;
 
             if (!ChessPieceImages.IsEmpty(oldCoordsImage))
             {
@@ -196,8 +211,8 @@ namespace ChessDotNET.ViewModels
             {
                 PlaceChessPiece(newCoords, oldCoordsImage);
                 PlaceChessPiece(oldCoords, ChessPieceImages.Empty);
-                tileDict[Coords.CoordsToString(oldCoords)].IsOccupied = false;
-                tileDict[Coords.CoordsToString(newCoords)].IsOccupied = true;
+                tileDict[oldCoords.ToString()].IsOccupied = false;
+                tileDict[newCoords.ToString()].IsOccupied = true;
             }
             return true;
         }
@@ -273,7 +288,7 @@ namespace ChessDotNET.ViewModels
             int col = (int)((point.X - point.X % 50) / 50) + 1;
             int row = (int)((point.Y - point.Y % 50) / 50) + 1;
 
-            if      (row == 1) row = 8;
+            if (row == 1) row = 8;
             else if (row == 2) row = 7;
             else if (row == 3) row = 6;
             else if (row == 4) row = 5;

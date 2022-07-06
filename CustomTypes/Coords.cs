@@ -12,21 +12,19 @@ namespace ChessDotNET.CustomTypes
         public Coords(int x, int y)
         {
             Col = x;
-            Row = y;
+            Row = y; 
+            _string = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
         }
 
         public int Col { get; }
         public int Row { get; }
+        private readonly string _string;
 
-        public override string ToString() => $"({Col}, {Row})";
+        public override string ToString() => _string;
 
         internal static Coords StringToCoords(string coordsString)
         {
             return new Coords(int.Parse(coordsString[0].ToString()), int.Parse(coordsString[1].ToString()));
-        }
-        internal static string CoordsToString(Coords coords)
-        {
-            return Enum.GetName(typeof(Columns), coords.Col).ToString() + (coords.Row).ToString();
         }
 
         internal static string ColToString(int row)
@@ -42,6 +40,6 @@ namespace ChessDotNET.CustomTypes
 
     internal enum Columns
     {
-       A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8
+        A = 1, B = 2, C = 3, D = 4, E = 5, F = 6, G = 7, H = 8
     }
 }
