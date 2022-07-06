@@ -22,20 +22,21 @@ namespace ChessDotNET.GameLogic
 
                 return ValidatePawn(tileDict, oldCoords, newCoords, isBottom);
             }
+            // validate bishop's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
             {
                 if (oldCoords.Col == newCoords.Col || oldCoords.Row == newCoords.Row) return false;
                 bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
                 return isValidDiagonal;
-
-
             }
+            // validate queen's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Queen)
             {
                 bool isValidStraight = ValidateRookAndKingStraight(tileDict, oldCoords, newCoords);
                 bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
                 return isValidStraight && isValidDiagonal;
             }
+            // validate rook's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Rook)
             {
                 if (oldCoords.Col != newCoords.Col && oldCoords.Row != newCoords.Row) return false;

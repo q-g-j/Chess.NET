@@ -29,7 +29,6 @@ namespace ChessDotNET.ViewModels
 
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-            hasClickedOnImage = false;
 
             tileDict = new TileDict();
 
@@ -44,7 +43,6 @@ namespace ChessDotNET.ViewModels
         private int currentlyDraggedChessPieceOriginalCanvasTop;
         private Point dragOverCanvasPosition;
         private Point dragOverChessPiecePosition;
-        private bool hasClickedOnImage;
         private bool isMouseMoving;
         private string bottomColor;
         #endregion Fields
@@ -109,14 +107,9 @@ namespace ChessDotNET.ViewModels
         {
             object param = ((CompositeCommandParameter)o).Parameter;
             MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-            if (hasClickedOnImage)
-            {
-                hasClickedOnImage = false;
-                currentlyDraggedChessPiece = null;
-                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-            }
-            hasClickedOnImage = true;
+            currentlyDraggedChessPiece = null;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
             currentlyDraggedChessPiece = param as Image;
             if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPiece.Source))
             {
