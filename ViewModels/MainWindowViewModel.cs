@@ -15,6 +15,7 @@ using ChessDotNET.GameLogic;
 using ChessDotNET.CustomTypes;
 using static ChessDotNET.CustomTypes.Columns;
 using ChessDotNET.ViewHelpers;
+using System.IO;
 
 namespace ChessDotNET.ViewModels
 {
@@ -23,6 +24,7 @@ namespace ChessDotNET.ViewModels
         #region Constructors
         public MainWindowViewModel()
         {
+            folderSettings = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
@@ -37,6 +39,7 @@ namespace ChessDotNET.ViewModels
         #endregion Constuctors
 
         #region Fields
+        private readonly string folderSettings;
         private Canvas canvas;
         private Image currentlyDraggedChessPiece;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{26305F0A-0B0F-4E42-997E-F9A23567293D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>ChessDotNET</RootNamespace>
     <AssemblyName>ChessDotNET</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -80,6 +80,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -143,6 +146,9 @@
     <Compile Include="CustomTypes\ChessPiece.cs" />
     <Compile Include="CustomTypes\TileDict.cs" />
     <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
+    <Compile Include="SaveGame\SaveCurrentGame.cs" />
+    <Compile Include="SaveGame\SaveSlots.cs" />
+    <Compile Include="Settings\Settings.cs" />
     <Compile Include="ViewHelpers\AdvancedInvokeCommandAction.cs" />
     <Compile Include="CustomTypes\ChessPieceImages.cs" />
     <Compile Include="ViewHelpers\CompositeCommandParameter.cs" />
