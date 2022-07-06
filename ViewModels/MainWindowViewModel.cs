@@ -107,8 +107,8 @@ namespace ChessDotNET.ViewModels
                 {
                     currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.LeftProperty).ToString());
                     currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPiece.GetValue(Canvas.TopProperty).ToString());
+                    currentlyDraggedChessPiece.CaptureMouse();
                 }
-                currentlyDraggedChessPiece.CaptureMouse();
             }
             e.Handled = true;
         }

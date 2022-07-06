@@ -52,6 +52,8 @@ namespace ChessDotNET.GameLogic
             // check if the path towards top right is free:
             if (newCoords.Col > oldCoords.Col && newCoords.Row > oldCoords.Row)
             {
+                // first check if it's a diagnoal move:
+                if (newCoords.Col - oldCoords.Col != newCoords.Row - oldCoords.Row) return false;
                 for (int i = oldCoords.Col + 1, j = oldCoords.Row + 1; i < newCoords.Col && j < newCoords.Row; i++, j++)
                 {
                     if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
@@ -60,6 +62,8 @@ namespace ChessDotNET.GameLogic
             // check if the path towards top left is free:
             else if (newCoords.Col < oldCoords.Col && newCoords.Row > oldCoords.Row)
             {
+                // first check if it's a diagnoal move:
+                if (oldCoords.Col - newCoords.Col != newCoords.Row - oldCoords.Row) return false;
                 for (int i = oldCoords.Col - 1, j = oldCoords.Row + 1; i > newCoords.Col && j < newCoords.Row; i--, j++)
                 {
                     if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
@@ -68,6 +72,8 @@ namespace ChessDotNET.GameLogic
             // check if the path towards bottom right is free:
             else if (newCoords.Col > oldCoords.Col && newCoords.Row < oldCoords.Row)
             {
+                // first check if it's a diagnoal move:
+                if (newCoords.Col - oldCoords.Col != oldCoords.Row - newCoords.Row) return false;
                 for (int i = oldCoords.Col + 1, j = oldCoords.Row - 1; i < newCoords.Col && j > newCoords.Row; i++, j--)
                 {
                     if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
@@ -76,6 +82,8 @@ namespace ChessDotNET.GameLogic
             // check if the path towards bottom left is free:
             else if (newCoords.Col < oldCoords.Col && newCoords.Row < oldCoords.Row)
             {
+                // first check if it's a diagnoal move:
+                if (oldCoords.Col - newCoords.Col != oldCoords.Row - newCoords.Row) return false;
                 for (int i = oldCoords.Col - 1, j = oldCoords.Row - 1; i > newCoords.Col && j > newCoords.Row; i--, j--)
                 {
                     if (tileDict[IntsToCoordsString(i, j)].ChessPiece.ChessPieceColor != ChessPieceColor.Empty) return false;
