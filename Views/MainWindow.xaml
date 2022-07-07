@@ -26,7 +26,7 @@
             <behaviors:InvokeCommandAction Command="{Binding WindowMouseMoveCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
-            <behaviors:InvokeCommandAction Command="{Binding WindowMouseLeftDownCommand}"/>
+            <behaviors:InvokeCommandAction Command="{Binding WindowMouseLeftDownCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
             <behaviors:InvokeCommandAction Command="{Binding WindowMouseLeftUpCommand}" PassEventArgsToCommand="True"/>
@@ -55,9 +55,9 @@
                 </Button>
             </DockPanel>
             <Grid>
-                <local:SideMenu Visibility="{Binding SideMenuVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="10" HorizontalAlignment="Left" Margin="0, 20, 40, 0"/>
+                <local:SideMenu Visibility="{Binding SideMenuVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Left" Margin="0, 20, 40, 0"/>
                 <Grid
-                Background="#ffce9e">
+                    Background="#ffce9e">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40"/>
                         <ColumnDefinition Width="*"/>

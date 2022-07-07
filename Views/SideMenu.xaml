@@ -7,8 +7,8 @@
              xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
-    
-    <Grid>
+
+    <Grid Name="Test">
         <Border Style="{StaticResource StyleSideMenuBorder}">
             <Border.Effect>
                 <DropShadowEffect />

@@ -35,7 +35,7 @@ namespace ChessDotNET.ViewModels
             SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
             QuitProgramCommand = new RelayCommand(QuitProgramAction);
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
-            WindowMouseLeftDownCommand = new RelayCommand(WindowMouseLeftDownAction);
+            WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
 
@@ -114,7 +114,7 @@ namespace ChessDotNET.ViewModels
         public RelayCommand SideMenuNewGameCommand { get; }
         public RelayCommand QuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
-        public RelayCommand WindowMouseLeftDownCommand { get; }
+        public RelayCommand<object> WindowMouseLeftDownCommand { get; }
         public RelayCommand<object> WindowMouseLeftUpCommand { get; }
         public RelayCommand<object> ChessPieceMouseLeftDownCommand { get; }
         #endregion Commands
@@ -145,16 +145,24 @@ namespace ChessDotNET.ViewModels
         {
             Application.Current.Shutdown();
         }
-        private void WindowMouseLeftDownAction()
+        private void WindowMouseLeftDownAction(object o)
         {
-            if (SideMenuVisibility == "Visible")
+            var e = o as MouseEventArgs;
+
+            if (e.Source != null)
             {
-                wasSideMenuOpen = true;
-                SideMenuVisibility = "Collapsed";
-            }
-            else
-            {
-                wasSideMenuOpen = false;
+                if (e.Source.ToString() != "ChessDotNET.Views.SideMenu")
+                {
+                    if (SideMenuVisibility == "Visible")
+                    {
+                        wasSideMenuOpen = true;
+                        SideMenuVisibility = "Collapsed";
+                    }
+                    else
+                    {
+                        wasSideMenuOpen = false;
+                    }
+                }
             }
         }
         private void WindowMouseMoveAction(object o)
