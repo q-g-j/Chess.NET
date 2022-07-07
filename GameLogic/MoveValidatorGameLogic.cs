@@ -11,14 +11,14 @@ namespace ChessDotNET.GameLogic
 {
     internal static class MoveValidatorGameLogic
     {
-        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, string bottomColor, Coords oldCoords, Coords newCoords)
+        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, ChessPieceColor bottomColor, Coords oldCoords, Coords newCoords)
         {
             // validate pawn's move:
             if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
-                bool isBottom = false;
-                if (bottomColor == "white") isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.White;
-                if (bottomColor == "black") isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.Black;
+                bool isBottom;
+                if (bottomColor == ChessPieceColor.White) isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.White;
+                else isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.Black;
 
                 return ValidatePawn(tileDict, oldCoords, newCoords, isBottom);
             }

@@ -9,11 +9,8 @@ namespace ChessDotNET.GameLogic
 {
     internal static class ThreatDetectionGameLogic
     {
-        internal static List<Tile> GetThreateningTilesList(Dictionary<string, Tile> tileDict, Coords currentCoords, string bottomColorString)
+        internal static List<Tile> GetThreateningTilesList(Dictionary<string, Tile> tileDict, Coords currentCoords, ChessPieceColor bottomColor)
         {
-            ChessPieceColor bottomColor = ChessPieceColor.White;
-            if (bottomColorString == "black") bottomColor = ChessPieceColor.Black;
-
             List<Tile> returnList = new List<Tile>();
 
             foreach (var tile in tileDict.Values)

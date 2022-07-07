@@ -52,7 +52,7 @@ namespace ChessDotNET.ViewModels
                 Directory.CreateDirectory(appSettingsFolder);
             }
 
-            StartGame("black");
+            StartGame(ChessPieceColor.Black);
         }
         #endregion Constuctors
 
@@ -67,7 +67,7 @@ namespace ChessDotNET.ViewModels
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
         private bool wasSideMenuOpen;
-        private string bottomColor;
+        private ChessPieceColor bottomColor;
         #endregion Fields
 
         #region Property-Values
@@ -139,7 +139,7 @@ namespace ChessDotNET.ViewModels
 
             tileDict = new TileDict();
             SideMenuVisibility = "Collapsed";
-            StartGame("white");
+            StartGame(ChessPieceColor.White);
         }
         private void QuitProgramAction()
         {
@@ -308,11 +308,11 @@ namespace ChessDotNET.ViewModels
             tileDict[coords.ToString()].IsOccupied = true;
             TileDict = tileDict;
         }
-        internal void StartGame(string color)
+        internal void StartGame(ChessPieceColor color)
         {
-            if (color == "white")
+            if (color == ChessPieceColor.White)
             {
-                bottomColor = "white";
+                bottomColor = ChessPieceColor.White;
                 for (int col = 1; col < 9; col++)
                 {
                     PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn);
@@ -343,7 +343,7 @@ namespace ChessDotNET.ViewModels
             }
             else
             {
-                bottomColor = "black";
+                bottomColor = ChessPieceColor.Black;
                 for (int col = 1; col < 9; col++)
                 {
                     PlaceChessPiece(new Coords(col, 2), ChessPieceColor.Black, ChessPieceType.Pawn);
