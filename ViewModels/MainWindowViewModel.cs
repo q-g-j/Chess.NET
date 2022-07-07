@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.IO;
+using System.Net.Mail;
 using OpenPop.Pop3;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,6 +19,7 @@ using ChessDotNET.CustomTypes;
 using ChessDotNET.ViewHelpers;
 using ChessDotNET.Settings;
 using OpenPop.Mime;
+using System.Net;
 
 namespace ChessDotNET.ViewModels
 {
@@ -29,12 +31,19 @@ namespace ChessDotNET.ViewModels
             appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
             appSettings = new AppSettings(appSettingsFolder);
 
+            OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
+            SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
+            QuitProgramCommand = new RelayCommand(QuitProgramAction);
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
+            WindowMouseLeftDownCommand = new RelayCommand(WindowMouseLeftDownAction);
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
 
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            wasSideMenuOpen = false;
+            sideMenuVisibility = "Collapsed";
 
             tileDict = new TileDict();
 
@@ -42,35 +51,6 @@ namespace ChessDotNET.ViewModels
             {
                 Directory.CreateDirectory(appSettingsFolder);
             }
-
-            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-
-            //Console.Write("Password: ");
-            //string password = Console.ReadLine().Replace("\\", "\\\\");
-
-            //AppSettingsStruct appSettingsStruct = new AppSettingsStruct()
-            //{
-            //    EmailServer = new Dictionary<string, string>()
-            //    {
-            //        ["email"] = "j.emken@gmx.net",
-            //        ["server"] = "pop.gmx.net",
-            //        ["pop3_port"] = "995",
-            //        ["smtp_port"] = "587",
-            //        ["username"] = "j.emken@gmx.net",
-            //        ["password"] = password
-            //    }
-            //};
-
-            //Dictionary<string, string> emailServer = appSettingsStruct.EmailServer;
-
-            //Console.WriteLine(@emailServer["password"].Replace("\\\\", "\\"));
-
-            //var client = new Pop3Client();
-            //client.Connect(emailServer["server"], int.Parse(emailServer["pop3_port"]), true);
-            //client.Authenticate(emailServer["username"], @emailServer["password"].Replace("\\\\", "\\"));
-            //var count = client.GetMessageCount();
-            //Message message = client.GetMessage(count);
-            //Console.WriteLine(message.Headers.Subject);
 
             StartGame("black");
         }
@@ -86,14 +66,28 @@ namespace ChessDotNET.ViewModels
         private Point dragOverCanvasPosition;
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
+        private bool wasSideMenuOpen;
         private string bottomColor;
         #endregion Fields
 
         #region Property-Values
         private Dictionary<string, Tile> tileDict;
+        private string sideMenuVisibility;
         #endregion Property-Values
 
         #region Properties
+        public string SideMenuVisibility
+        {
+            get
+            {
+                return sideMenuVisibility;
+            }
+            set
+            {
+                sideMenuVisibility = value;
+                OnPropertyChanged();
+            }
+        }
         public Dictionary<string, Tile> TileDict
         {
             get
@@ -116,33 +110,82 @@ namespace ChessDotNET.ViewModels
         #endregion Properties
 
         #region Commands
+        public RelayCommand OpenSideMenuCommand { get; }
+        public RelayCommand SideMenuNewGameCommand { get; }
+        public RelayCommand QuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
+        public RelayCommand WindowMouseLeftDownCommand { get; }
         public RelayCommand<object> WindowMouseLeftUpCommand { get; }
         public RelayCommand<object> ChessPieceMouseLeftDownCommand { get; }
         #endregion Commands
 
         #region Command-Actions
+        private void OpenSideMenuAction()
+        {
+            if (!wasSideMenuOpen)
+            {
+                if (sideMenuVisibility == "Collapsed") SideMenuVisibility = "Visible";
+                else SideMenuVisibility = "Collapsed";
+            }
+            else
+            {
+                wasSideMenuOpen = false;
+            }
+        }
+        private void SideMenuNewGameAction()
+        {
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            tileDict = new TileDict();
+            SideMenuVisibility = "Collapsed";
+            StartGame("white");
+        }
+        private void QuitProgramAction()
+        {
+            Application.Current.Shutdown();
+        }
+        private void WindowMouseLeftDownAction()
+        {
+            if (SideMenuVisibility == "Visible")
+            {
+                wasSideMenuOpen = true;
+                SideMenuVisibility = "Collapsed";
+            }
+            else
+            {
+                wasSideMenuOpen = false;
+            }
+        }
         private void WindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
+
             if (currentlyDraggedChessPieceImage != null)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    if (!isMouseMoving)
+                    if (SideMenuVisibility == "Visible")
                     {
-                        dragOverCanvasPosition = e.GetPosition(canvas);
-                        dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
+                        wasSideMenuOpen = true;
+                        SideMenuVisibility = "Collapsed";
                     }
-                    isMouseMoving = true;
-                    dragOverCanvasPosition = e.GetPosition(canvas);
-                    currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+                    else if (!wasSideMenuOpen)
+                    {
+                        if (!isMouseMoving)
+                        {
+                            dragOverCanvasPosition = e.GetPosition(canvas);
+                            dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
+                        }
+                        isMouseMoving = true;
+                        dragOverCanvasPosition = e.GetPosition(canvas);
+                        currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
 
-                    Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                    Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                    }
                 }
             }
-
             e.Handled = true;
         }
         private void ChessPieceMouseleftDownAction(object o)
@@ -164,11 +207,13 @@ namespace ChessDotNET.ViewModels
                 }
                 currentlyDraggedChessPieceImage.CaptureMouse();
             }
+            wasSideMenuOpen = false;
             e.Handled = true;
         }
         private void WindowMouseLeftUpAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
+
             if (currentlyDraggedChessPieceImage == null) return;
             if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
 
@@ -207,6 +252,9 @@ namespace ChessDotNET.ViewModels
                             tileDict[newCoords.ToString()].IsOccupied = true;
                             tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
                             TileDict = tileDict;
+
+                            // store a list of threatening tiles:
+                            tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords, bottomColor);
 
                             Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
                             Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());

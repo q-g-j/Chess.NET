@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{26305F0A-0B0F-4E42-997E-F9A23567293D}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>ChessDotNET</RootNamespace>
     <AssemblyName>ChessDotNET</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -130,6 +130,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Views\SideMenu.xaml.cs">
+      <DependentUpon>SideMenu.xaml</DependentUpon>
+    </Compile>
     <Page Include="ResourceDictionaries\MainWindowImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -137,6 +140,10 @@
     <Page Include="ResourceDictionaries\MainWindowStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\SideMenuStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -148,7 +155,11 @@
     </Compile>
     <Compile Include="CustomTypes\ChessPiece.cs" />
     <Compile Include="CustomTypes\TileDict.cs" />
+    <Compile Include="EmailChess\Recieve.cs" />
+    <Compile Include="EmailChess\Send.cs" />
+    <Compile Include="GameLogic\CheckMateGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
+    <Compile Include="GameLogic\ThreatDetectionGameLogic.cs" />
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
     <Compile Include="Settings\AppSettings.cs" />
@@ -162,6 +173,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\SideMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

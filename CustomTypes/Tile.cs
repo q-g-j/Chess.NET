@@ -15,7 +15,13 @@ namespace ChessDotNET.CustomTypes
             Row = row;
             IsOccupied = occupied;
             ChessPiece = chessPiece;
+            ThreatenedByTileList = new List<Tile>();
         }
+        public int Col { get; set; }
+        public int Row { get; set; }
+        public bool IsOccupied { get; set; }
+        public List<Tile> ThreatenedByTileList { get; set; }
+        public ChessPiece ChessPiece { get; set; }
 
         internal void SetChessPiece(ImageSource image)
         {
@@ -44,10 +50,5 @@ namespace ChessDotNET.CustomTypes
                 IsOccupied = true;
             }
         }
-
-        public int Col { get; set; }
-        public int Row { get; set; }
-        public bool IsOccupied { get; set; }
-        public ChessPiece ChessPiece { get; set; }
     }
 }

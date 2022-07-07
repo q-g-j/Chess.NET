@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="ChessDotNET.Views.SideMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChessDotNET.Views"
+             xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
+             mc:Ignorable="d">
+    
+    <Grid>
+        <Border Style="{StaticResource StyleSideMenuBorder}">
+            <Border.Effect>
+                <DropShadowEffect />
+            </Border.Effect>
+        </Border>
+        <Border Style="{StaticResource StyleSideMenuBorder}">
+            <Grid Style="{StaticResource StyleSideMenuGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameCommand}" Content="Neues Spiel"/>
+                <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
+                <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>
+                <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Einstellungen"/>
+                <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding QuitProgramCommand}" Content="Beenden"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

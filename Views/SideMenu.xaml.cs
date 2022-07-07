@@ -13,19 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using ChessDotNET.ViewModels;
-
 namespace ChessDotNET.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SideMenu.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SideMenu : UserControl
     {
-        public MainWindow()
+        public SideMenu()
         {
             InitializeComponent();
-            SetValue(SideMenu.DataContextProperty, this.DataContext);
         }
     }
 }
