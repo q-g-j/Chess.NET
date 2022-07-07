@@ -25,7 +25,6 @@ namespace ChessDotNET.Views
         public MainWindow()
         {
             InitializeComponent();
-            SetValue(SideMenu.DataContextProperty, this.DataContext);
         }
     }
 }
