@@ -15,6 +15,7 @@
         MinHeight="300"
         MinWidth="300"
         SizeToContent="Height"
+        Background="#ffce9e"
         Title="Chess.NET">
 
     <Window.DataContext>
@@ -37,16 +38,11 @@
         x:Name="ChessScrollView"
         SnapsToDevicePixels="True">
         <StackPanel
-            Background="#ffce9e"
+            Background="Transparent"
             Orientation="Vertical">
             <DockPanel
                 Margin="10, 10, 0, 0">
                 <Button Command="{Binding OpenSideMenuCommand}" Style="{StaticResource StyleTopBarButton}" Panel.ZIndex="20">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
                     <StackPanel Orientation="Vertical" Width="30">
                         <Line Style="{StaticResource StyleTopBarButtonMenuStripes}" Margin="0, 0, 0, 0"/>
                         <Line Style="{StaticResource StyleTopBarButtonMenuStripes}" Margin="0, 5, 0, 0"/>
@@ -55,7 +51,7 @@
                 </Button>
             </DockPanel>
             <Grid>
-                <local:SideMenu Visibility="{Binding SideMenuVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Left" Margin="0, 20, 40, 0"/>
+                <local:SideMenu Visibility="{Binding SideMenuVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Left" Margin="25, 30, 0, 0"/>
                 <Grid
                     Background="#ffce9e">
                     <Grid.ColumnDefinitions>
