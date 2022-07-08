@@ -4,6 +4,7 @@
     <Style x:Key="StyleSideMenuBorder" TargetType="Border">
         <Setter Property="Margin" Value="10, 0, 10, 10"/>
         <Setter Property="CornerRadius" Value="25"/>
+        <Setter Property="Width" Value="200"/>
         <Setter Property="Height" Value="230"/>
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="Background" Value="#ffb366"/>
@@ -20,7 +21,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}">
-                        <Border.Padding>30, 4, 30, 4</Border.Padding>
+                        <Border.Padding>0, 4, 0, 4</Border.Padding>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>

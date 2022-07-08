@@ -49,8 +49,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsWhiteCommand}" Content="Mit Weiß spielen"/>
-                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsBlackCommand}" Content="Mit Schwarz spielen"/>
+                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsWhiteCommand}" Content="Weiß spielen"/>
+                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsBlackCommand}" Content="Schwarz spielen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameGoBackCommand}" Content="Zurück"/>
                 </Grid>
             </Grid>
