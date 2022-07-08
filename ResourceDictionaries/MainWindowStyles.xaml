@@ -12,7 +12,7 @@
             </Setter.Value>
         </Setter>
         <Setter Property="Background" Value="#ffb366"/>
-        <Setter Property="Margin" Value="30, 0, 0, 0"/>
+        <Setter Property="Margin" Value="0, 0, 0, 0"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="Width" Value="40"/>
         <Setter Property="Height" Value="40"/>

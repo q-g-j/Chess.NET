@@ -16,25 +16,43 @@
         </Border>
         <Border Style="{StaticResource StyleSideMenuBorder}">
             <Grid Style="{StaticResource StyleSideMenuGrid}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="6*"/>
-                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameCommand}" Content="Neues Spiel"/>
-                <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
-                <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>
-                <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Einstellungen"/>
-                <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding QuitProgramCommand}" Content="Beenden"/>
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsMainVisibility, FallbackValue=Visible}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameCommand}" Content="Neues Spiel"/>
+                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
+                    <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>
+                    <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Einstellungen"/>
+                    <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding QuitProgramCommand}" Content="Beenden"/>
+                </Grid>
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsNewGameVisibility, FallbackValue=Collapsed}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsWhiteCommand}" Content="Mit Weiß spielen"/>
+                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameAsBlackCommand}" Content="Mit Schwarz spielen"/>
+                    <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameGoBackCommand}" Content="Zurück"/>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

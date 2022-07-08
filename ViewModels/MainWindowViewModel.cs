@@ -33,6 +33,9 @@ namespace ChessDotNET.ViewModels
 
             OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
             SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
+            SideMenuNewGameAsWhiteCommand = new RelayCommand(SideMenuNewGameAsWhiteAction);
+            SideMenuNewGameAsBlackCommand = new RelayCommand(SideMenuNewGameAsBlackAction);
+            SideMenuNewGameGoBackCommand = new RelayCommand(SideMenuNewGameGoBackAction);
             QuitProgramCommand = new RelayCommand(QuitProgramAction);
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
@@ -73,6 +76,8 @@ namespace ChessDotNET.ViewModels
         #region Property-Values
         private Dictionary<string, Tile> tileDict;
         private string sideMenuVisibility;
+        private string sideMenuButtonsMainVisibility;
+        private string sideMenuButtonsNewGameVisibility;
         #endregion Property-Values
 
         #region Properties
@@ -85,6 +90,30 @@ namespace ChessDotNET.ViewModels
             set
             {
                 sideMenuVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+        public string SideMenuButtonsMainVisibility
+        {
+            get
+            {
+                return sideMenuButtonsMainVisibility;
+            }
+            set
+            {
+                sideMenuButtonsMainVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+        public string SideMenuButtonsNewGameVisibility
+        {
+            get
+            {
+                return sideMenuButtonsNewGameVisibility;
+            }
+            set
+            {
+                sideMenuButtonsNewGameVisibility = value;
                 OnPropertyChanged();
             }
         }
@@ -112,6 +141,9 @@ namespace ChessDotNET.ViewModels
         #region Commands
         public RelayCommand OpenSideMenuCommand { get; }
         public RelayCommand SideMenuNewGameCommand { get; }
+        public RelayCommand SideMenuNewGameAsWhiteCommand { get; }
+        public RelayCommand SideMenuNewGameAsBlackCommand { get; }
+        public RelayCommand SideMenuNewGameGoBackCommand { get; }
         public RelayCommand QuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
@@ -124,7 +156,12 @@ namespace ChessDotNET.ViewModels
         {
             if (!wasSideMenuOpen)
             {
-                if (sideMenuVisibility == "Collapsed") SideMenuVisibility = "Visible";
+                if (sideMenuVisibility == "Collapsed")
+                {
+                    SideMenuButtonsMainVisibility = "Visible";
+                    SideMenuButtonsNewGameVisibility = "Collapsed";
+                    SideMenuVisibility = "Visible";
+                }
                 else SideMenuVisibility = "Collapsed";
             }
             else
@@ -134,12 +171,35 @@ namespace ChessDotNET.ViewModels
         }
         private void SideMenuNewGameAction()
         {
+            SideMenuButtonsMainVisibility = "Collapsed";
+            SideMenuButtonsNewGameVisibility = "Visible";
+        }
+        private void SideMenuNewGameAsWhiteAction()
+        {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             tileDict = new TileDict();
             SideMenuVisibility = "Collapsed";
+            SideMenuButtonsMainVisibility = "Visible";
+            SideMenuButtonsNewGameVisibility = "Collapsed";
             StartGame(ChessPieceColor.White);
+        }
+        private void SideMenuNewGameAsBlackAction()
+        {
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            tileDict = new TileDict();
+            SideMenuVisibility = "Collapsed";
+            SideMenuButtonsMainVisibility = "Visible";
+            SideMenuButtonsNewGameVisibility = "Collapsed";
+            StartGame(ChessPieceColor.Black);
+        }
+        private void SideMenuNewGameGoBackAction()
+        {
+            SideMenuButtonsMainVisibility = "Visible";
+            SideMenuButtonsNewGameVisibility = "Collapsed";
         }
         private void QuitProgramAction()
         {
