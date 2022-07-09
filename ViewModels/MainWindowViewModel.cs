@@ -78,9 +78,6 @@ namespace ChessDotNET.ViewModels
                 Directory.CreateDirectory(appSettingsFolder);
             }
 
-            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            emailServer = appSettingsStruct.EmailServer;
-
             StartGame(ChessPieceColor.White);
         }
         #endregion Constuctors
@@ -90,7 +87,6 @@ namespace ChessDotNET.ViewModels
         private string emailPassword;
         private ChessPieceColor emailGameOwnColor;
         private AppSettings appSettings;
-        private Dictionary<string, string> emailServer;
         private Canvas canvas;
         private Image currentlyDraggedChessPieceImage;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
@@ -304,11 +300,12 @@ namespace ChessDotNET.ViewModels
         }
         private void SideMenuSettingsAction()
         {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
             SideMenuVisibility = "Hidden";
             SettingsVisibility = "Visible";
-            if (emailServer["email_address"] != null) SettingsTextBoxEmailAddress = emailServer["email_address"];
-            if (emailServer["pop3_server"] != null) SettingsTextBoxEmailPop3Server = emailServer["pop3_server"];
-            if (emailServer["smtp_server"] != null) SettingsTextBoxEmailSMTPServer = emailServer["smtp_server"];
+            if (appSettingsStruct.EmailServer["email_address"] != null) SettingsTextBoxEmailAddress = appSettingsStruct.EmailServer["email_address"];
+            if (appSettingsStruct.EmailServer["pop3_server"] != null) SettingsTextBoxEmailPop3Server = appSettingsStruct.EmailServer["pop3_server"];
+            if (appSettingsStruct.EmailServer["smtp_server"] != null) SettingsTextBoxEmailSMTPServer = appSettingsStruct.EmailServer["smtp_server"];
         }
         private void SettingsPasswordBoxAction(object o)
         {
@@ -318,12 +315,13 @@ namespace ChessDotNET.ViewModels
         }
         private void SettingsSaveAction()
         {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
             SettingsVisibility = "Hidden";
-            emailServer["email_address"] = settingsTextBoxEmailAddress;
-            emailServer["password"] = emailPassword;
-            emailServer["pop3_server"] = settingsTextBoxEmailPop3Server;
-            emailServer["smtp_server"] = settingsTextBoxEmailSMTPServer;
-            appSettings.ChangeEmailServer(emailServer);
+            appSettingsStruct.EmailServer["email_address"] = settingsTextBoxEmailAddress;
+            appSettingsStruct.EmailServer["password"] = emailPassword;
+            appSettingsStruct.EmailServer["pop3_server"] = settingsTextBoxEmailPop3Server;
+            appSettingsStruct.EmailServer["smtp_server"] = settingsTextBoxEmailSMTPServer;
+            appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);
         }
         private void SettingsCancelAction()
         {
@@ -649,25 +647,28 @@ namespace ChessDotNET.ViewModels
         }
         private async Task SendEmailWhiteMoveTask(Coords oldCoords, Coords newCoords)
         {
-            Task sendCurrentMove = EmailChess.Send.SendCurrentWhiteMove(emailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            Task sendCurrentMove = EmailChess.Send.SendCurrentWhiteMove(appSettingsStruct.EmailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
             await sendCurrentMove;
         }
         private async Task SendEmailBlackMoveTask(Coords oldCoords, Coords newCoords)
         {
-            Task sendCurrentMove = EmailChess.Send.SendCurrentBlackMove(emailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            Task sendCurrentMove = EmailChess.Send.SendCurrentBlackMove(appSettingsStruct.EmailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
             await sendCurrentMove;
         }
         private async Task WaitForEmailNextWhiteMoveTask()
         {
             await Task.Run(() =>
             {
+                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
                 string message;
                 string oldCoordsString = "";
                 string newCoordsString = "";
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextWhiteMove(emailServer, ChessPieceColor.White);
+                    message = EmailChess.Receive.CheckForNextWhiteMove(appSettingsStruct.EmailServer, ChessPieceColor.White);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);
@@ -696,13 +697,15 @@ namespace ChessDotNET.ViewModels
         {
             await Task.Run(() =>
             {
+
+                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
                 string message;
                 string oldCoordsString = "";
                 string newCoordsString = "";
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextBlackMove(emailServer, ChessPieceColor.Black);
+                    message = EmailChess.Receive.CheckForNextBlackMove(appSettingsStruct.EmailServer, ChessPieceColor.Black);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);

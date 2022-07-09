@@ -14,29 +14,29 @@ namespace ChessDotNET.CustomTypes
     {
         static ChessPieceImages()
         {
-            mainWindowImages = new ResourceDictionary
+            images = new ResourceDictionary
             {
-                Source = new Uri(@"/ChessDotNET;component/ResourceDictionaries/MainWindowImages.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri(@"/ChessDotNET;component/ResourceDictionaries/ChessPieceImages.xaml", UriKind.RelativeOrAbsolute)
             };
 
             Empty       = new BitmapImage();
 
-            WhitePawn   = (ImageSource)mainWindowImages["WhitePawn"];
-            WhiteRook   = (ImageSource)mainWindowImages["WhiteRook"];
-            WhiteKnight = (ImageSource)mainWindowImages["WhiteKnight"];
-            WhiteBishop = (ImageSource)mainWindowImages["WhiteBishop"];
-            WhiteQueen  = (ImageSource)mainWindowImages["WhiteQueen"];
-            WhiteKing   = (ImageSource)mainWindowImages["WhiteKing"];
+            WhitePawn   = (ImageSource)images["WhitePawn"];
+            WhiteRook   = (ImageSource)images["WhiteRook"];
+            WhiteKnight = (ImageSource)images["WhiteKnight"];
+            WhiteBishop = (ImageSource)images["WhiteBishop"];
+            WhiteQueen  = (ImageSource)images["WhiteQueen"];
+            WhiteKing   = (ImageSource)images["WhiteKing"];
 
-            BlackPawn   = (ImageSource)mainWindowImages["BlackPawn"];
-            BlackRook   = (ImageSource)mainWindowImages["BlackRook"];
-            BlackKnight = (ImageSource)mainWindowImages["BlackKnight"];
-            BlackBishop = (ImageSource)mainWindowImages["BlackBishop"];
-            BlackQueen  = (ImageSource)mainWindowImages["BlackQueen"];
-            BlackKing   = (ImageSource)mainWindowImages["BlackKing"];
+            BlackPawn   = (ImageSource)images["BlackPawn"];
+            BlackRook   = (ImageSource)images["BlackRook"];
+            BlackKnight = (ImageSource)images["BlackKnight"];
+            BlackBishop = (ImageSource)images["BlackBishop"];
+            BlackQueen  = (ImageSource)images["BlackQueen"];
+            BlackKing   = (ImageSource)images["BlackKing"];
         }
 
-        private static readonly ResourceDictionary mainWindowImages;
+        private static readonly ResourceDictionary images;
 
         public static ImageSource Empty;
         public static ImageSource WhitePawn;
