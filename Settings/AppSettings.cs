@@ -34,25 +34,26 @@ namespace ChessDotNET.Settings
                     if (settingsDict.ContainsKey("EmailServer"))
                     {
                         
-                        Dictionary<string, string> emailServer = settingsDict["EmailServer"];
-                        appSettingsStruct.EmailServer = emailServer;
+                        Dictionary<string, string> EmailServer = settingsDict["EmailServer"];
+                        appSettingsStruct.EmailServer = EmailServer;
                     }
                 }
             }
             else
             {
+                var emailServer = new Dictionary<string, string>()
+                {
+                    ["email_address"] = "user@server.com",
+                    ["pop3_server"] = "pop3.server.com",
+                    ["smtp_server"] = "smtp.server.com",
+                    ["pop3_port"] = "995",
+                    ["smtp_port"] = "587",
+                    ["password"] = "password",
+                };
+
                 Dictionary<string, object> settingsDict = new Dictionary<string, object>
                 {
-                    ["EmailServer"] = new Dictionary<string, string>()
-                    {
-                        ["email_address"] = "user@emailserver.com",
-                        ["pop3_server"] = "pop3.server.com",
-                        ["smtp_server"] = "smtp.server.com",
-                        ["pop3_port"] = "995",
-                        ["smtp_port"] = "587",
-                        ["username"] = "username",
-                        ["password"] = "password",
-                    }
+                    ["EmailServer"] = emailServer
                 };
 
                 using (var file = File.CreateText(settingsFilename))
@@ -60,13 +61,13 @@ namespace ChessDotNET.Settings
                     var settingsDictJson = JsonConvert.SerializeObject(settingsDict, Formatting.Indented);
                     file.WriteLine(settingsDictJson);
                 }
-                appSettingsStruct.EmailServer = new Dictionary<string, string>();
+                appSettingsStruct.EmailServer = emailServer;
             }
 
             return appSettingsStruct;
         }
 
-        public void ChangeEmailServer(Dictionary<string, string> emailServerDict)
+        public void ChangeEmailServer(Dictionary<string, string> EmailServerDict)
         {
             string filename = Path.Combine(appSettingsFolder, "settings.json");
 
@@ -88,7 +89,7 @@ namespace ChessDotNET.Settings
 
             Dictionary<string, object> dict = new Dictionary<string, object>(oldDict)
             {
-                ["EmailServer"] = emailServerDict
+                ["EmailServer"] = EmailServerDict
             };
 
             using (var fileSave = File.CreateText(@filename))

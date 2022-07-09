@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
 
-    <Grid Name="Test">
+    <Grid>
         <Border Style="{StaticResource StyleSideMenuBorder}">
             <Border.Effect>
                 <DropShadowEffect />
@@ -34,7 +34,7 @@
                     <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameCommand}" Content="Neues Spiel"/>
                     <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
                     <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>
-                    <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Einstellungen"/>
+                    <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuSettingsCommand}" Content="Einstellungen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding QuitProgramCommand}" Content="Beenden"/>
                 </Grid>
                 <Grid Grid.Row="0" Visibility="{Binding SideMenuNewGameModeVisibility}">

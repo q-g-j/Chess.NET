@@ -39,8 +39,12 @@ namespace ChessDotNET.ViewModels
             SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
             SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
             SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
+            SideMenuSettingsCommand = new RelayCommand(SideMenuSettingsAction);
+            SettingsPasswordBoxCommand = new RelayCommand<object>(o => SettingsPasswordBoxAction(o));
+            SettingsSaveCommand = new RelayCommand(SettingsSaveAction);
+            SettingsCancelCommand = new RelayCommand(SettingsCancelAction);
             NewEmailGameStartCommand = new RelayCommand(NewEmailGameStartAction);
-            NewEmailGameGoBackCommand = new RelayCommand(NewEmailGameGoBackAction);
+            NewEmailGameCancelCommand = new RelayCommand(NewEmailGameCancelAction);
             QuitProgramCommand = new RelayCommand(QuitProgramAction);
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
@@ -50,11 +54,15 @@ namespace ChessDotNET.ViewModels
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
+            newEmailGameRadioButtonWhiteIsChecked = "True";
+            newEmailGameRadioButtonBlackIsChecked = "False";
+
             sideMenuVisibility = "Hidden";
             sideMenuMainMenuVisibility = "Visible";
             sideMenuNewGameModeVisibility = "Hidden";
             SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
             newEmailGameVisibility = "Hidden";
+            settingsVisibility = "Hidden";
 
             newEmailGameTextBoxOwnEmail = "";
             newEmailGameTextBoxOpponentEmail = "";
@@ -73,13 +81,16 @@ namespace ChessDotNET.ViewModels
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
             emailServer = appSettingsStruct.EmailServer;
 
-            StartGame(ChessPieceColor.Black);
+            StartGame(ChessPieceColor.White);
         }
         #endregion Constuctors
 
         #region Fields
         private string appSettingsFolder;
+        private string emailPassword;
+        private ChessPieceColor emailGameOwnColor;
         private AppSettings appSettings;
+        private Dictionary<string, string> emailServer;
         private Canvas canvas;
         private Image currentlyDraggedChessPieceImage;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
@@ -95,12 +106,17 @@ namespace ChessDotNET.ViewModels
 
         #region Property-Values
         private TileDictionary tileDict;
-        private Dictionary<string, string> emailServer;
         private string sideMenuVisibility;
         private string sideMenuMainMenuVisibility;
         private string sideMenuNewGameModeVisibility;
         private string sideMenuButtonsNewGameLocalColorVisibility;
+        private string settingsVisibility;
         private string newEmailGameVisibility;
+
+        private string settingsTextBoxEmailAddress;
+        private string settingsTextBoxEmailPop3Server;
+        private string settingsTextBoxEmailSMTPServer;
+
         private string newEmailGameTextBoxOwnEmail;
         private string newEmailGameTextBoxOpponentEmail;
         private string newEmailGameRadioButtonWhiteIsChecked;
@@ -128,10 +144,30 @@ namespace ChessDotNET.ViewModels
             get => sideMenuButtonsNewGameLocalColorVisibility;
             set { sideMenuButtonsNewGameLocalColorVisibility = value; OnPropertyChanged(); }
         }
+        public string SettingsVisibility
+        {
+            get => settingsVisibility;
+            set { settingsVisibility = value; OnPropertyChanged(); }
+        }
         public string NewEmailGameVisibility
         {
             get => newEmailGameVisibility;
             set { newEmailGameVisibility = value; OnPropertyChanged(); }
+        }
+        public string SettingsTextBoxEmailAddress
+        {
+            get => settingsTextBoxEmailAddress;
+            set { settingsTextBoxEmailAddress = value; OnPropertyChanged(); }
+        }
+        public string SettingsTextBoxEmailPop3Server
+        {
+            get => settingsTextBoxEmailPop3Server;
+            set { settingsTextBoxEmailPop3Server = value; OnPropertyChanged(); }
+        }
+        public string SettingsTextBoxEmailSMTPServer
+        {
+            get => settingsTextBoxEmailSMTPServer;
+            set { settingsTextBoxEmailSMTPServer = value; OnPropertyChanged(); }
         }
         public string NewEmailGameTextBoxOwnEmail
         {
@@ -183,8 +219,12 @@ namespace ChessDotNET.ViewModels
         public RelayCommand SideMenuNewGameLocalAsWhiteCommand { get; }
         public RelayCommand SideMenuNewGameLocalAsBlackCommand { get; }
         public RelayCommand SideMenuNewGameLocalColorGoBackCommand { get; }
+        public RelayCommand SideMenuSettingsCommand { get; }
+        public RelayCommand<object> SettingsPasswordBoxCommand { get; }
+        public RelayCommand SettingsSaveCommand { get; }
+        public RelayCommand SettingsCancelCommand { get; }
         public RelayCommand NewEmailGameStartCommand { get; }
-        public RelayCommand NewEmailGameGoBackCommand { get; }
+        public RelayCommand NewEmailGameCancelCommand { get; }
         public RelayCommand QuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
@@ -197,7 +237,7 @@ namespace ChessDotNET.ViewModels
         {
             if (!wasSideMenuOpen)
             {
-                if (sideMenuVisibility != "Visible" && newEmailGameVisibility == "Hidden")
+                if (sideMenuVisibility != "Visible" && settingsVisibility == "Hidden" && newEmailGameVisibility == "Hidden")
                 {
                     SideMenuNewGameModeVisibility = "Hidden";
                     SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
@@ -262,11 +302,63 @@ namespace ChessDotNET.ViewModels
             SideMenuMainMenuVisibility = "Visible";
             SideMenuNewGameModeVisibility = "Hidden";
         }
-        private void NewEmailGameStartAction()
+        private void SideMenuSettingsAction()
+        {
+            SideMenuVisibility = "Hidden";
+            SettingsVisibility = "Visible";
+            if (emailServer["email_address"] != null) SettingsTextBoxEmailAddress = emailServer["email_address"];
+            if (emailServer["pop3_server"] != null) SettingsTextBoxEmailPop3Server = emailServer["pop3_server"];
+            if (emailServer["smtp_server"] != null) SettingsTextBoxEmailSMTPServer = emailServer["smtp_server"];
+        }
+        private void SettingsPasswordBoxAction(object o)
+        {
+            var e = o as RoutedEventArgs;
+            var passwordBox = e.Source as PasswordBox;
+            emailPassword = passwordBox.Password;
+        }
+        private void SettingsSaveAction()
+        {
+            SettingsVisibility = "Hidden";
+            emailServer["email_address"] = settingsTextBoxEmailAddress;
+            emailServer["password"] = emailPassword;
+            emailServer["pop3_server"] = settingsTextBoxEmailPop3Server;
+            emailServer["smtp_server"] = settingsTextBoxEmailSMTPServer;
+            appSettings.ChangeEmailServer(emailServer);
+        }
+        private void SettingsCancelAction()
+        {
+            SettingsVisibility = "Hidden";
+        }
+        private async void NewEmailGameStartAction()
         {
             NewEmailGameVisibility = "Hidden";
+
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            tileDict = new TileDictionary();
+            SideMenuVisibility = "Hidden";
+            SideMenuMainMenuVisibility = "Visible";
+            SideMenuNewGameModeVisibility = "Hidden";
+            isEmailGame = true;
+
+            if (newEmailGameRadioButtonWhiteIsChecked == "True")
+            {
+                emailGameOwnColor = ChessPieceColor.White;
+                StartGame(ChessPieceColor.White);
+
+            }
+            else if (newEmailGameRadioButtonBlackIsChecked == "True")
+            {
+                emailGameOwnColor = ChessPieceColor.Black;
+                StartGame(ChessPieceColor.Black);
+                doWaitForEmail = true;
+                Task waitForEmailWhiteMoveTask = WaitForEmailNextWhiteMoveTask();
+                await waitForEmailWhiteMoveTask;
+                doWaitForEmail = false;
+            }
         }
-        private void NewEmailGameGoBackAction()
+        private void NewEmailGameCancelAction()
         {
             NewEmailGameVisibility = "Hidden";
         }
@@ -296,7 +388,7 @@ namespace ChessDotNET.ViewModels
         }
         private void WindowMouseMoveAction(object o)
         {
-            if (IsInputAllowed())
+            if (!doWaitForEmail && IsInputAllowed() && isEmailGame)
             {
                 MouseEventArgs e = o as MouseEventArgs;
 
@@ -304,6 +396,7 @@ namespace ChessDotNET.ViewModels
                 {
                     if (e.LeftButton == MouseButtonState.Pressed)
                     {
+                        if (isEmailGame && emailGameOwnColor != ChessPieceImages.GetImageColor(currentlyDraggedChessPieceImage.Source)) return;
                         if (SideMenuVisibility == "Visible")
                         {
                             wasSideMenuOpen = true;
@@ -406,14 +499,14 @@ namespace ChessDotNET.ViewModels
                                     {
                                         await Task.Run(() => SendEmailWhiteMoveTask(oldCoords, newCoords));
                                         doWaitForEmail = true;
-                                        await Task.Run(() => WaitForEmailBlackMoveTask());
+                                        await Task.Run(() => WaitForEmailNextBlackMoveTask());
                                         doWaitForEmail = false;
                                     }
                                     else
                                     {
                                         await Task.Run(() => SendEmailBlackMoveTask(oldCoords, newCoords));
                                         doWaitForEmail = true;
-                                        await Task.Run(() => WaitForEmailWhiteMoveTask());
+                                        await Task.Run(() => WaitForEmailNextWhiteMoveTask());
                                         doWaitForEmail = false;
                                     }
 
@@ -539,6 +632,7 @@ namespace ChessDotNET.ViewModels
                 PlaceChessPiece(new Coords(7, 8), ChessPieceColor.White, ChessPieceType.Knight);
                 PlaceChessPiece(new Coords(8, 8), ChessPieceColor.White, ChessPieceType.Rook);
             }
+            TileDict = tileDict;
         }
         internal Coords CanvasPositionToCoords(Point point)
         {
@@ -558,15 +652,15 @@ namespace ChessDotNET.ViewModels
         }
         private async Task SendEmailWhiteMoveTask(Coords oldCoords, Coords newCoords)
         {
-            Task sendCurrentMove = EmailChess.Send.SendCurrentWhiteMove(emailServer, oldCoords, newCoords);
+            Task sendCurrentMove = EmailChess.Send.SendCurrentWhiteMove(emailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
             await sendCurrentMove;
         }
         private async Task SendEmailBlackMoveTask(Coords oldCoords, Coords newCoords)
         {
-            Task sendCurrentMove = EmailChess.Send.SendCurrentBlackMove(emailServer, oldCoords, newCoords);
+            Task sendCurrentMove = EmailChess.Send.SendCurrentBlackMove(emailServer, newEmailGameTextBoxOpponentEmail, oldCoords, newCoords);
             await sendCurrentMove;
         }
-        private async Task WaitForEmailWhiteMoveTask()
+        private async Task WaitForEmailNextWhiteMoveTask()
         {
             await Task.Run(() =>
             {
@@ -576,7 +670,7 @@ namespace ChessDotNET.ViewModels
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextMove(emailServer, ChessPieceColor.White);
+                    message = EmailChess.Receive.CheckForNextWhiteMove(emailServer, ChessPieceColor.White);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);
@@ -591,6 +685,8 @@ namespace ChessDotNET.ViewModels
                 }
                 Console.WriteLine(oldCoordsString, newCoordsString);
 
+                (oldCoordsString, newCoordsString) = InvertCoords(oldCoordsString, newCoordsString);
+
                 tileDict[newCoordsString].ChessPiece = tileDict[oldCoordsString].ChessPiece;
                 tileDict[oldCoordsString].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
                 tileDict[oldCoordsString].IsOccupied = false;
@@ -599,7 +695,7 @@ namespace ChessDotNET.ViewModels
                 TileDict = tileDict;
             });
         }
-        private async Task WaitForEmailBlackMoveTask()
+        private async Task WaitForEmailNextBlackMoveTask()
         {
             await Task.Run(() =>
             {
@@ -609,7 +705,7 @@ namespace ChessDotNET.ViewModels
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextMove(emailServer, ChessPieceColor.Black);
+                    message = EmailChess.Receive.CheckForNextBlackMove(emailServer, ChessPieceColor.Black);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);
@@ -624,6 +720,8 @@ namespace ChessDotNET.ViewModels
                 }
                 
                 Console.WriteLine(oldCoordsString, newCoordsString);
+
+                (oldCoordsString, newCoordsString) = InvertCoords(oldCoordsString, newCoordsString);
                 
                 tileDict[newCoordsString].ChessPiece = tileDict[oldCoordsString].ChessPiece;
                 tileDict[oldCoordsString].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
@@ -633,9 +731,50 @@ namespace ChessDotNET.ViewModels
                 TileDict = tileDict;
             });
         }
+        private (string, string) InvertCoords(string oldCoordsString, string newCoordsString)
+        {
+            if (oldCoordsString[0] == 'A') oldCoordsString = 'H' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'B') oldCoordsString = 'G' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'C') oldCoordsString = 'F' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'D') oldCoordsString = 'E' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'E') oldCoordsString = 'D' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'F') oldCoordsString = 'C' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'G') oldCoordsString = 'B' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'H') oldCoordsString = 'A' + oldCoordsString[1].ToString();
+
+            if (newCoordsString[0] == 'A') newCoordsString = 'H' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'B') newCoordsString = 'G' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'C') newCoordsString = 'F' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'D') newCoordsString = 'E' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'E') newCoordsString = 'D' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'F') newCoordsString = 'C' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'G') newCoordsString = 'B' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'H') newCoordsString = 'A' + newCoordsString[1].ToString();
+
+            if (oldCoordsString[1] == '8') oldCoordsString = oldCoordsString[0].ToString() + '1';
+            else if (oldCoordsString[1] == '7') oldCoordsString = oldCoordsString[0].ToString() + '2';
+            else if (oldCoordsString[1] == '6') oldCoordsString = oldCoordsString[0].ToString() + '3';
+            else if (oldCoordsString[1] == '5') oldCoordsString = oldCoordsString[0].ToString() + '4';
+            else if (oldCoordsString[1] == '4') oldCoordsString = oldCoordsString[0].ToString() + '5';
+            else if (oldCoordsString[1] == '3') oldCoordsString = oldCoordsString[0].ToString() + '6';
+            else if (oldCoordsString[1] == '2') oldCoordsString = oldCoordsString[0].ToString() + '7';
+            else if (oldCoordsString[1] == '1') oldCoordsString = oldCoordsString[0].ToString() + '8';
+
+            if (newCoordsString[1] == '8') newCoordsString = newCoordsString[0].ToString() + '1';
+            else if (newCoordsString[1] == '7') newCoordsString = newCoordsString[0].ToString() + '2';
+            else if (newCoordsString[1] == '6') newCoordsString = newCoordsString[0].ToString() + '3';
+            else if (newCoordsString[1] == '5') newCoordsString = newCoordsString[0].ToString() + '4';
+            else if (newCoordsString[1] == '4') newCoordsString = newCoordsString[0].ToString() + '5';
+            else if (newCoordsString[1] == '3') newCoordsString = newCoordsString[0].ToString() + '6';
+            else if (newCoordsString[1] == '2') newCoordsString = newCoordsString[0].ToString() + '7';
+            else if (newCoordsString[1] == '1') newCoordsString = newCoordsString[0].ToString() + '8';
+
+            return (oldCoordsString, newCoordsString);
+        }
         private bool IsInputAllowed()
         {
             if (sideMenuVisibility == "Visible") return false;
+            if (settingsVisibility == "Visible") return false;
             if (newEmailGameVisibility == "Visible") return false;
             return true;
         }

@@ -60,5 +60,11 @@ namespace ChessDotNET.CustomTypes
         {
             return image.ToString() == ChessPieceImages.Empty.ToString();
         }
+        internal static ChessPieceColor GetImageColor(ImageSource image)
+        {
+            if (image.ToString().Contains("white")) return ChessPieceColor.White;
+            else if (image.ToString().Contains("black")) return ChessPieceColor.Black;
+            else return ChessPieceColor.Empty;
+        }
     }
 }

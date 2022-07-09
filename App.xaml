@@ -10,6 +10,7 @@
                 <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/MainWindowImages.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/MainWindowStyles.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/SettingsStyles.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/SideMenuStyles.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/NewEmailGameStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>

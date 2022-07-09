@@ -59,6 +59,7 @@
             <Grid>
                 <local:SideMenu Visibility="{Binding SideMenuVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Left" Margin="25, 30, 0, 0"/>
                 <local:NewEmailGame Visibility="{Binding NewEmailGameVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <local:Settings Visibility="{Binding SettingsVisibility}" Grid.Column="0" Grid.Row="0" Panel.ZIndex="40" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <Grid
                     Background="#ffce9e">
                     <Grid.ColumnDefinitions>

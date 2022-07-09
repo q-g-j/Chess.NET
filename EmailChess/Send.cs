@@ -12,32 +12,32 @@ namespace ChessDotNET.EmailChess
 {
     internal class Send
     {
-        internal static async Task SendCurrentWhiteMove(Dictionary<string, string> emailServer, Coords oldCoords, Coords newCoords)
+        internal static async Task SendCurrentWhiteMove(Dictionary<string, string> emailServer, string recipient, Coords oldCoords, Coords newCoords)
         {
             await Task.Run(() =>
             {
                 var smtpClient = new SmtpClient(emailServer["smtp_server"])
                 {
                     Port = int.Parse(emailServer["smtp_port"]),
-                    Credentials = new NetworkCredential(emailServer["username"], emailServer["password"].Replace("\\\\", "\\")),
+                    Credentials = new NetworkCredential(emailServer["email_address"], emailServer["password"].Replace("\\\\", "\\")),
                     EnableSsl = true,
                 };
 
-                smtpClient.Send(emailServer["email_address"], emailServer["email_address"], "ChessDotNetMoveWhite", oldCoords.ToString() + "->" + newCoords.ToString());
+                smtpClient.Send(emailServer["email_address"], recipient, "ChessDotNetMoveWhite", oldCoords.ToString() + "->" + newCoords.ToString());
             });
         }
-        internal static async Task SendCurrentBlackMove(Dictionary<string, string> emailServer, Coords oldCoords, Coords newCoords)
+        internal static async Task SendCurrentBlackMove(Dictionary<string, string> emailServer, string recipient, Coords oldCoords, Coords newCoords)
         {
             await Task.Run(() =>
             {
                 var smtpClient = new SmtpClient(emailServer["smtp_server"])
                 {
                     Port = int.Parse(emailServer["smtp_port"]),
-                    Credentials = new NetworkCredential(emailServer["username"], emailServer["password"].Replace("\\\\", "\\")),
+                    Credentials = new NetworkCredential(emailServer["email_address"], emailServer["password"].Replace("\\\\", "\\")),
                     EnableSsl = true,
                 };
 
-                smtpClient.Send(emailServer["email_address"], emailServer["email_address"], "ChessDotNetMoveBlack", oldCoords.ToString() + "->" + newCoords.ToString());
+                smtpClient.Send(emailServer["email_address"], recipient, "ChessDotNetMoveBlack", oldCoords.ToString() + "->" + newCoords.ToString());
             });
         }
     }

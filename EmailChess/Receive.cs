@@ -14,25 +14,48 @@ namespace ChessDotNET.EmailChess
 {
     internal class Receive
     {
-        internal static string CheckForNextMove(Dictionary<string, string> emailServer, ChessPieceColor color)
+        internal static string CheckForNextWhiteMove(Dictionary<string, string> EmailServer, ChessPieceColor color)
         {
             var client = new Pop3Client();
-            client.Connect(emailServer["pop3_server"], int.Parse(emailServer["pop3_port"]), true);
-            client.Authenticate(emailServer["username"], @emailServer["password"].Replace("\\\\", "\\"));
+            client.Connect(EmailServer["pop3_server"], int.Parse(EmailServer["pop3_port"]), true);
+            client.Authenticate(EmailServer["email_address"], @EmailServer["password"].Replace("\\\\", "\\"));
             int messageCount = client.GetMessageCount();
             Message message = null;
             for (int i = messageCount; i > 0; i--)
             {
                 var subject = client.GetMessage(i).Headers.Subject;
 
-                if (color == ChessPieceColor.White && subject.Contains("ChessDotNetMoveWhite"))
+                if (subject.Contains("ChessDotNetMoveWhite"))
                 {
                     message = client.GetMessage(i);
                     client.DeleteMessage(i);
                     break;
                 }
+            }
+            client.Disconnect();
 
-                else if (color == ChessPieceColor.Black && subject.Contains("ChessDotNetMoveBlack"))
+            string messageText = "";
+
+            if (message != null)
+            {
+                var messagePlainText = message.FindFirstPlainTextVersion();
+                messageText = messagePlainText.GetBodyAsText();
+            }
+
+            return messageText;
+        }
+        internal static string CheckForNextBlackMove(Dictionary<string, string> EmailServer, ChessPieceColor color)
+        {
+            var client = new Pop3Client();
+            client.Connect(EmailServer["pop3_server"], int.Parse(EmailServer["pop3_port"]), true);
+            client.Authenticate(EmailServer["email_address"], @EmailServer["password"].Replace("\\\\", "\\"));
+            int messageCount = client.GetMessageCount();
+            Message message = null;
+            for (int i = messageCount; i > 0; i--)
+            {
+                var subject = client.GetMessage(i).Headers.Subject;
+
+                if (subject.Contains("ChessDotNetMoveBlack"))
                 {
                     message = client.GetMessage(i);
                     client.DeleteMessage(i);

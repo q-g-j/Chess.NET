@@ -134,6 +134,9 @@
     <Compile Include="Views\NewEmailGame.xaml.cs">
       <DependentUpon>NewEmailGame.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
     </Compile>
@@ -148,6 +151,10 @@
     <Page Include="ResourceDictionaries\MainWindowStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\SettingsStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ResourceDictionaries\NewEmailGameStyles.xaml">
       <SubType>Designer</SubType>
@@ -185,6 +192,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\NewEmailGame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
