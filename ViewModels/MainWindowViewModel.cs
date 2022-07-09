@@ -388,38 +388,35 @@ namespace ChessDotNET.ViewModels
         }
         private void WindowMouseMoveAction(object o)
         {
-            if (!doWaitForEmail && IsInputAllowed() && isEmailGame)
+            MouseEventArgs e = o as MouseEventArgs;
+
+            if (currentlyDraggedChessPieceImage != null)
             {
-                MouseEventArgs e = o as MouseEventArgs;
-
-                if (currentlyDraggedChessPieceImage != null)
+                if (e.LeftButton == MouseButtonState.Pressed && !doWaitForEmail && IsInputAllowed())
                 {
-                    if (e.LeftButton == MouseButtonState.Pressed)
+                    if (isEmailGame && emailGameOwnColor != ChessPieceImages.GetImageColor(currentlyDraggedChessPieceImage.Source)) return;
+                    if (SideMenuVisibility == "Visible")
                     {
-                        if (isEmailGame && emailGameOwnColor != ChessPieceImages.GetImageColor(currentlyDraggedChessPieceImage.Source)) return;
-                        if (SideMenuVisibility == "Visible")
+                        wasSideMenuOpen = true;
+                        SideMenuVisibility = "Hidden";
+                    }
+                    else if (!wasSideMenuOpen)
+                    {
+                        if (!isMouseMoving)
                         {
-                            wasSideMenuOpen = true;
-                            SideMenuVisibility = "Hidden";
-                        }
-                        else if (!wasSideMenuOpen)
-                        {
-                            if (!isMouseMoving)
-                            {
-                                dragOverCanvasPosition = e.GetPosition(canvas);
-                                dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
-                            }
-                            isMouseMoving = true;
                             dragOverCanvasPosition = e.GetPosition(canvas);
-                            currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
-
-                            Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                            Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                            dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
                         }
+                        isMouseMoving = true;
+                        dragOverCanvasPosition = e.GetPosition(canvas);
+                        currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
                     }
                 }
-                e.Handled = true;
             }
+            e.Handled = true;
         }
         private void ChessPieceMouseleftDownAction(object o)
         {
