@@ -9,9 +9,9 @@ using ChessDotNET.CustomTypes;
 
 namespace ChessDotNET.CustomTypes
 {
-    internal class TileDict : Dictionary<string, Tile>
+    internal class TileDictionary : Dictionary<string, Tile>
     {
-        public TileDict()
+        public TileDictionary()
         {
             for (int col = 1; col < 9; col++)
             {

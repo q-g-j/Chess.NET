@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/ResourceDictionaries/MainWindowImages.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/MainWindowStyles.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/SideMenuStyles.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/NewEmailGameStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

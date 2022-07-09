@@ -39,6 +39,8 @@ namespace ChessDotNET.ViewModels
             SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
             SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
             SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
+            NewEmailGameStartCommand = new RelayCommand(NewEmailGameStartAction);
+            NewEmailGameGoBackCommand = new RelayCommand(NewEmailGameGoBackAction);
             QuitProgramCommand = new RelayCommand(QuitProgramAction);
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
@@ -48,22 +50,35 @@ namespace ChessDotNET.ViewModels
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            wasSideMenuOpen = false;
-            sideMenuVisibility = "Collapsed";
+            sideMenuVisibility = "Hidden";
+            sideMenuMainMenuVisibility = "Visible";
+            sideMenuNewGameModeVisibility = "Hidden";
+            SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
+            newEmailGameVisibility = "Hidden";
 
-            tileDict = new TileDict();
+            newEmailGameTextBoxOwnEmail = "";
+            newEmailGameTextBoxOpponentEmail = "";
+
+            wasSideMenuOpen = false;
+            isEmailGame = false;
+            doWaitForEmail = false;
+
+            tileDict = new TileDictionary();
 
             if (!Directory.Exists(appSettingsFolder))
             {
                 Directory.CreateDirectory(appSettingsFolder);
             }
 
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            emailServer = appSettingsStruct.EmailServer;
+
             StartGame(ChessPieceColor.Black);
         }
         #endregion Constuctors
 
         #region Fields
-        private readonly string appSettingsFolder;
+        private string appSettingsFolder;
         private AppSettings appSettings;
         private Canvas canvas;
         private Image currentlyDraggedChessPieceImage;
@@ -73,67 +88,72 @@ namespace ChessDotNET.ViewModels
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
         private bool wasSideMenuOpen;
+        private bool isEmailGame;
+        private bool doWaitForEmail;
         private ChessPieceColor bottomColor;
         #endregion Fields
 
         #region Property-Values
-        private Dictionary<string, Tile> tileDict;
+        private TileDictionary tileDict;
+        private Dictionary<string, string> emailServer;
         private string sideMenuVisibility;
         private string sideMenuMainMenuVisibility;
         private string sideMenuNewGameModeVisibility;
         private string sideMenuButtonsNewGameLocalColorVisibility;
+        private string newEmailGameVisibility;
+        private string newEmailGameTextBoxOwnEmail;
+        private string newEmailGameTextBoxOpponentEmail;
+        private string newEmailGameRadioButtonWhiteIsChecked;
+        private string newEmailGameRadioButtonBlackIsChecked;
         #endregion Property-Values
 
         #region Properties
         public string SideMenuVisibility
         {
-            get
-            {
-                return sideMenuVisibility;
-            }
-            set
-            {
-                sideMenuVisibility = value;
-                OnPropertyChanged();
-            }
+            get => sideMenuVisibility;
+            set { sideMenuVisibility = value; OnPropertyChanged(); }
         }
         public string SideMenuMainMenuVisibility
         {
-            get
-            {
-                return sideMenuMainMenuVisibility;
-            }
-            set
-            {
-                sideMenuMainMenuVisibility = value;
-                OnPropertyChanged();
-            }
+            get => sideMenuMainMenuVisibility;
+            set { sideMenuMainMenuVisibility = value; OnPropertyChanged(); }
         }
         public string SideMenuNewGameModeVisibility
         {
-            get
-            {
-                return sideMenuNewGameModeVisibility;
-            }
-            set
-            {
-                sideMenuNewGameModeVisibility = value;
-                OnPropertyChanged();
-            }
+            get => sideMenuNewGameModeVisibility;
+            set { sideMenuNewGameModeVisibility = value; OnPropertyChanged(); }
         }
         public string SideMenuButtonsNewGameLocalColorVisibility
         {
-            get
-            {
-                return sideMenuButtonsNewGameLocalColorVisibility;
-            }
-            set
-            {
-                sideMenuButtonsNewGameLocalColorVisibility = value;
-                OnPropertyChanged();
-            }
+            get => sideMenuButtonsNewGameLocalColorVisibility;
+            set { sideMenuButtonsNewGameLocalColorVisibility = value; OnPropertyChanged(); }
         }
-        public Dictionary<string, Tile> TileDict
+        public string NewEmailGameVisibility
+        {
+            get => newEmailGameVisibility;
+            set { newEmailGameVisibility = value; OnPropertyChanged(); }
+        }
+        public string NewEmailGameTextBoxOwnEmail
+        {
+            get => newEmailGameTextBoxOwnEmail;
+            set { newEmailGameTextBoxOwnEmail = value; OnPropertyChanged(); }
+        }
+        public string NewEmailGameTextBoxOpponentEmail
+        {
+            get => newEmailGameTextBoxOpponentEmail;
+            set { newEmailGameTextBoxOpponentEmail = value; OnPropertyChanged(); }
+        }
+        public string NewEmailGameRadioButtonWhiteIsChecked
+        {
+            get => newEmailGameRadioButtonWhiteIsChecked;
+            set { newEmailGameRadioButtonWhiteIsChecked = value; OnPropertyChanged(); }
+        }
+        public string NewEmailGameRadioButtonBlackIsChecked
+        {
+            get => newEmailGameRadioButtonBlackIsChecked;
+            set { newEmailGameRadioButtonBlackIsChecked = value; OnPropertyChanged(); }
+        }
+        public TileDictionary TileDict
         {
             get
             {
@@ -163,6 +183,8 @@ namespace ChessDotNET.ViewModels
         public RelayCommand SideMenuNewGameLocalAsWhiteCommand { get; }
         public RelayCommand SideMenuNewGameLocalAsBlackCommand { get; }
         public RelayCommand SideMenuNewGameLocalColorGoBackCommand { get; }
+        public RelayCommand NewEmailGameStartCommand { get; }
+        public RelayCommand NewEmailGameGoBackCommand { get; }
         public RelayCommand QuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
@@ -175,14 +197,14 @@ namespace ChessDotNET.ViewModels
         {
             if (!wasSideMenuOpen)
             {
-                if (sideMenuVisibility == "Collapsed")
+                if (sideMenuVisibility != "Visible" && newEmailGameVisibility == "Hidden")
                 {
-                    SideMenuNewGameModeVisibility = "Collapsed";
-                    SideMenuButtonsNewGameLocalColorVisibility = "Collapsed";
+                    SideMenuNewGameModeVisibility = "Hidden";
+                    SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
                     SideMenuMainMenuVisibility = "Visible";
                     SideMenuVisibility = "Visible";
                 }
-                else SideMenuVisibility = "Collapsed";
+                else SideMenuVisibility = "Hidden";
             }
             else
             {
@@ -191,22 +213,24 @@ namespace ChessDotNET.ViewModels
         }
         private void SideMenuNewGameAction()
         {
-            SideMenuMainMenuVisibility = "Collapsed";
+            SideMenuMainMenuVisibility = "Hidden";
             SideMenuNewGameModeVisibility = "Visible";
         }
         private void SideMenuNewGameModeLocalAction()
         {
-            SideMenuNewGameModeVisibility = "Collapsed";
+            SideMenuNewGameModeVisibility = "Hidden";
             SideMenuButtonsNewGameLocalColorVisibility = "Visible";
         }
         private void SideMenuNewGameModeEmailAction()
         {
-            SideMenuNewGameModeVisibility = "Collapsed";
-            SideMenuButtonsNewGameLocalColorVisibility = "Visible";
+            SideMenuVisibility = "Hidden";
+            SideMenuMainMenuVisibility = "Visible";
+            SideMenuNewGameModeVisibility = "Hidden";
+            NewEmailGameVisibility = "Visible";
         }
         private void SideMenuNewGameLocalColorGoBackAction()
         {
-            SideMenuButtonsNewGameLocalColorVisibility = "Collapsed";
+            SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
             SideMenuNewGameModeVisibility = "Visible";
         }
         private void SideMenuNewGameLocalAsWhiteAction()
@@ -214,10 +238,11 @@ namespace ChessDotNET.ViewModels
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            tileDict = new TileDict();
-            SideMenuVisibility = "Collapsed";
+            tileDict = new TileDictionary();
+            SideMenuVisibility = "Hidden";
             SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Collapsed";
+            SideMenuNewGameModeVisibility = "Hidden";
+            isEmailGame = false;
             StartGame(ChessPieceColor.White);
         }
         private void SideMenuNewGameLocalAsBlackAction()
@@ -225,16 +250,25 @@ namespace ChessDotNET.ViewModels
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            tileDict = new TileDict();
-            SideMenuVisibility = "Collapsed";
+            tileDict = new TileDictionary();
+            SideMenuVisibility = "Hidden";
             SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Collapsed";
+            SideMenuNewGameModeVisibility = "Hidden";
+            isEmailGame = false;
             StartGame(ChessPieceColor.Black);
         }
         private void SideMenuNewGameModeGoBackAction()
         {
             SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Collapsed";
+            SideMenuNewGameModeVisibility = "Hidden";
+        }
+        private void NewEmailGameStartAction()
+        {
+            NewEmailGameVisibility = "Hidden";
+        }
+        private void NewEmailGameGoBackAction()
+        {
+            NewEmailGameVisibility = "Hidden";
         }
         private void QuitProgramAction()
         {
@@ -251,7 +285,7 @@ namespace ChessDotNET.ViewModels
                     if (SideMenuVisibility == "Visible")
                     {
                         wasSideMenuOpen = true;
-                        SideMenuVisibility = "Collapsed";
+                        SideMenuVisibility = "Hidden";
                     }
                     else
                     {
@@ -262,107 +296,142 @@ namespace ChessDotNET.ViewModels
         }
         private void WindowMouseMoveAction(object o)
         {
-            MouseEventArgs e = o as MouseEventArgs;
-
-            if (currentlyDraggedChessPieceImage != null)
+            if (IsInputAllowed())
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    if (SideMenuVisibility == "Visible")
-                    {
-                        wasSideMenuOpen = true;
-                        SideMenuVisibility = "Collapsed";
-                    }
-                    else if (!wasSideMenuOpen)
-                    {
-                        if (!isMouseMoving)
-                        {
-                            dragOverCanvasPosition = e.GetPosition(canvas);
-                            dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
-                        }
-                        isMouseMoving = true;
-                        dragOverCanvasPosition = e.GetPosition(canvas);
-                        currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+                MouseEventArgs e = o as MouseEventArgs;
 
-                        Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
-                        Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                if (currentlyDraggedChessPieceImage != null)
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        if (SideMenuVisibility == "Visible")
+                        {
+                            wasSideMenuOpen = true;
+                            SideMenuVisibility = "Hidden";
+                        }
+                        else if (!wasSideMenuOpen)
+                        {
+                            if (!isMouseMoving)
+                            {
+                                dragOverCanvasPosition = e.GetPosition(canvas);
+                                dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
+                            }
+                            isMouseMoving = true;
+                            dragOverCanvasPosition = e.GetPosition(canvas);
+                            currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+
+                            Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                            Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
+                        }
                     }
                 }
+                e.Handled = true;
             }
-            e.Handled = true;
         }
         private void ChessPieceMouseleftDownAction(object o)
         {
-            object param = ((CompositeCommandParameter)o).Parameter;
-            MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-            currentlyDraggedChessPieceImage = null;
-            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-            currentlyDraggedChessPieceImage = param as Image;
-            if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
+            if (!doWaitForEmail && IsInputAllowed())
             {
-                canvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
-
-                if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
+                object param = ((CompositeCommandParameter)o).Parameter;
+                MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
+                currentlyDraggedChessPieceImage = null;
+                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                currentlyDraggedChessPieceImage = param as Image;
+                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
                 {
-                    currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
-                    currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
-                }
-                currentlyDraggedChessPieceImage.CaptureMouse();
-            }
-            wasSideMenuOpen = false;
-            e.Handled = true;
-        }
-        private void WindowMouseLeftUpAction(object o)
-        {
-            MouseEventArgs e = o as MouseEventArgs;
+                    canvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
-            if (currentlyDraggedChessPieceImage == null) return;
-            if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
-
-            if (isMouseMoving)
-            {
-                isMouseMoving = false;
-                if (dragOverCanvasPosition.X < 0 || dragOverCanvasPosition.X > 400 || dragOverCanvasPosition.Y < 0 || dragOverCanvasPosition.Y > 400)
-                {
-                    Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                    Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
-                    currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                    currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                }
-                else
-                {
-                    Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
-                    Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
-                    Coords oldCoords = CanvasPositionToCoords(oldPoint);
-
-                    if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8
-                        && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
+                    if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
                     {
+                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
+                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
+                    }
+                    currentlyDraggedChessPieceImage.CaptureMouse();
+                }
+                wasSideMenuOpen = false;
+                e.Handled = true;
+            }
+        }
+        private async void WindowMouseLeftUpAction(object o)
+        {
+            if (!doWaitForEmail && IsInputAllowed())
+            {
+                MouseEventArgs e = o as MouseEventArgs;
 
-                        bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(TileDictReadOnly, bottomColor, oldCoords, newCoords);
+                if (currentlyDraggedChessPieceImage == null) return;
+                if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
 
-                        if (isValidMove)
+                if (isMouseMoving)
+                {
+                    isMouseMoving = false;
+                    if (dragOverCanvasPosition.X < 0 || dragOverCanvasPosition.X > 400 || dragOverCanvasPosition.Y < 0 || dragOverCanvasPosition.Y > 400)
+                    {
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                        currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                        currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    }
+                    else
+                    {
+                        Coords newCoords = CanvasPositionToCoords(dragOverCanvasPosition);
+                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
+                        Coords oldCoords = CanvasPositionToCoords(oldPoint);
+
+                        if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8
+                            && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
                         {
-                            Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                            Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
-                            Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
-                            Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
 
-                            tileDict[newCoords.ToString()].ChessPiece = tileDict[oldCoords.ToString()].ChessPiece;
-                            tileDict[oldCoords.ToString()].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
-                            tileDict[oldCoords.ToString()].IsOccupied = false;
-                            tileDict[newCoords.ToString()].IsOccupied = true;
-                            tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
-                            TileDict = tileDict;
+                            bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(TileDictReadOnly, bottomColor, oldCoords, newCoords);
 
-                            // store a list of threatening tiles:
-                            tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords, bottomColor);
+                            if (isValidMove)
+                            {
+                                ChessPieceColor oldColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
 
-                            Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoords.ToString() + "\t| Color = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType.ToString());
-                            Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoords.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoords.ToString() + "\t| Color = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoords.ToString()].ChessPiece.ChessPieceType.ToString());
-                            Console.WriteLine("MoveCount: " + tileDict[newCoords.ToString()].ChessPiece.MoveCount);
-                            Console.WriteLine();
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                                //Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+
+                                tileDict[newCoords.ToString()].ChessPiece = tileDict[oldCoords.ToString()].ChessPiece;
+                                tileDict[oldCoords.ToString()].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
+                                tileDict[oldCoords.ToString()].IsOccupied = false;
+                                tileDict[newCoords.ToString()].IsOccupied = true;
+                                tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
+                                TileDict = tileDict;
+
+                                if (isEmailGame)
+                                {
+                                    if (oldColor == ChessPieceColor.White)
+                                    {
+                                        await Task.Run(() => SendEmailWhiteMoveTask(oldCoords, newCoords));
+                                        doWaitForEmail = true;
+                                        await Task.Run(() => WaitForEmailBlackMoveTask());
+                                        doWaitForEmail = false;
+                                    }
+                                    else
+                                    {
+                                        await Task.Run(() => SendEmailBlackMoveTask(oldCoords, newCoords));
+                                        doWaitForEmail = true;
+                                        await Task.Run(() => WaitForEmailWhiteMoveTask());
+                                        doWaitForEmail = false;
+                                    }
+
+                                }
+
+                                // store a list of threatening tiles:
+                                tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords, bottomColor);
+
+                                //Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("MoveCount: " + tileDict[newCoordsString.ToString()].ChessPiece.MoveCount);
+                                //Console.WriteLine();
+                            }
+                            else
+                            {
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                            }
                         }
                         else
                         {
@@ -370,18 +439,13 @@ namespace ChessDotNET.ViewModels
                             Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                         }
                     }
-                    else
-                    {
-                        Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                        Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
-                    }
+                    currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                    currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
                 }
-                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
+                currentlyDraggedChessPieceImage = null;
+                e.Handled = true;
             }
-            currentlyDraggedChessPieceImage = null;
-            e.Handled = true;
         }
         #endregion Command-Actions
 
@@ -492,7 +556,89 @@ namespace ChessDotNET.ViewModels
 
             return new Coords(col, row);
         }
+        private async Task SendEmailWhiteMoveTask(Coords oldCoords, Coords newCoords)
+        {
+            Task sendCurrentMove = EmailChess.Send.SendCurrentWhiteMove(emailServer, oldCoords, newCoords);
+            await sendCurrentMove;
+        }
+        private async Task SendEmailBlackMoveTask(Coords oldCoords, Coords newCoords)
+        {
+            Task sendCurrentMove = EmailChess.Send.SendCurrentBlackMove(emailServer, oldCoords, newCoords);
+            await sendCurrentMove;
+        }
+        private async Task WaitForEmailWhiteMoveTask()
+        {
+            await Task.Run(() =>
+            {
+                string message;
+                string oldCoordsString = "";
+                string newCoordsString = "";
+                bool hasReceived = false;
+                while (!hasReceived)
+                {
+                    message = EmailChess.Receive.CheckForNextMove(emailServer, ChessPieceColor.White);
+                    if (message == "")
+                    {
+                        System.Threading.Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        hasReceived = true;
+                        Console.WriteLine(message);
+                        oldCoordsString = message.Substring(0, 2);
+                        newCoordsString = message.Substring(4, 2);
+                    }
+                }
+                Console.WriteLine(oldCoordsString, newCoordsString);
 
+                tileDict[newCoordsString].ChessPiece = tileDict[oldCoordsString].ChessPiece;
+                tileDict[oldCoordsString].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
+                tileDict[oldCoordsString].IsOccupied = false;
+                tileDict[newCoordsString].IsOccupied = true;
+                tileDict[newCoordsString].ChessPiece.MoveCount++;
+                TileDict = tileDict;
+            });
+        }
+        private async Task WaitForEmailBlackMoveTask()
+        {
+            await Task.Run(() =>
+            {
+                string message;
+                string oldCoordsString = "";
+                string newCoordsString = "";
+                bool hasReceived = false;
+                while (!hasReceived)
+                {
+                    message = EmailChess.Receive.CheckForNextMove(emailServer, ChessPieceColor.Black);
+                    if (message == "")
+                    {
+                        System.Threading.Thread.Sleep(5000);
+                    }
+                    else
+                    {
+                        hasReceived = true;
+                        Console.WriteLine(message);
+                        oldCoordsString = message.Substring(0, 2);
+                        newCoordsString = message.Substring(4, 2);
+                    }
+                }
+                
+                Console.WriteLine(oldCoordsString, newCoordsString);
+                
+                tileDict[newCoordsString].ChessPiece = tileDict[oldCoordsString].ChessPiece;
+                tileDict[oldCoordsString].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
+                tileDict[oldCoordsString].IsOccupied = false;
+                tileDict[newCoordsString].IsOccupied = true;
+                tileDict[newCoordsString].ChessPiece.MoveCount++;
+                TileDict = tileDict;
+            });
+        }
+        private bool IsInputAllowed()
+        {
+            if (sideMenuVisibility == "Visible") return false;
+            if (newEmailGameVisibility == "Visible") return false;
+            return true;
+        }
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

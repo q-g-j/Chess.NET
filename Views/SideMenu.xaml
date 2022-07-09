@@ -19,7 +19,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuMainMenuVisibility, FallbackValue=Visible}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuMainMenuVisibility}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -37,7 +37,7 @@
                     <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Einstellungen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding QuitProgramCommand}" Content="Beenden"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuNewGameModeVisibility, FallbackValue=Collapsed}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuNewGameModeVisibility}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -53,7 +53,7 @@
                     <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeEmailCommand}" Content="Per Email spielen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeGoBackCommand}" Content="Zurück"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsNewGameLocalColorVisibility, FallbackValue=Collapsed}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsNewGameLocalColorVisibility}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -65,8 +65,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameLocalAsWhiteCommand}" Content="Weiß spielen"/>
-                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameLocalAsBlackCommand}" Content="Schwarz spielen"/>
+                    <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameLocalAsWhiteCommand}" Content="Weiß unten"/>
+                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameLocalAsBlackCommand}" Content="Schwarz unten"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameLocalColorGoBackCommand}" Content="Zurück"/>
                 </Grid>
             </Grid>
