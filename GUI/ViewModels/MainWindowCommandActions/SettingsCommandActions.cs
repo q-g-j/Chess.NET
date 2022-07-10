@@ -39,10 +39,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal void SettingsCancelAction()
         {
             vm.SettingsVisibility = "Hidden";
-            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            if (appSettingsStruct.EmailServer["password"] != null && passwordBox != null)
+            if (passwordBox != null)
             {
-                passwordBox.Password = appSettingsStruct.EmailServer["password"];
+                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+                if (appSettingsStruct.EmailServer["password"] != null)
+                {
+                    passwordBox.Password = appSettingsStruct.EmailServer["password"];
+                }
+                passwordBox = null;
             }
         }
     }
