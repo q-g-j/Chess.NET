@@ -40,7 +40,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             vm.SettingsVisibility = "Hidden";
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            if (appSettingsStruct.EmailServer["password"] != null) passwordBox.Password = appSettingsStruct.EmailServer["password"];
+            if (appSettingsStruct.EmailServer["password"] != null && passwordBox != null)
+            {
+                passwordBox.Password = appSettingsStruct.EmailServer["password"];
+            }
         }
     }
 }
