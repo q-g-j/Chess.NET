@@ -38,22 +38,22 @@
                         <RowDefinition Height="7"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Adresse:"/>
-                    <TextBox Grid.Row="1" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailAddress, Mode=TwoWay}"/>
-                    <Label Grid.Row="3" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Password:"/>
-                    <PasswordBox x:Name="PasswordBox" Grid.Row="4" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Background="White" PasswordChar="*">
+                    <Label Grid.Row="0" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Adresse:"/>
+                    <TextBox Grid.Row="1" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailAddress, Mode=TwoWay}"/>
+                    <Label Grid.Row="3" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Password:"/>
+                    <PasswordBox x:Name="PasswordBox" Grid.Row="4" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" PasswordChar="*">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="PasswordChanged">
                                 <behaviors:InvokeCommandAction Command="{Binding SettingsPasswordBoxCommand}" PassEventArgsToCommand="True"/>
                             </behaviors:EventTrigger>
                         </behaviors:Interaction.Triggers>
                     </PasswordBox>
-                    <Label Grid.Row="6" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Content="POP3-Server:"/>
-                    <TextBox Grid.Row="7" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailPop3Server, Mode=TwoWay}"/>
-                    <Label Grid.Row="9" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Content="SMTP-Server:"/>
-                    <TextBox Grid.Row="10" Margin="0, 0, 0, 0" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailSMTPServer, Mode=TwoWay}"/>
-                    <Button Grid.Row="12" Margin="0, 0, 0, 0"  Style="{StaticResource StyleSettingsButton}" Command="{Binding SettingsSaveCommand}" Content="Speichern"/>
-                    <Button Grid.Row="14" Margin="0, 0, 0, 0" Style="{StaticResource StyleSettingsButton}" Command="{Binding SettingsCancelCommand}" Content="Abbrechen"/>
+                    <Label Grid.Row="6" FontFamily="{StaticResource Main}" FontSize="13" Content="POP3-Server:"/>
+                    <TextBox Grid.Row="7" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailPop3Server, Mode=TwoWay}"/>
+                    <Label Grid.Row="9" FontFamily="{StaticResource Main}" FontSize="13" Content="SMTP-Server:"/>
+                    <TextBox Grid.Row="10" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding SettingsTextBoxEmailSMTPServer, Mode=TwoWay}"/>
+                    <Button Grid.Row="12" Style="{StaticResource StyleSettingsButton}" Command="{Binding SettingsSaveCommand}" Content="Speichern"/>
+                    <Button Grid.Row="14" Style="{StaticResource StyleSettingsButton}" Command="{Binding SettingsCancelCommand}" Content="Abbrechen"/>
                 </Grid>
             </Grid>
         </Border>

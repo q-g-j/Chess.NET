@@ -22,11 +22,12 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}">
                         <Border.Padding>0, 4, 0, 4</Border.Padding>
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="Padding" Value="0, 2, 0, 0"/>
         <Setter Property="Foreground" Value="#f2f2f2"/>
         <Setter Property="Background" Value="SaddleBrown"/>
         <Setter Property="BorderThickness" Value="0"/>

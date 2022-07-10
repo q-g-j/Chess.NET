@@ -15,11 +15,12 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
         private readonly MainWindowViewModel vm;
         private readonly AppSettings appSettings;
+        private PasswordBox passwordBox;
 
         internal void SettingsPasswordBoxAction(object o)
         {
             var e = o as RoutedEventArgs;
-            var passwordBox = e.Source as PasswordBox;
+            if (passwordBox == null) passwordBox = e.Source as PasswordBox;
             vm.EmailPassword = passwordBox.Password;
         }
         internal void SettingsSaveAction()
@@ -38,6 +39,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal void SettingsCancelAction()
         {
             vm.SettingsVisibility = "Hidden";
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            if (appSettingsStruct.EmailServer["password"] != null) passwordBox.Password = appSettingsStruct.EmailServer["password"];
         }
     }
 }

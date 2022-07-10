@@ -83,7 +83,7 @@ namespace ChessDotNET.EmailChess
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextWhiteMove(appSettingsStruct.EmailServer);
+                    message = CheckForNextWhiteMove(appSettingsStruct.EmailServer);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);
@@ -119,7 +119,7 @@ namespace ChessDotNET.EmailChess
                 bool hasReceived = false;
                 while (!hasReceived)
                 {
-                    message = EmailChess.Receive.CheckForNextBlackMove(appSettingsStruct.EmailServer);
+                    message = CheckForNextBlackMove(appSettingsStruct.EmailServer);
                     if (message == "")
                     {
                         System.Threading.Thread.Sleep(5000);
