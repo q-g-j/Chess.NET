@@ -3,7 +3,7 @@
 //
 // Snippet taken from:
 // https://stackoverflow.com/questions/66465149/pass-extra-argument-to-command-with-invokecommandaction
-
+// (modified to pass an object type instead of a string)
 
 
 using System;
@@ -14,9 +14,10 @@ using System.Globalization;
 using System.Windows.Data;
 using Microsoft.Xaml.Behaviors;
 
+
 // Copyright (c) Microsoft. All rights reserved. 
 // Licensed under the MIT license. See LICENSE file in the project root for full license information. 
-namespace ChessDotNET.ViewHelpers
+namespace ChessDotNET.GUI.ViewHelpers
 {
 
     /// <summary>

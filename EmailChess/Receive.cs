@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
-using ChessDotNET.CustomTypes;
-using ChessDotNET.Settings;
-using ChessDotNET.ViewModels;
 using OpenPop.Mime;
 using OpenPop.Pop3;
+using ChessDotNET.CustomTypes;
+using ChessDotNET.Settings;
+using ChessDotNET.GUI.ViewModels.MainWindow;
+
 
 namespace ChessDotNET.EmailChess
 {

@@ -1,18 +1,15 @@
-﻿using ChessDotNET.CustomTypes;
-using ChessDotNET.GameLogic;
-using ChessDotNET.Settings;
-using ChessDotNET.ViewHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ChessDotNET.CustomTypes;
+using ChessDotNET.GameLogic;
+using ChessDotNET.Settings;
+using ChessDotNET.GUI.ViewHelpers;
 
-namespace ChessDotNET.ViewModels.CommandActions.MainWindow
+
+namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
     internal class GeneralCommandActions
     {
@@ -78,7 +75,7 @@ namespace ChessDotNET.ViewModels.CommandActions.MainWindow
 
             if (e.Source != null)
             {
-                if (e.Source.ToString() != "ChessDotNET.Views.SideMenu")
+                if (e.Source.ToString() != "ChessDotNET.GUI.Views.SideMenu")
                 {
                     if (vm.SideMenuVisibility == "Visible")
                     {
@@ -113,9 +110,9 @@ namespace ChessDotNET.ViewModels.CommandActions.MainWindow
                     }
                     else
                     {
-                        Coords newCoords = Coords.CanvasPositionToCoords(vm.DragOverCanvasPosition);
                         Point oldPoint = new Point(vm.CurrentlyDraggedChessPieceOriginalCanvasLeft, vm.CurrentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
+                        Coords newCoords = Coords.CanvasPositionToCoords(vm.DragOverCanvasPosition);
 
                         if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8
                             && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))

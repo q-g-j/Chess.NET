@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ChessDotNET.CustomTypes;
+
 
 namespace ChessDotNET.GameLogic
 {
     internal static class ThreatDetectionGameLogic
     {
-        internal static List<Tile> GetThreateningTilesList(Dictionary<string, Tile> tileDict, Coords currentCoords, ChessPieceColor bottomColor)
+        internal static List<Tile> GetThreateningTilesList(TileDictionary tileDict, Coords currentCoords, ChessPieceColor bottomColor)
         {
             List<Tile> returnList = new List<Tile>();
 

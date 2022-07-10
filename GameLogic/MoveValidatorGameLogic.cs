@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
 using ChessDotNET.CustomTypes;
 using static ChessDotNET.CustomTypes.Coords;
 
@@ -11,7 +6,7 @@ namespace ChessDotNET.GameLogic
 {
     internal static class MoveValidatorGameLogic
     {
-        public static bool ValidateCurrentMove(Dictionary<string, Tile> tileDict, ChessPieceColor bottomColor, Coords oldCoords, Coords newCoords)
+        public static bool ValidateCurrentMove(TileDictionary tileDict, ChessPieceColor bottomColor, Coords oldCoords, Coords newCoords)
         {
             // validate pawn's move:
             if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn)

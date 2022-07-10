@@ -4,14 +4,10 @@
 // https://stackoverflow.com/questions/66465149/pass-extra-argument-to-command-with-invokecommandaction
 
 
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessDotNET.ViewHelpers
+
+namespace ChessDotNET.GUI.ViewHelpers
 {
     public class CompositeCommandParameter
     {

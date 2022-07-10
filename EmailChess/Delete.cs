@@ -1,10 +1,7 @@
-﻿using OpenPop.Mime;
-using OpenPop.Pop3;
-using System;
+﻿using OpenPop.Pop3;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+
 
 namespace ChessDotNET.EmailChess
 {

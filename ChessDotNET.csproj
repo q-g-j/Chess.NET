@@ -133,44 +133,44 @@
     <Compile Include="EmailChess\Delete.cs" />
     <Compile Include="EmailChess\Receive.cs" />
     <Compile Include="EmailChess\Test.cs" />
-    <Compile Include="CommandActions\MainWindow\GeneralCommandActions.cs" />
-    <Compile Include="CommandActions\MainWindow\NewEmailGameCommandActions.cs" />
-    <Compile Include="CommandActions\MainWindow\SettingsCommandActions.cs" />
-    <Compile Include="CommandActions\MainWindow\SideMenuCommandActions.cs" />
-    <Compile Include="Views\NewEmailGame.xaml.cs">
+    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\GeneralCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\NewEmailGameCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\SettingsCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\SideMenuCommandActions.cs" />
+    <Compile Include="GUI\Views\NewEmailGame.xaml.cs">
       <DependentUpon>NewEmailGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Settings.xaml.cs">
+    <Compile Include="GUI\Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SideMenu.xaml.cs">
+    <Compile Include="GUI\Views\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
     </Compile>
-    <Page Include="ResourceDictionaries\Fonts.xaml">
+    <Page Include="GUI\ResourceDictionaries\Fonts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResourceDictionaries\ChessPieceImages.xaml">
+    <Page Include="GUI\ResourceDictionaries\ChessPieceImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResourceDictionaries\MainWindowStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\MainWindowStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResourceDictionaries\SettingsStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\SettingsStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ResourceDictionaries\NewEmailGameStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\NewEmailGameStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResourceDictionaries\SideMenuStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\SideMenuStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="GUI\Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -187,25 +187,25 @@
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
     <Compile Include="Settings\AppSettings.cs" />
-    <Compile Include="ViewHelpers\AdvancedInvokeCommandAction.cs" />
+    <Compile Include="GUI\ViewHelpers\AdvancedInvokeCommandAction.cs" />
     <Compile Include="CustomTypes\ChessPieceImages.cs" />
-    <Compile Include="ViewHelpers\CompositeCommandParameter.cs" />
+    <Compile Include="GUI\ViewHelpers\CompositeCommandParameter.cs" />
     <Compile Include="CustomTypes\Coords.cs" />
     <Compile Include="CustomTypes\Tile.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="GUI\ViewModels\MainWindow\MainWindowViewModel.cs" />
+    <Compile Include="GUI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\NewEmailGame.xaml">
+    <Page Include="GUI\Views\NewEmailGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Settings.xaml">
+    <Page Include="GUI\Views\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SideMenu.xaml">
+    <Page Include="GUI\Views\SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -233,13 +233,13 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Resource Include="Resources\Fonts\BowlbyOne-Regular.otf" />
-    <Resource Include="Resources\Fonts\JetBrainsMono-Regular.ttf" />
-    <Resource Include="Resources\Fonts\selawk.ttf" />
-    <Resource Include="Resources\Fonts\selawkb.ttf" />
-    <Resource Include="Resources\Fonts\selawkl.ttf" />
-    <Resource Include="Resources\Fonts\selawksb.ttf" />
-    <Resource Include="Resources\Fonts\selawksl.ttf" />
+    <Resource Include="GUI\Resources\Fonts\BowlbyOne-Regular.otf" />
+    <Resource Include="GUI\Resources\Fonts\JetBrainsMono-Regular.ttf" />
+    <Resource Include="GUI\Resources\Fonts\selawk.ttf" />
+    <Resource Include="GUI\Resources\Fonts\selawkb.ttf" />
+    <Resource Include="GUI\Resources\Fonts\selawkl.ttf" />
+    <Resource Include="GUI\Resources\Fonts\selawksb.ttf" />
+    <Resource Include="GUI\Resources\Fonts\selawksl.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -248,18 +248,18 @@
     <Folder Include="Converters\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Images\black_bishop.png" />
-    <Resource Include="Resources\Images\black_king.png" />
-    <Resource Include="Resources\Images\black_knight.png" />
-    <Resource Include="Resources\Images\black_pawn.png" />
-    <Resource Include="Resources\Images\black_queen.png" />
-    <Resource Include="Resources\Images\black_rook.png" />
-    <Resource Include="Resources\Images\white_bishop.png" />
-    <Resource Include="Resources\Images\white_king.png" />
-    <Resource Include="Resources\Images\white_knight.png" />
-    <Resource Include="Resources\Images\white_pawn.png" />
-    <Resource Include="Resources\Images\white_queen.png" />
-    <Resource Include="Resources\Images\white_rook.png" />
+    <Resource Include="GUI\Resources\Images\black_bishop.png" />
+    <Resource Include="GUI\Resources\Images\black_king.png" />
+    <Resource Include="GUI\Resources\Images\black_knight.png" />
+    <Resource Include="GUI\Resources\Images\black_pawn.png" />
+    <Resource Include="GUI\Resources\Images\black_queen.png" />
+    <Resource Include="GUI\Resources\Images\black_rook.png" />
+    <Resource Include="GUI\Resources\Images\white_bishop.png" />
+    <Resource Include="GUI\Resources\Images\white_king.png" />
+    <Resource Include="GUI\Resources\Images\white_knight.png" />
+    <Resource Include="GUI\Resources\Images\white_pawn.png" />
+    <Resource Include="GUI\Resources\Images\white_queen.png" />
+    <Resource Include="GUI\Resources\Images\white_rook.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

@@ -1,12 +1,8 @@
-﻿using ChessDotNET.CustomTypes;
+﻿using System.Threading.Tasks;
+using ChessDotNET.CustomTypes;
 using ChessDotNET.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ChessDotNET.ViewModels.CommandActions.MainWindow
+namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
     internal class NewEmailGameCommandActions
     {

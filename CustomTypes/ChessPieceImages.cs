@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
 
 namespace ChessDotNET.CustomTypes
 
@@ -16,7 +13,7 @@ namespace ChessDotNET.CustomTypes
         {
             images = new ResourceDictionary
             {
-                Source = new Uri(@"/ChessDotNET;component/ResourceDictionaries/ChessPieceImages.xaml", UriKind.RelativeOrAbsolute)
+                Source = new Uri(@"/ChessDotNET;component/GUI/ResourceDictionaries/ChessPieceImages.xaml", UriKind.RelativeOrAbsolute)
             };
 
             Empty       = new BitmapImage();
@@ -58,7 +55,7 @@ namespace ChessDotNET.CustomTypes
         }
         internal static bool IsEmpty(ImageSource image)
         {
-            return image.ToString() == ChessPieceImages.Empty.ToString();
+            return image.ToString() == Empty.ToString();
         }
         internal static ChessPieceColor GetImageColor(ImageSource image)
         {

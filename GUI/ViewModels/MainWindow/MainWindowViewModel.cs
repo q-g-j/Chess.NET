@@ -1,36 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.IO;
-using System.Net.Mail;
-using OpenPop.Pop3;
 using CommunityToolkit.Mvvm.Input;
-
-using ChessDotNET.ViewModels.CommandActions.MainWindow;
-using ChessDotNET.GameLogic;
 using ChessDotNET.CustomTypes;
-using ChessDotNET.ViewHelpers;
 using ChessDotNET.Settings;
-using OpenPop.Mime;
-using System.Net;
 
-namespace ChessDotNET.ViewModels
+namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
     internal class MainWindowViewModel : INotifyPropertyChanged
     {
         #region Constructors
         public MainWindowViewModel()
         {
-            appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
-            appSettings = new AppSettings(appSettingsFolder);
+            AppSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
+            appSettings = new AppSettings(AppSettingsFolder);
 
             GeneralCommandActions generalCommandActions = new GeneralCommandActions(this);
             SideMenuCommandActions sideMenuCommandActions = new SideMenuCommandActions(this, appSettings);
@@ -77,9 +64,9 @@ namespace ChessDotNET.ViewModels
             IsEmailGame = false;
             DoWaitForEmail = false;
 
-            if (!Directory.Exists(appSettingsFolder))
+            if (!Directory.Exists(AppSettingsFolder))
             {
-                Directory.CreateDirectory(appSettingsFolder);
+                Directory.CreateDirectory(AppSettingsFolder);
             }
 
             StartGame(ChessPieceColor.White);
@@ -88,8 +75,8 @@ namespace ChessDotNET.ViewModels
 
         #region Fields
         private readonly AppSettings appSettings;
-        private readonly string appSettingsFolder;
 
+        internal readonly string AppSettingsFolder;
         internal ChessPieceColor EmailGameOwnColor;
         internal ChessPieceColor BottomColor;
         internal Canvas ChessCanvas;
@@ -161,6 +148,15 @@ namespace ChessDotNET.ViewModels
             get => settingsTextBoxEmailAddress;
             set { settingsTextBoxEmailAddress = value; OnPropertyChanged(); }
         }
+        public string SettingsTextBoxEmailPassword
+        {
+            get
+            {
+                //AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+                //return appSettingsStruct.EmailServer["password"];
+                return "123456";
+            }
+        }
         public string SettingsTextBoxEmailPop3Server
         {
             get => settingsTextBoxEmailPop3Server;
@@ -203,7 +199,7 @@ namespace ChessDotNET.ViewModels
                 OnPropertyChanged();
             }
         }
-        internal Dictionary<string, Tile> TileDictReadOnly
+        internal TileDictionary TileDictReadOnly
         {
             get
             {

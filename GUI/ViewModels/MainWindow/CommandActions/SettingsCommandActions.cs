@@ -1,13 +1,9 @@
-﻿using ChessDotNET.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ChessDotNET.Settings;
 
-namespace ChessDotNET.ViewModels.CommandActions.MainWindow
+
+namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
     internal class SettingsCommandActions
     {
@@ -28,13 +24,16 @@ namespace ChessDotNET.ViewModels.CommandActions.MainWindow
         }
         internal void SettingsSaveAction()
         {
-            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            vm.SettingsVisibility = "Hidden";
-            appSettingsStruct.EmailServer["email_address"] = vm.SettingsTextBoxEmailAddress;
-            appSettingsStruct.EmailServer["password"] = vm.EmailPassword;
-            appSettingsStruct.EmailServer["pop3_server"] = vm.SettingsTextBoxEmailPop3Server;
-            appSettingsStruct.EmailServer["smtp_server"] = vm.SettingsTextBoxEmailSMTPServer;
-            appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);
+            if (vm.EmailPassword != "")
+            {
+                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+                vm.SettingsVisibility = "Hidden";
+                appSettingsStruct.EmailServer["email_address"] = vm.SettingsTextBoxEmailAddress;
+                appSettingsStruct.EmailServer["password"] = vm.EmailPassword;
+                appSettingsStruct.EmailServer["pop3_server"] = vm.SettingsTextBoxEmailPop3Server;
+                appSettingsStruct.EmailServer["smtp_server"] = vm.SettingsTextBoxEmailSMTPServer;
+                appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);
+            }
         }
         internal void SettingsCancelAction()
         {
