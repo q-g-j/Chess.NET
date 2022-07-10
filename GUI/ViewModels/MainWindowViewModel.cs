@@ -148,15 +148,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             get => settingsTextBoxEmailAddress;
             set { settingsTextBoxEmailAddress = value; OnPropertyChanged(); }
         }
-        public string SettingsTextBoxEmailPassword
-        {
-            get
-            {
-                //AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-                //return appSettingsStruct.EmailServer["password"];
-                return "123456";
-            }
-        }
         public string SettingsTextBoxEmailPop3Server
         {
             get => settingsTextBoxEmailPop3Server;

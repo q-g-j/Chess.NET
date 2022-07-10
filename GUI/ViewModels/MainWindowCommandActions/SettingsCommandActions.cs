@@ -29,7 +29,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
                 vm.SettingsVisibility = "Hidden";
                 appSettingsStruct.EmailServer["email_address"] = vm.SettingsTextBoxEmailAddress;
-                appSettingsStruct.EmailServer["password"] = vm.EmailPassword;
+                if (vm.EmailPassword != null) appSettingsStruct.EmailServer["password"] = vm.EmailPassword;
                 appSettingsStruct.EmailServer["pop3_server"] = vm.SettingsTextBoxEmailPop3Server;
                 appSettingsStruct.EmailServer["smtp_server"] = vm.SettingsTextBoxEmailSMTPServer;
                 appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);

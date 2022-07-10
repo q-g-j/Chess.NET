@@ -133,10 +133,10 @@
     <Compile Include="EmailChess\Delete.cs" />
     <Compile Include="EmailChess\Receive.cs" />
     <Compile Include="EmailChess\Test.cs" />
-    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\GeneralCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\NewEmailGameCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\SettingsCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindow\CommandActions\SideMenuCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\GeneralCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\NewEmailGameCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\SettingsCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\SideMenuCommandActions.cs" />
     <Compile Include="GUI\Views\NewEmailGame.xaml.cs">
       <DependentUpon>NewEmailGame.xaml</DependentUpon>
     </Compile>
@@ -192,7 +192,7 @@
     <Compile Include="GUI\ViewHelpers\CompositeCommandParameter.cs" />
     <Compile Include="CustomTypes\Coords.cs" />
     <Compile Include="CustomTypes\Tile.cs" />
-    <Compile Include="GUI\ViewModels\MainWindow\MainWindowViewModel.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="GUI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
