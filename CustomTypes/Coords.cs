@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ChessDotNET.CustomTypes
 
@@ -35,6 +36,62 @@ namespace ChessDotNET.CustomTypes
         internal static string IntsToCoordsString(int col, int row)
         {
             return Enum.GetName(typeof(Columns), col).ToString() + row.ToString();
+        }
+        internal static (string, string) InvertCoords(string oldCoordsString, string newCoordsString)
+        {
+            if      (oldCoordsString[0] == 'A') oldCoordsString = 'H' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'B') oldCoordsString = 'G' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'C') oldCoordsString = 'F' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'D') oldCoordsString = 'E' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'E') oldCoordsString = 'D' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'F') oldCoordsString = 'C' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'G') oldCoordsString = 'B' + oldCoordsString[1].ToString();
+            else if (oldCoordsString[0] == 'H') oldCoordsString = 'A' + oldCoordsString[1].ToString();
+
+            if      (newCoordsString[0] == 'A') newCoordsString = 'H' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'B') newCoordsString = 'G' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'C') newCoordsString = 'F' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'D') newCoordsString = 'E' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'E') newCoordsString = 'D' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'F') newCoordsString = 'C' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'G') newCoordsString = 'B' + newCoordsString[1].ToString();
+            else if (newCoordsString[0] == 'H') newCoordsString = 'A' + newCoordsString[1].ToString();
+
+            if      (oldCoordsString[1] == '8') oldCoordsString = oldCoordsString[0].ToString() + '1';
+            else if (oldCoordsString[1] == '7') oldCoordsString = oldCoordsString[0].ToString() + '2';
+            else if (oldCoordsString[1] == '6') oldCoordsString = oldCoordsString[0].ToString() + '3';
+            else if (oldCoordsString[1] == '5') oldCoordsString = oldCoordsString[0].ToString() + '4';
+            else if (oldCoordsString[1] == '4') oldCoordsString = oldCoordsString[0].ToString() + '5';
+            else if (oldCoordsString[1] == '3') oldCoordsString = oldCoordsString[0].ToString() + '6';
+            else if (oldCoordsString[1] == '2') oldCoordsString = oldCoordsString[0].ToString() + '7';
+            else if (oldCoordsString[1] == '1') oldCoordsString = oldCoordsString[0].ToString() + '8';
+
+            if      (newCoordsString[1] == '8') newCoordsString = newCoordsString[0].ToString() + '1';
+            else if (newCoordsString[1] == '7') newCoordsString = newCoordsString[0].ToString() + '2';
+            else if (newCoordsString[1] == '6') newCoordsString = newCoordsString[0].ToString() + '3';
+            else if (newCoordsString[1] == '5') newCoordsString = newCoordsString[0].ToString() + '4';
+            else if (newCoordsString[1] == '4') newCoordsString = newCoordsString[0].ToString() + '5';
+            else if (newCoordsString[1] == '3') newCoordsString = newCoordsString[0].ToString() + '6';
+            else if (newCoordsString[1] == '2') newCoordsString = newCoordsString[0].ToString() + '7';
+            else if (newCoordsString[1] == '1') newCoordsString = newCoordsString[0].ToString() + '8';
+
+            return (oldCoordsString, newCoordsString);
+        }
+        internal static Coords CanvasPositionToCoords(Point point)
+        {
+            int col = (int)((point.X - point.X % 50) / 50) + 1;
+            int row = (int)((point.Y - point.Y % 50) / 50) + 1;
+
+            if (row == 1) row = 8;
+            else if (row == 2) row = 7;
+            else if (row == 3) row = 6;
+            else if (row == 4) row = 5;
+            else if (row == 5) row = 4;
+            else if (row == 6) row = 3;
+            else if (row == 7) row = 2;
+            else if (row == 8) row = 1;
+
+            return new Coords(col, row);
         }
     }
 

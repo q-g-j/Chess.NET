@@ -40,5 +40,17 @@ namespace ChessDotNET.EmailChess
                 smtpClient.Send(emailServer["email_address"], recipient, "ChessDotNetMoveBlack", oldCoords.ToString() + "->" + newCoords.ToString());
             });
         }
+        internal static async Task SendEmailWhiteMoveTask(Coords oldCoords, Coords newCoords, AppSettings appSettings, string opponentEmail)
+        {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            Task sendCurrentMove = SendCurrentWhiteMove(appSettingsStruct.EmailServer, opponentEmail, oldCoords, newCoords);
+            await sendCurrentMove;
+        }
+        internal static async Task SendEmailBlackMoveTask(Coords oldCoords, Coords newCoords, AppSettings appSettings, string opponentEmail)
+        {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            Task sendCurrentMove = SendCurrentBlackMove(appSettingsStruct.EmailServer, opponentEmail, oldCoords, newCoords);
+            await sendCurrentMove;
+        }
     }
 }

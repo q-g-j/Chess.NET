@@ -130,7 +130,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EmailChess\Delete.cs" />
     <Compile Include="EmailChess\Receive.cs" />
+    <Compile Include="EmailChess\Test.cs" />
+    <Compile Include="CommandActions\MainWindow\GeneralCommandActions.cs" />
+    <Compile Include="CommandActions\MainWindow\NewEmailGameCommandActions.cs" />
+    <Compile Include="CommandActions\MainWindow\SettingsCommandActions.cs" />
+    <Compile Include="CommandActions\MainWindow\SideMenuCommandActions.cs" />
     <Compile Include="Views\NewEmailGame.xaml.cs">
       <DependentUpon>NewEmailGame.xaml</DependentUpon>
     </Compile>
