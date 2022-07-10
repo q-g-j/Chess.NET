@@ -235,31 +235,6 @@ namespace ChessDotNET.ViewModels
         #endregion Commands
 
         #region Methods
-        internal void PlaceChessPiece(Coords coords, ChessPieceColor color, ChessPieceType type)
-        {
-            ImageSource image = ChessPieceImages.Empty;
-            if (color == ChessPieceColor.White)
-            {
-                if      (type == ChessPieceType.Pawn)   image = ChessPieceImages.WhitePawn;
-                else if (type == ChessPieceType.Rook)   image = ChessPieceImages.WhiteRook;
-                else if (type == ChessPieceType.Knight) image = ChessPieceImages.WhiteKnight;
-                else if (type == ChessPieceType.Bishop) image = ChessPieceImages.WhiteBishop;
-                else if (type == ChessPieceType.Queen)  image = ChessPieceImages.WhiteQueen;
-                else if (type == ChessPieceType.King)   image = ChessPieceImages.WhiteKing;
-            }
-            else
-            {
-                if      (type == ChessPieceType.Pawn)   image = ChessPieceImages.BlackPawn;
-                else if (type == ChessPieceType.Rook)   image = ChessPieceImages.BlackRook;
-                else if (type == ChessPieceType.Knight) image = ChessPieceImages.BlackKnight;
-                else if (type == ChessPieceType.Bishop) image = ChessPieceImages.BlackBishop;
-                else if (type == ChessPieceType.Queen)  image = ChessPieceImages.BlackQueen;
-                else if (type == ChessPieceType.King)   image = ChessPieceImages.BlackKing;
-            }
-            tileDict[coords.ToString()].ChessPiece = new ChessPiece(image, color, type);
-            tileDict[coords.ToString()].IsOccupied = true;
-            TileDict = tileDict;
-        }
         internal void StartGame(ChessPieceColor color)
         {
             CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
@@ -271,62 +246,62 @@ namespace ChessDotNET.ViewModels
                 BottomColor = ChessPieceColor.White;
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn);
+                    tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 1), ChessPieceColor.White, ChessPieceType.Rook);
-                PlaceChessPiece(new Coords(2, 1), ChessPieceColor.White, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(3, 1), ChessPieceColor.White, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(4, 1), ChessPieceColor.White, ChessPieceType.Queen);
-                PlaceChessPiece(new Coords(5, 1), ChessPieceColor.White, ChessPieceType.King);
-                PlaceChessPiece(new Coords(6, 1), ChessPieceColor.White, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(7, 1), ChessPieceColor.White, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(8, 1), ChessPieceColor.White, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(1, 1), ChessPieceColor.White, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(2, 1), ChessPieceColor.White, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(3, 1), ChessPieceColor.White, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(4, 1), ChessPieceColor.White, ChessPieceType.Queen);
+                tileDict.PlaceChessPiece(new Coords(5, 1), ChessPieceColor.White, ChessPieceType.King);
+                tileDict.PlaceChessPiece(new Coords(6, 1), ChessPieceColor.White, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(7, 1), ChessPieceColor.White, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(8, 1), ChessPieceColor.White, ChessPieceType.Rook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 7), ChessPieceColor.Black, ChessPieceType.Pawn);
+                    tileDict.PlaceChessPiece(new Coords(col, 7), ChessPieceColor.Black, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 8), ChessPieceColor.Black, ChessPieceType.Rook);
-                PlaceChessPiece(new Coords(2, 8), ChessPieceColor.Black, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(3, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(4, 8), ChessPieceColor.Black, ChessPieceType.Queen);
-                PlaceChessPiece(new Coords(5, 8), ChessPieceColor.Black, ChessPieceType.King);
-                PlaceChessPiece(new Coords(6, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(1, 8), ChessPieceColor.Black, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(2, 8), ChessPieceColor.Black, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(3, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(4, 8), ChessPieceColor.Black, ChessPieceType.Queen);
+                tileDict.PlaceChessPiece(new Coords(5, 8), ChessPieceColor.Black, ChessPieceType.King);
+                tileDict.PlaceChessPiece(new Coords(6, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook);
             }
             else
             {
                 BottomColor = ChessPieceColor.Black;
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 2), ChessPieceColor.Black, ChessPieceType.Pawn);
+                    tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.Black, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 1), ChessPieceColor.Black, ChessPieceType.Rook);
-                PlaceChessPiece(new Coords(2, 1), ChessPieceColor.Black, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(3, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(4, 1), ChessPieceColor.Black, ChessPieceType.King);
-                PlaceChessPiece(new Coords(5, 1), ChessPieceColor.Black, ChessPieceType.Queen);
-                PlaceChessPiece(new Coords(6, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(7, 1), ChessPieceColor.Black, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(8, 1), ChessPieceColor.Black, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(1, 1), ChessPieceColor.Black, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(2, 1), ChessPieceColor.Black, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(3, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(4, 1), ChessPieceColor.Black, ChessPieceType.King);
+                tileDict.PlaceChessPiece(new Coords(5, 1), ChessPieceColor.Black, ChessPieceType.Queen);
+                tileDict.PlaceChessPiece(new Coords(6, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(7, 1), ChessPieceColor.Black, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(8, 1), ChessPieceColor.Black, ChessPieceType.Rook);
 
                 for (int col = 1; col < 9; col++)
                 {
-                    PlaceChessPiece(new Coords(col, 7), ChessPieceColor.White, ChessPieceType.Pawn);
+                    tileDict.PlaceChessPiece(new Coords(col, 7), ChessPieceColor.White, ChessPieceType.Pawn);
                 }
 
-                PlaceChessPiece(new Coords(1, 8), ChessPieceColor.White, ChessPieceType.Rook);
-                PlaceChessPiece(new Coords(2, 8), ChessPieceColor.White, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(3, 8), ChessPieceColor.White, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(4, 8), ChessPieceColor.White, ChessPieceType.King);
-                PlaceChessPiece(new Coords(5, 8), ChessPieceColor.White, ChessPieceType.Queen);
-                PlaceChessPiece(new Coords(6, 8), ChessPieceColor.White, ChessPieceType.Bishop);
-                PlaceChessPiece(new Coords(7, 8), ChessPieceColor.White, ChessPieceType.Knight);
-                PlaceChessPiece(new Coords(8, 8), ChessPieceColor.White, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(1, 8), ChessPieceColor.White, ChessPieceType.Rook);
+                tileDict.PlaceChessPiece(new Coords(2, 8), ChessPieceColor.White, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(3, 8), ChessPieceColor.White, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(4, 8), ChessPieceColor.White, ChessPieceType.King);
+                tileDict.PlaceChessPiece(new Coords(5, 8), ChessPieceColor.White, ChessPieceType.Queen);
+                tileDict.PlaceChessPiece(new Coords(6, 8), ChessPieceColor.White, ChessPieceType.Bishop);
+                tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.White, ChessPieceType.Knight);
+                tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.White, ChessPieceType.Rook);
             }
             TileDict = tileDict;
         }
