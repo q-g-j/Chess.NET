@@ -154,7 +154,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                         await Task.Run(() => EmailChess.Receive.WaitForEmailNextWhiteMoveTask(vm, tileDict, appSettings));
                                         vm.DoWaitForEmail = false;
                                     }
-
                                 }
 
                                 // store a list of threatening tiles:

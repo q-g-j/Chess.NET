@@ -7,7 +7,7 @@ namespace ChessDotNET.EmailChess
 {
     internal class Delete
     {
-        internal static async Task DeleteOldEmails(Dictionary<string, string> emailServer)
+        internal static async Task DeleteOldEmails(Dictionary<string, string> emailServer, bool keepNewest)
         {
             await Task.Run(() =>
             {

@@ -39,11 +39,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         internal void SideMenuNewGameLocalAsWhiteAction()
         {
-            if (vm.IsEmailGame)
-            {
-                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-                vm.DeleteOldEmailsTask = EmailChess.Delete.DeleteOldEmails(appSettingsStruct.EmailServer);
-            }
             vm.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             vm.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
@@ -55,11 +50,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         internal void SideMenuNewGameLocalAsBlackAction()
         {
-            if (vm.IsEmailGame)
-            {
-                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-                vm.DeleteOldEmailsTask = EmailChess.Delete.DeleteOldEmails(appSettingsStruct.EmailServer);
-            }
             vm.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             vm.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
@@ -79,17 +69,13 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
             vm.SideMenuVisibility = "Hidden";
             vm.SettingsVisibility = "Visible";
+            vm.isSettingsSaved = false;
             if (appSettingsStruct.EmailServer["email_address"] != null) vm.SettingsTextBoxEmailAddress = appSettingsStruct.EmailServer["email_address"];
             if (appSettingsStruct.EmailServer["pop3_server"] != null) vm.SettingsTextBoxEmailPop3Server = appSettingsStruct.EmailServer["pop3_server"];
             if (appSettingsStruct.EmailServer["smtp_server"] != null) vm.SettingsTextBoxEmailSMTPServer = appSettingsStruct.EmailServer["smtp_server"];
         }
         internal void SideMenuQuitProgramAction()
         {
-            if (vm.IsEmailGame)
-            {
-                AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-                vm.DeleteOldEmailsTask = EmailChess.Delete.DeleteOldEmails(appSettingsStruct.EmailServer);
-            }
             Application.Current.Shutdown();
         }
     }

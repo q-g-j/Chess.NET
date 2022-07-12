@@ -91,12 +91,10 @@ namespace ChessDotNET.EmailChess
                     else
                     {
                         hasReceived = true;
-                        Console.WriteLine(message);
                         oldCoordsString = message.Substring(0, 2);
                         newCoordsString = message.Substring(4, 2);
                     }
                 }
-                Console.WriteLine(oldCoordsString, newCoordsString);
 
                 (oldCoordsString, newCoordsString) = Coords.InvertCoords(oldCoordsString, newCoordsString);
 
@@ -127,13 +125,10 @@ namespace ChessDotNET.EmailChess
                     else
                     {
                         hasReceived = true;
-                        Console.WriteLine(message);
                         oldCoordsString = message.Substring(0, 2);
                         newCoordsString = message.Substring(4, 2);
                     }
                 }
-
-                Console.WriteLine(oldCoordsString, newCoordsString);
 
                 (oldCoordsString, newCoordsString) = Coords.InvertCoords(oldCoordsString, newCoordsString);
 

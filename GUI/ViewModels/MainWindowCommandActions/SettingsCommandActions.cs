@@ -34,6 +34,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 appSettingsStruct.EmailServer["pop3_server"] = vm.SettingsTextBoxEmailPop3Server;
                 appSettingsStruct.EmailServer["smtp_server"] = vm.SettingsTextBoxEmailSMTPServer;
                 appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);
+                vm.isSettingsSaved = true;
                 passwordBox = null;
             }
         }

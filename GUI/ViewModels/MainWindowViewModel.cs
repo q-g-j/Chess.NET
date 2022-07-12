@@ -44,7 +44,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             SettingsSaveCommand = new RelayCommand(settingsCommandActions.SettingsSaveAction);
             SettingsCancelCommand = new RelayCommand(settingsCommandActions.SettingsCancelAction);
 
-            NewEmailGameStartCommand = new RelayCommand(() => newEmailGameCommandActions.NewEmailGameStartAction(tileDict));
+            NewEmailGameStartCommand = new RelayCommand(newEmailGameCommandActions.NewEmailGameStartAction);
             NewEmailGameCancelCommand = new RelayCommand(newEmailGameCommandActions.NewEmailGameCancelAction);
 
             newEmailGameRadioButtonWhiteIsChecked = "True";
@@ -63,6 +63,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             WasSideMenuOpen = false;
             IsEmailGame = false;
             DoWaitForEmail = false;
+            isSettingsSaved = false;
 
             if (!Directory.Exists(AppSettingsFolder))
             {
@@ -89,6 +90,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal bool WasSideMenuOpen;
         internal bool IsEmailGame;
         internal bool DoWaitForEmail;
+        internal bool isSettingsSaved;
         internal Task DeleteOldEmailsTask;
         internal string EmailPassword;
         #endregion Fields
