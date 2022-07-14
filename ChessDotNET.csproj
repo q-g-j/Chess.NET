@@ -133,15 +133,27 @@
     <Compile Include="EmailChess\Delete.cs" />
     <Compile Include="EmailChess\Receive.cs" />
     <Compile Include="EmailChess\Test.cs" />
+    <Compile Include="GameLogic\SwitchPawn.cs" />
     <Compile Include="GUI\ViewModels\MainWindowCommandActions\GeneralCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\NewEmailGameCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\SettingsCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayInvitationAcceptedCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayNewEmailGameCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayInvitationCommandActions.cs" />
+    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlaySettingsCommandActions.cs" />
     <Compile Include="GUI\ViewModels\MainWindowCommandActions\SideMenuCommandActions.cs" />
-    <Compile Include="GUI\Views\NewEmailGame.xaml.cs">
-      <DependentUpon>NewEmailGame.xaml</DependentUpon>
+    <Compile Include="GUI\Views\ChessGrid.xaml.cs">
+      <DependentUpon>ChessGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Views\Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
+    <Compile Include="GUI\Views\OverlayInvitationAccepted.xaml.cs">
+      <DependentUpon>OverlayInvitationAccepted.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\OverlayNewEmailGame.xaml.cs">
+      <DependentUpon>OverlayNewEmailGame.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\OverlayInvitation.xaml.cs">
+      <DependentUpon>OverlayInvitation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\OverlaySettings.xaml.cs">
+      <DependentUpon>OverlaySettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Views\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
@@ -154,19 +166,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ResourceDictionaries\MainWindowStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\ResourceDictionaries\SettingsStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\Styles\OverlayStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="GUI\ResourceDictionaries\NewEmailGameStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\Styles\MainWindowStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\ResourceDictionaries\SideMenuStyles.xaml">
+    <Page Include="GUI\ResourceDictionaries\Styles\SideMenuStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Views\ChessGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Views\OverlayInvitationAccepted.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -197,11 +213,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="GUI\Views\NewEmailGame.xaml">
+    <Page Include="GUI\Views\OverlayNewEmailGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\Views\Settings.xaml">
+    <Page Include="GUI\Views\OverlayInvitation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Views\OverlaySettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

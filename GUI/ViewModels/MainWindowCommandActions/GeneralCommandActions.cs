@@ -13,29 +13,35 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
     internal class GeneralCommandActions
     {
-        public GeneralCommandActions(MainWindowViewModel _mainWindowViewModel)
+        public GeneralCommandActions(MainWindowViewModel _mainWindowViewModel, AppSettings _appSettings)
         {
             vm = _mainWindowViewModel;
+            appSettings = _appSettings;
         }
 
         private readonly MainWindowViewModel vm;
+        private readonly AppSettings appSettings;
+
         internal void OpenSideMenuAction()
         {
             if (!vm.WasSideMenuOpen)
             {
-                if (vm.SideMenuVisibility != "Visible" && vm.SettingsVisibility == "Hidden" && vm.NewEmailGameVisibility == "Hidden")
+                if (vm.PropertiesDict["SideMenuVisibility"] != "Visible" 
+                    && vm.PropertiesDict["SettingsOverlayVisibility"] == "Hidden" 
+                    && vm.PropertiesDict["NewEmailGameOverlayVisibility"] == "Hidden")
                 {
-                    vm.SideMenuNewGameModeVisibility = "Hidden";
-                    vm.SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-                    vm.SideMenuMainMenuVisibility = "Visible";
-                    vm.SideMenuVisibility = "Visible";
+                    vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+                    vm.PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
+                    vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+                    vm.PropertiesDict["SideMenuVisibility"] = "Visible";
                 }
-                else vm.SideMenuVisibility = "Hidden";
+                else vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
             }
             else
             {
                 vm.WasSideMenuOpen = false;
             }
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void WindowMouseMoveAction(object o)
         {
@@ -46,10 +52,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (e.LeftButton == MouseButtonState.Pressed && !vm.DoWaitForEmail && vm.IsInputAllowed())
                 {
                     if (vm.IsEmailGame && vm.EmailGameOwnColor != ChessPieceImages.GetImageColor(vm.CurrentlyDraggedChessPieceImage.Source)) return;
-                    if (vm.SideMenuVisibility == "Visible")
+                    if (vm.PropertiesDict["SideMenuVisibility"] == "Visible")
                     {
                         vm.WasSideMenuOpen = true;
-                        vm.SideMenuVisibility = "Hidden";
+                        vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
                     }
                     else if (!vm.WasSideMenuOpen)
                     {
@@ -65,6 +71,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         Canvas.SetLeft(vm.CurrentlyDraggedChessPieceImage, vm.DragOverCanvasPosition.X - vm.DragOverChessPiecePosition.X);
                         Canvas.SetTop(vm.CurrentlyDraggedChessPieceImage, vm.DragOverCanvasPosition.Y - vm.DragOverChessPiecePosition.Y);
                     }
+                    vm.PropertiesDict = vm.PropertiesDict;
                 }
             }
             e.Handled = true;
@@ -77,19 +84,21 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 if (e.Source.ToString() != "ChessDotNET.GUI.Views.SideMenu")
                 {
-                    if (vm.SideMenuVisibility == "Visible")
+                    if (vm.PropertiesDict["SideMenuVisibility"] == "Visible")
                     {
                         vm.WasSideMenuOpen = true;
-                        vm.SideMenuVisibility = "Hidden";
+                        vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
                     }
                     else
                     {
                         vm.WasSideMenuOpen = false;
                     }
+
+                    vm.PropertiesDict = vm.PropertiesDict;
                 }
             }
         }
-        internal async void WindowMouseLeftUpAction(object o, TileDictionary tileDict, AppSettings appSettings)
+        internal async void WindowMouseLeftUpAction(object o, TileDictionary tileDict)
         {
             if (!vm.DoWaitForEmail && vm.IsInputAllowed())
             {
@@ -118,7 +127,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                             && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
                         {
 
-                            bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(vm.TileDictReadOnly, vm.BottomColor, oldCoords, newCoords);
+                            bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(vm.TileDictReadOnly, oldCoords, newCoords);
 
                             if (isValidMove)
                             {
@@ -129,19 +138,31 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 //Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
                                 //Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
 
-                                tileDict[newCoords.ToString()].ChessPiece = tileDict[oldCoords.ToString()].ChessPiece;
-                                tileDict[oldCoords.ToString()].ChessPiece = new ChessPiece(ChessPieceImages.Empty, ChessPieceColor.Empty, ChessPieceType.Empty);
-                                tileDict[oldCoords.ToString()].IsOccupied = false;
-                                tileDict[newCoords.ToString()].IsOccupied = true;
+                                tileDict[newCoords.ToString()].SetChessPiece(tileDict[oldCoords.ToString()].ChessPiece.ChessPieceImage);
+                                tileDict[oldCoords.ToString()].SetChessPiece(ChessPieceImages.Empty);
                                 tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
-                                vm.TileDict = tileDict;
+
+
+                                // Get a queen if your pawn is on opposite of the field
+                                if (tileDict[newCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn && newCoords.Row == 8)
+                                {
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceImage = ChessPieceImages.WhiteQueen;
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceType = ChessPieceType.Queen;
+                                }
+                                if (tileDict[newCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn && newCoords.Row == 1)
+                                {
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceImage = ChessPieceImages.BlackQueen;
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceType = ChessPieceType.Queen;
+                                }
+
+                                vm.TileDict = vm.TileDict;
 
                                 if (vm.IsEmailGame)
                                 {
                                     if (oldColor == ChessPieceColor.White)
                                     {
                                         if (vm.DeleteOldEmailsTask != null) await vm.DeleteOldEmailsTask;
-                                        await Task.Run(() => EmailChess.Send.SendEmailWhiteMoveTask(oldCoords, newCoords, appSettings, vm.NewEmailGameTextBoxOpponentEmail));
+                                        await Task.Run(() => EmailChess.Send.SendEmailWhiteMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"]));
                                         vm.DoWaitForEmail = true;
                                         await Task.Run(() => EmailChess.Receive.WaitForEmailNextBlackMoveTask(vm, tileDict, appSettings));
                                         vm.DoWaitForEmail = false;
@@ -149,7 +170,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     else
                                     {
                                         if (vm.DeleteOldEmailsTask != null) await vm.DeleteOldEmailsTask;
-                                        await Task.Run(() => EmailChess.Send.SendEmailBlackMoveTask(oldCoords, newCoords, appSettings, vm.NewEmailGameTextBoxOpponentEmail));
+                                        await Task.Run(() => EmailChess.Send.SendEmailBlackMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"]));
                                         vm.DoWaitForEmail = true;
                                         await Task.Run(() => EmailChess.Receive.WaitForEmailNextWhiteMoveTask(vm, tileDict, appSettings));
                                         vm.DoWaitForEmail = false;
@@ -157,7 +178,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 }
 
                                 // store a list of threatening tiles:
-                                tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords, vm.BottomColor);
+                                tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords);
 
                                 //Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
                                 //Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());

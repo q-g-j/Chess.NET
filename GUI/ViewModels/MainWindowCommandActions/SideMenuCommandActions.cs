@@ -17,66 +17,80 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
         internal void SideMenuNewGameAction()
         {
-            vm.SideMenuMainMenuVisibility = "Hidden";
-            vm.SideMenuNewGameModeVisibility = "Visible";
+            vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuNewGameModeLocalAction()
         {
-            vm.SideMenuNewGameModeVisibility = "Hidden";
-            vm.SideMenuButtonsNewGameLocalColorVisibility = "Visible";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Visible";
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuNewGameModeEmailAction()
         {
-            vm.SideMenuVisibility = "Hidden";
-            vm.SideMenuMainMenuVisibility = "Visible";
-            vm.SideMenuNewGameModeVisibility = "Hidden";
-            vm.NewEmailGameVisibility = "Visible";
+            vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            vm.PropertiesDict["NewEmailGameOverlayErrorLabelVisibility"] = "Hidden";
+            vm.PropertiesDict["NewEmailGameOverlayVisibility"] = "Visible";
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuNewGameLocalColorGoBackAction()
         {
-            vm.SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-            vm.SideMenuNewGameModeVisibility = "Visible";
+            vm.PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuNewGameLocalAsWhiteAction()
         {
             vm.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             vm.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            vm.SideMenuVisibility = "Hidden";
-            vm.SideMenuMainMenuVisibility = "Visible";
-            vm.SideMenuNewGameModeVisibility = "Hidden";
+            vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            vm.PropertiesDict = vm.PropertiesDict;
+
             vm.IsEmailGame = false;
-            vm.StartGame(ChessPieceColor.White);
+            vm.StartGame(false);
         }
         internal void SideMenuNewGameLocalAsBlackAction()
         {
             vm.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             vm.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            vm.SideMenuVisibility = "Hidden";
-            vm.SideMenuMainMenuVisibility = "Visible";
-            vm.SideMenuNewGameModeVisibility = "Hidden";
+            vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
+            vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            vm.PropertiesDict = vm.PropertiesDict;
+
             vm.IsEmailGame = false;
-            vm.StartGame(ChessPieceColor.Black);
+            vm.StartGame(true);
         }
         internal void SideMenuNewGameModeGoBackAction()
         {
-            vm.SideMenuMainMenuVisibility = "Visible";
-            vm.SideMenuNewGameModeVisibility = "Hidden";
+            vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuSettingsAction()
         {
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            vm.SideMenuVisibility = "Hidden";
-            vm.SettingsVisibility = "Visible";
+            vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
+            vm.PropertiesDict["SettingsOverlayVisibility"] = "Visible";
+
             vm.isSettingsSaved = false;
-            if (appSettingsStruct.EmailServer["email_address"] != null) vm.SettingsTextBoxEmailAddress = appSettingsStruct.EmailServer["email_address"];
-            if (appSettingsStruct.EmailServer["pop3_server"] != null) vm.SettingsTextBoxEmailPop3Server = appSettingsStruct.EmailServer["pop3_server"];
-            if (appSettingsStruct.EmailServer["smtp_server"] != null) vm.SettingsTextBoxEmailSMTPServer = appSettingsStruct.EmailServer["smtp_server"];
+            if (appSettingsStruct.EmailServer["email_address"] != null) vm.PropertiesDict["SettingsOverlayTextBoxEmailAddress"] = appSettingsStruct.EmailServer["email_address"];
+            if (appSettingsStruct.EmailServer["pop3_server"] != null) vm.PropertiesDict["SettingsOverlayTextBoxEmailPop3Server"] = appSettingsStruct.EmailServer["pop3_server"];
+            if (appSettingsStruct.EmailServer["smtp_server"] != null) vm.PropertiesDict["SettingsOverlayTextBoxEmailSMTPServer"] = appSettingsStruct.EmailServer["smtp_server"];
+
+            vm.PropertiesDict = vm.PropertiesDict;
         }
         internal void SideMenuQuitProgramAction()
         {
             Application.Current.Shutdown();
         }
+
     }
 }

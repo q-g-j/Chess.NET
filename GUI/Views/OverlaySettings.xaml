@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="ChessDotNET.GUI.Views.OverlaySettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:ChessDotNET.GUI.ViewModels.MainWindow"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
+             Grid.Column="0" Grid.Row="0" Panel.ZIndex="40"
+             HorizontalAlignment="Center" VerticalAlignment="Center"
+             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+             DataContextChanged="OnDataContextChanged">
+
+    <Grid>
+        <Border
+            x:Name="MainBorder"
+            Style="{StaticResource StyleOverlayBorder}"
+            Height="320">
+            <Border.Effect>
+                <DropShadowEffect />
+            </Border.Effect>
+        </Border>
+        <Border
+            Style="{StaticResource StyleOverlayBorder}"
+            Height="{Binding ElementName=MainBorder, Path=Height}">
+            <Grid Style="{StaticResource StyleOverlayGrid}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="3"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Adresse:"/>
+                    <TextBox Grid.Row="1" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailAddress], Mode=TwoWay}"/>
+                    <Label Grid.Row="3" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Password:"/>
+                    <PasswordBox x:Name="PasswordBox" Grid.Row="4" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" PasswordChar="*">
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="PasswordChanged">
+                                <behaviors:InvokeCommandAction Command="{Binding OverlaySettingsPasswordBoxCommand}" PassEventArgsToCommand="True"/>
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </PasswordBox>
+                    <Label Grid.Row="6" FontFamily="{StaticResource Main}" FontSize="13" Content="POP3-Server:"/>
+                    <TextBox Grid.Row="7" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailPop3Server], Mode=TwoWay}"/>
+                    <Label Grid.Row="9" FontFamily="{StaticResource Main}" FontSize="13" Content="SMTP-Server:"/>
+                    <TextBox Grid.Row="10" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailSMTPServer], Mode=TwoWay}"/>
+                    <Button Grid.Row="12" Style="{StaticResource StyleOverlayButton}" Command="{Binding OverlaySettingsSaveCommand}" Content="Speichern"/>
+                    <Button Grid.Row="14" Style="{StaticResource StyleOverlayButton}" Command="{Binding OverlaySettingsCancelCommand}" Content="Abbrechen"/>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

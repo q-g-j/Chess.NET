@@ -8,6 +8,8 @@ using System.IO;
 using CommunityToolkit.Mvvm.Input;
 using ChessDotNET.CustomTypes;
 using ChessDotNET.Settings;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
@@ -19,14 +21,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             AppSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
             appSettings = new AppSettings(AppSettingsFolder);
 
-            GeneralCommandActions generalCommandActions = new GeneralCommandActions(this);
+            GeneralCommandActions generalCommandActions = new GeneralCommandActions(this, appSettings);
             SideMenuCommandActions sideMenuCommandActions = new SideMenuCommandActions(this, appSettings);
-            SettingsCommandActions settingsCommandActions = new SettingsCommandActions(this, appSettings);
-            NewEmailGameCommandActions newEmailGameCommandActions = new NewEmailGameCommandActions(this, appSettings);
+            OverlayInvitationCommandActions overlayInvitationCommandActions = new OverlayInvitationCommandActions(this, appSettings);
+            OverlayInvitationAcceptedCommandActions overlayInvitationAcceptedCommandActions = new OverlayInvitationAcceptedCommandActions(this, appSettings);
+            OverlaySettingsCommandActions overlaySettingsCommandActions = new OverlaySettingsCommandActions(this, appSettings);
+            OverlayNewEmailGameCommandActions overlayNewEmailGameCommandActions = new OverlayNewEmailGameCommandActions(this, appSettings);
 
             WindowMouseMoveCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseLeftDownAction(o));
-            WindowMouseLeftUpCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseLeftUpAction(o, tileDict, appSettings));
+            WindowMouseLeftUpCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseLeftUpAction(o, tileDict));
             ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => generalCommandActions.ChessPieceMouseleftDownAction(o));
             OpenSideMenuCommand = new RelayCommand(generalCommandActions.OpenSideMenuAction);
 
@@ -40,25 +44,52 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             SideMenuSettingsCommand = new RelayCommand(sideMenuCommandActions.SideMenuSettingsAction);
             SideMenuQuitProgramCommand = new RelayCommand(sideMenuCommandActions.SideMenuQuitProgramAction);
 
-            SettingsPasswordBoxCommand = new RelayCommand<object>(o => settingsCommandActions.SettingsPasswordBoxAction(o));
-            SettingsSaveCommand = new RelayCommand(settingsCommandActions.SettingsSaveAction);
-            SettingsCancelCommand = new RelayCommand(settingsCommandActions.SettingsCancelAction);
+            OverlaySettingsPasswordBoxCommand = new RelayCommand<object>(o => overlaySettingsCommandActions.OverlaySettingsPasswordBoxAction(o));
+            OverlaySettingsSaveCommand = new RelayCommand(overlaySettingsCommandActions.OverlaySettingsSaveAction);
+            OverlaySettingsCancelCommand = new RelayCommand(overlaySettingsCommandActions.OverlaySettingsCancelAction);
 
-            NewEmailGameStartCommand = new RelayCommand(newEmailGameCommandActions.NewEmailGameStartAction);
-            NewEmailGameCancelCommand = new RelayCommand(newEmailGameCommandActions.NewEmailGameCancelAction);
+            OverlayNewEmailGameStartCommand = new RelayCommand(overlayNewEmailGameCommandActions.OverlayNewEmailGameStartAction);
+            OverlayNewEmailGameCancelCommand = new RelayCommand(overlayNewEmailGameCommandActions.OverlayNewEmailGameCancelAction);
 
-            newEmailGameRadioButtonWhiteIsChecked = "True";
-            newEmailGameRadioButtonBlackIsChecked = "False";
+            OverlayInvitationAcceptCommand = new RelayCommand(overlayInvitationCommandActions.OverlayInvitationAcceptAction);
+            OverlayInvitationRejectCommand = new RelayCommand(overlayInvitationCommandActions.OverlayInvitationRejectAction);
 
-            sideMenuVisibility = "Hidden";
-            sideMenuMainMenuVisibility = "Visible";
-            sideMenuNewGameModeVisibility = "Hidden";
-            SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-            newEmailGameVisibility = "Hidden";
-            settingsVisibility = "Hidden";
+            OverlayInvitationAcceptedCommand = new RelayCommand(overlayInvitationAcceptedCommandActions.OverlayInvitationAcceptedStartGameAction);
 
-            newEmailGameTextBoxOwnEmail = "";
-            newEmailGameTextBoxOpponentEmail = "";
+            propertiesDict = new Dictionary<string, string>()
+            {
+                ["SideMenuVisibility"] = "Hidden",
+                ["SideMenuMainMenuVisibility"] = "Visible",
+                ["SideMenuNewGameModeVisibility"] = "Hidden",
+                ["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden",
+                ["NewEmailGameOverlayVisibility"] = "Hidden",
+                ["NewEmailGameOverlayErrorLabelVisibility"] = "Hidden",
+                ["SettingsOverlayVisibility"] = "Hidden",
+                ["InvitationOverlayVisibility"] = "Hidden",
+                ["InvitationAcceptedOverlayVisibility"] = "Hidden",
+
+                ["SettingsOverlayTextBoxEmailAddress"] = " ",
+                ["SettingsOverlayTextBoxEmailPop3Server"] = " ",
+                ["SettingsOverlayTextBoxEmailSMTPServer"] = " ",
+
+                ["NewEmailGameOverlayTextBoxOwnEmail"] = " ",
+                ["NewEmailGameOverlayTextBoxOpponentEmail"] = " ",
+
+                ["NewEmailGameOverlayRadioButtonWhiteIsChecked"] = "True",
+                ["NewEmailGameOverlayRadioButtonBlackIsChecked"] = "False",
+
+                ["InvitationOverlayLabelSenderInfoText1"] = "user@server.com möchte eine Partie E-Mail-Schach spielen!",
+                ["InvitationOverlayLabelSenderInfoText2"] = "Dein Herausforderer hat die Farbe weiß gewählt.",
+
+                ["InvitationAcceptedOverlayLabelText"] = "user@server.com hat die Einladung angenommen! Du bist am Zug...",
+
+                ["ChessCanvasRotationAngle"] = "0",
+                ["ChessCanvasRotationCenterX"] = "0",
+                ["ChessCanvasRotationCenterY"] = "-200",
+
+                ["InvitationLabelSenderInfo1"] = " ",
+                ["InvitationLabelSenderInfo2"] = " ",
+            };
 
             WasSideMenuOpen = false;
             IsEmailGame = false;
@@ -70,7 +101,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 Directory.CreateDirectory(AppSettingsFolder);
             }
 
-            StartGame(ChessPieceColor.White);
+            StartGame(false);
         }
         #endregion Constuctors
 
@@ -79,7 +110,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
         internal readonly string AppSettingsFolder;
         internal ChessPieceColor EmailGameOwnColor;
-        internal ChessPieceColor BottomColor;
         internal Canvas ChessCanvas;
         internal Image CurrentlyDraggedChessPieceImage;
         internal int CurrentlyDraggedChessPieceOriginalCanvasLeft;
@@ -97,107 +127,35 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
         #region Property-Values
         private TileDictionary tileDict;
-        private string sideMenuVisibility;
-        private string sideMenuMainMenuVisibility;
-        private string sideMenuNewGameModeVisibility;
-        private string sideMenuButtonsNewGameLocalColorVisibility;
-        private string settingsVisibility;
-        private string newEmailGameVisibility;
-
-        private string settingsTextBoxEmailAddress;
-        private string settingsTextBoxEmailPop3Server;
-        private string settingsTextBoxEmailSMTPServer;
-
-        private string newEmailGameTextBoxOwnEmail;
-        private string newEmailGameTextBoxOpponentEmail;
-        private string newEmailGameRadioButtonWhiteIsChecked;
-        private string newEmailGameRadioButtonBlackIsChecked;
+        private Dictionary<string, string> propertiesDict;
+        private List<string> horizontalNotationList;
+        private List<string> verticalNotationList;
         #endregion Property-Values
 
         #region Properties
-        public string SideMenuVisibility
-        {
-            get => sideMenuVisibility;
-            set { sideMenuVisibility = value; OnPropertyChanged(); }
-        }
-        public string SideMenuMainMenuVisibility
-        {
-            get => sideMenuMainMenuVisibility;
-            set { sideMenuMainMenuVisibility = value; OnPropertyChanged(); }
-        }
-        public string SideMenuNewGameModeVisibility
-        {
-            get => sideMenuNewGameModeVisibility;
-            set { sideMenuNewGameModeVisibility = value; OnPropertyChanged(); }
-        }
-        public string SideMenuButtonsNewGameLocalColorVisibility
-        {
-            get => sideMenuButtonsNewGameLocalColorVisibility;
-            set { sideMenuButtonsNewGameLocalColorVisibility = value; OnPropertyChanged(); }
-        }
-        public string SettingsVisibility
-        {
-            get => settingsVisibility;
-            set { settingsVisibility = value; OnPropertyChanged(); }
-        }
-        public string NewEmailGameVisibility
-        {
-            get => newEmailGameVisibility;
-            set { newEmailGameVisibility = value; OnPropertyChanged(); }
-        }
-        public string SettingsTextBoxEmailAddress
-        {
-            get => settingsTextBoxEmailAddress;
-            set { settingsTextBoxEmailAddress = value; OnPropertyChanged(); }
-        }
-        public string SettingsTextBoxEmailPop3Server
-        {
-            get => settingsTextBoxEmailPop3Server;
-            set { settingsTextBoxEmailPop3Server = value; OnPropertyChanged(); }
-        }
-        public string SettingsTextBoxEmailSMTPServer
-        {
-            get => settingsTextBoxEmailSMTPServer;
-            set { settingsTextBoxEmailSMTPServer = value; OnPropertyChanged(); }
-        }
-        public string NewEmailGameTextBoxOwnEmail
-        {
-            get => newEmailGameTextBoxOwnEmail;
-            set { newEmailGameTextBoxOwnEmail = value; OnPropertyChanged(); }
-        }
-        public string NewEmailGameTextBoxOpponentEmail
-        {
-            get => newEmailGameTextBoxOpponentEmail;
-            set { newEmailGameTextBoxOpponentEmail = value; OnPropertyChanged(); }
-        }
-        public string NewEmailGameRadioButtonWhiteIsChecked
-        {
-            get => newEmailGameRadioButtonWhiteIsChecked;
-            set { newEmailGameRadioButtonWhiteIsChecked = value; OnPropertyChanged(); }
-        }
-        public string NewEmailGameRadioButtonBlackIsChecked
-        {
-            get => newEmailGameRadioButtonBlackIsChecked;
-            set { newEmailGameRadioButtonBlackIsChecked = value; OnPropertyChanged(); }
-        }
         public TileDictionary TileDict
         {
-            get
-            {
-                return tileDict;
-            }
-            set
-            {
-                tileDict = value;
-                OnPropertyChanged();
-            }
+            get => tileDict;
+            set { tileDict = value; OnPropertyChanged(); }
         }
         internal TileDictionary TileDictReadOnly
         {
-            get
-            {
-                return tileDict;
-            }
+            get => TileDict;
+        }
+        public Dictionary<string, string> PropertiesDict
+        {
+            get => propertiesDict;
+            set { propertiesDict = value; OnPropertyChanged(); }
+        }
+        public List<string> HorizontalNotationList
+        {
+            get => horizontalNotationList;
+            set { horizontalNotationList = value; OnPropertyChanged(); }
+        }
+        public List<string> VerticalNotationList
+        {
+            get => verticalNotationList;
+            set { verticalNotationList = value; OnPropertyChanged(); }
         }
         #endregion Properties
 
@@ -211,11 +169,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         public RelayCommand SideMenuNewGameLocalAsBlackCommand { get; }
         public RelayCommand SideMenuNewGameLocalColorGoBackCommand { get; }
         public RelayCommand SideMenuSettingsCommand { get; }
-        public RelayCommand<object> SettingsPasswordBoxCommand { get; }
-        public RelayCommand SettingsSaveCommand { get; }
-        public RelayCommand SettingsCancelCommand { get; }
-        public RelayCommand NewEmailGameStartCommand { get; }
-        public RelayCommand NewEmailGameCancelCommand { get; }
+        public RelayCommand<object> OverlaySettingsPasswordBoxCommand { get; }
+        public RelayCommand OverlaySettingsSaveCommand { get; }
+        public RelayCommand OverlaySettingsCancelCommand { get; }
+        public RelayCommand OverlayNewEmailGameStartCommand { get; }
+        public RelayCommand OverlayNewEmailGameCancelCommand { get; }
+        public RelayCommand OverlayInvitationAcceptCommand { get; }
+        public RelayCommand OverlayInvitationAcceptedCommand { get; }
+        public RelayCommand OverlayInvitationRejectCommand { get; }
         public RelayCommand SideMenuQuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
@@ -224,81 +185,117 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #endregion Commands
 
         #region Methods
-        internal void StartGame(ChessPieceColor color)
+        internal void StartGame(bool doRotate)
         {
             CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
-            
-            tileDict = new TileDictionary();
-            if (color == ChessPieceColor.White)
+
+            horizontalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
+            verticalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
+
+            if (doRotate)
             {
-                BottomColor = ChessPieceColor.White;
-                for (int col = 1; col < 9; col++)
-                {
-                    tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn);
-                }
-
-                tileDict.PlaceChessPiece(new Coords(1, 1), ChessPieceColor.White, ChessPieceType.Rook);
-                tileDict.PlaceChessPiece(new Coords(2, 1), ChessPieceColor.White, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(3, 1), ChessPieceColor.White, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(4, 1), ChessPieceColor.White, ChessPieceType.Queen);
-                tileDict.PlaceChessPiece(new Coords(5, 1), ChessPieceColor.White, ChessPieceType.King);
-                tileDict.PlaceChessPiece(new Coords(6, 1), ChessPieceColor.White, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(7, 1), ChessPieceColor.White, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(8, 1), ChessPieceColor.White, ChessPieceType.Rook);
-
-                for (int col = 1; col < 9; col++)
-                {
-                    tileDict.PlaceChessPiece(new Coords(col, 7), ChessPieceColor.Black, ChessPieceType.Pawn);
-                }
-
-                tileDict.PlaceChessPiece(new Coords(1, 8), ChessPieceColor.Black, ChessPieceType.Rook);
-                tileDict.PlaceChessPiece(new Coords(2, 8), ChessPieceColor.Black, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(3, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(4, 8), ChessPieceColor.Black, ChessPieceType.Queen);
-                tileDict.PlaceChessPiece(new Coords(5, 8), ChessPieceColor.Black, ChessPieceType.King);
-                tileDict.PlaceChessPiece(new Coords(6, 8), ChessPieceColor.Black, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook);
+                propertiesDict["ChessCanvasRotationAngle"] = "180";
+                propertiesDict["ChessCanvasRotationCenterX"] = "200";
+                propertiesDict["ChessCanvasRotationCenterY"] = "200";
             }
             else
             {
-                BottomColor = ChessPieceColor.Black;
-                for (int col = 1; col < 9; col++)
-                {
-                    tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.Black, ChessPieceType.Pawn);
-                }
-
-                tileDict.PlaceChessPiece(new Coords(1, 1), ChessPieceColor.Black, ChessPieceType.Rook);
-                tileDict.PlaceChessPiece(new Coords(2, 1), ChessPieceColor.Black, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(3, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(4, 1), ChessPieceColor.Black, ChessPieceType.King);
-                tileDict.PlaceChessPiece(new Coords(5, 1), ChessPieceColor.Black, ChessPieceType.Queen);
-                tileDict.PlaceChessPiece(new Coords(6, 1), ChessPieceColor.Black, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(7, 1), ChessPieceColor.Black, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(8, 1), ChessPieceColor.Black, ChessPieceType.Rook);
-
-                for (int col = 1; col < 9; col++)
-                {
-                    tileDict.PlaceChessPiece(new Coords(col, 7), ChessPieceColor.White, ChessPieceType.Pawn);
-                }
-
-                tileDict.PlaceChessPiece(new Coords(1, 8), ChessPieceColor.White, ChessPieceType.Rook);
-                tileDict.PlaceChessPiece(new Coords(2, 8), ChessPieceColor.White, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(3, 8), ChessPieceColor.White, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(4, 8), ChessPieceColor.White, ChessPieceType.King);
-                tileDict.PlaceChessPiece(new Coords(5, 8), ChessPieceColor.White, ChessPieceType.Queen);
-                tileDict.PlaceChessPiece(new Coords(6, 8), ChessPieceColor.White, ChessPieceType.Bishop);
-                tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.White, ChessPieceType.Knight);
-                tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.White, ChessPieceType.Rook);
+                propertiesDict["ChessCanvasRotationAngle"] = "0";
+                propertiesDict["ChessCanvasRotationCenterX"] = "0";
+                propertiesDict["ChessCanvasRotationCenterY"] = " -200";
             }
-            TileDict = tileDict;
+
+            if (doRotate)
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if      (i == 0) horizontalNotationList[i] = "H";
+                    else if (i == 1) horizontalNotationList[i] = "G";
+                    else if (i == 2) horizontalNotationList[i] = "F";
+                    else if (i == 3) horizontalNotationList[i] = "E";
+                    else if (i == 4) horizontalNotationList[i] = "D";
+                    else if (i == 5) horizontalNotationList[i] = "C";
+                    else if (i == 6) horizontalNotationList[i] = "B";
+                    else if (i == 7) horizontalNotationList[i] = "A";
+
+                }
+                HorizontalNotationList = horizontalNotationList;
+
+                for (int i = 0; i < 8; i++)
+                {
+                    verticalNotationList[i] = (i + 1).ToString();
+                }
+                VerticalNotationList = verticalNotationList;
+            }
+
+            else
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    if      (i == 0) horizontalNotationList[i] = "A";
+                    else if (i == 1) horizontalNotationList[i] = "B";
+                    else if (i == 2) horizontalNotationList[i] = "C";
+                    else if (i == 3) horizontalNotationList[i] = "D";
+                    else if (i == 4) horizontalNotationList[i] = "E";
+                    else if (i == 5) horizontalNotationList[i] = "F";
+                    else if (i == 6) horizontalNotationList[i] = "G";
+                    else if (i == 7) horizontalNotationList[i] = "H";
+
+                }
+                HorizontalNotationList = horizontalNotationList;
+
+                for (int i = 0; i < 8; i++)
+                {
+                    if      (i == 0) verticalNotationList[i] = "8";
+                    else if (i == 1) verticalNotationList[i] = "7";
+                    else if (i == 2) verticalNotationList[i] = "6";
+                    else if (i == 3) verticalNotationList[i] = "5";
+                    else if (i == 4) verticalNotationList[i] = "4";
+                    else if (i == 5) verticalNotationList[i] = "3";
+                    else if (i == 6) verticalNotationList[i] = "2";
+                    else if (i == 7) verticalNotationList[i] = "1";
+                }
+                VerticalNotationList = verticalNotationList;
+            }
+
+            tileDict = new TileDictionary();
+            for (int col = 1; col < 9; col++)
+            {
+                tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn, doRotate);
+            }
+
+            tileDict.PlaceChessPiece(new Coords(1, 1), ChessPieceColor.White, ChessPieceType.Rook, doRotate);
+            tileDict.PlaceChessPiece(new Coords(2, 1), ChessPieceColor.White, ChessPieceType.Knight, doRotate);
+            tileDict.PlaceChessPiece(new Coords(3, 1), ChessPieceColor.White, ChessPieceType.Bishop, doRotate);
+            tileDict.PlaceChessPiece(new Coords(4, 1), ChessPieceColor.White, ChessPieceType.Queen, doRotate);
+            tileDict.PlaceChessPiece(new Coords(5, 1), ChessPieceColor.White, ChessPieceType.King, doRotate);
+            tileDict.PlaceChessPiece(new Coords(6, 1), ChessPieceColor.White, ChessPieceType.Bishop, doRotate);
+            tileDict.PlaceChessPiece(new Coords(7, 1), ChessPieceColor.White, ChessPieceType.Knight, doRotate);
+            tileDict.PlaceChessPiece(new Coords(8, 1), ChessPieceColor.White, ChessPieceType.Rook, doRotate);
+
+            for (int col = 1; col < 9; col++)
+            {
+                tileDict.PlaceChessPiece(new Coords(col, 7), ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
+            }
+
+            tileDict.PlaceChessPiece(new Coords(1, 8), ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
+            tileDict.PlaceChessPiece(new Coords(2, 8), ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
+            tileDict.PlaceChessPiece(new Coords(3, 8), ChessPieceColor.Black, ChessPieceType.Bishop, doRotate);
+            tileDict.PlaceChessPiece(new Coords(4, 8), ChessPieceColor.Black, ChessPieceType.Queen, doRotate);
+            tileDict.PlaceChessPiece(new Coords(5, 8), ChessPieceColor.Black, ChessPieceType.King, doRotate);
+            tileDict.PlaceChessPiece(new Coords(6, 8), ChessPieceColor.Black, ChessPieceType.Bishop, doRotate);
+            tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
+            tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
+
+            PropertiesDict = PropertiesDict;
+            TileDict = TileDict;
         }
         internal bool IsInputAllowed()
         {
-            if (sideMenuVisibility == "Visible") return false;
-            if (settingsVisibility == "Visible") return false;
-            if (newEmailGameVisibility == "Visible") return false;
+            if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
+            if (propertiesDict["SettingsOverlayVisibility"] == "Visible") return false;
+            if (propertiesDict["NewEmailGameOverlayVisibility"] == "Visible") return false;
             return true;
         }
         protected void OnPropertyChanged([CallerMemberName] string name = null)

@@ -2,20 +2,17 @@
 using ChessDotNET.CustomTypes;
 using static ChessDotNET.CustomTypes.Coords;
 
+
 namespace ChessDotNET.GameLogic
 {
     internal static class MoveValidatorGameLogic
     {
-        public static bool ValidateCurrentMove(TileDictionary tileDict, ChessPieceColor bottomColor, Coords oldCoords, Coords newCoords)
+        public static bool ValidateCurrentMove(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
         {
             // validate pawn's move:
             if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
-                bool isBottom;
-                if (bottomColor == ChessPieceColor.White) isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.White;
-                else isBottom = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor == ChessPieceColor.Black;
-
-                return ValidatePawn(tileDict, oldCoords, newCoords, isBottom);
+                return ValidatePawn(tileDict, oldCoords, newCoords);
             }
             // validate bishop's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
@@ -141,12 +138,12 @@ namespace ChessDotNET.GameLogic
             }
             return true;
         }
-        private static bool ValidatePawn(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords, bool isBottom)
+        private static bool ValidatePawn(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
         {
             ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
             ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
 
-            if (isBottom)
+            if (oldCoordsColor == ChessPieceColor.White)
             {
                 // don't allow to move backwards:
                 if (oldCoords.Row > newCoords.Row) return false;

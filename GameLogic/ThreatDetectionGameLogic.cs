@@ -6,7 +6,7 @@ namespace ChessDotNET.GameLogic
 {
     internal static class ThreatDetectionGameLogic
     {
-        internal static List<Tile> GetThreateningTilesList(TileDictionary tileDict, Coords currentCoords, ChessPieceColor bottomColor)
+        internal static List<Tile> GetThreateningTilesList(TileDictionary tileDict, Coords currentCoords)
         {
             List<Tile> returnList = new List<Tile>();
 
@@ -18,7 +18,7 @@ namespace ChessDotNET.GameLogic
                 {
                     if (tile.ChessPiece.ChessPieceType == ChessPieceType.Pawn)
                     {
-                        if (tileDict[currentCoords.ToString()].ChessPiece.ChessPieceColor == bottomColor)
+                        //if (tileDict[currentCoords.ToString()].ChessPiece.ChessPieceColor == bottomColor)
                         {
                             if ((currentCoords.Col == tile.Col + 1 || currentCoords.Col == tile.Col - 1)
                                 && tile.Row - 1 == currentCoords.Row)
@@ -26,14 +26,14 @@ namespace ChessDotNET.GameLogic
                                 returnList.Add(tile);
                             }
                         }
-                        else
-                        {
-                            if ((currentCoords.Col == tile.Col + 1 || currentCoords.Col == tile.Col - 1)
-                                && tile.Row + 1 == currentCoords.Row)
-                            {
-                                returnList.Add(tile);
-                            }
-                        }
+                        //else
+                        //{
+                        //    if ((currentCoords.Col == tile.Col + 1 || currentCoords.Col == tile.Col - 1)
+                        //        && tile.Row + 1 == currentCoords.Row)
+                        //    {
+                        //        returnList.Add(tile);
+                        //    }
+                        //}
                     }
                 }
             }

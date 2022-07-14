@@ -53,5 +53,9 @@ namespace ChessDotNET.EmailChess
             Task sendCurrentMove = SendCurrentBlackMove(appSettingsStruct.EmailServer, opponentEmail, oldCoords, newCoords);
             await sendCurrentMove;
         }
+        internal void SendInvitation(AppSettings appSettings)
+        {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+        }
     }
 }

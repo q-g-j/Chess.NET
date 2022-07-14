@@ -6,7 +6,7 @@ using OpenPop.Pop3;
 using ChessDotNET.CustomTypes;
 using ChessDotNET.Settings;
 using ChessDotNET.GUI.ViewModels.MainWindow;
-
+using System.Reflection;
 
 namespace ChessDotNET.EmailChess
 {
@@ -103,7 +103,7 @@ namespace ChessDotNET.EmailChess
                 tileDict[oldCoordsString].IsOccupied = false;
                 tileDict[newCoordsString].IsOccupied = true;
                 tileDict[newCoordsString].ChessPiece.MoveCount++;
-                vm.TileDict = tileDict;
+                vm.TileDict = vm.TileDict;
             });
         }
         internal static async Task WaitForEmailNextBlackMoveTask(MainWindowViewModel vm, TileDictionary tileDict, AppSettings appSettings)
@@ -137,7 +137,7 @@ namespace ChessDotNET.EmailChess
                 tileDict[oldCoordsString].IsOccupied = false;
                 tileDict[newCoordsString].IsOccupied = true;
                 tileDict[newCoordsString].ChessPiece.MoveCount++;
-                vm.TileDict = tileDict;
+                vm.TileDict = vm.TileDict;
             });
         }
     }

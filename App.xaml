@@ -8,10 +8,10 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/GUI/ResourceDictionaries/Fonts.xaml" />
                 <ResourceDictionary Source="/GUI/ResourceDictionaries/ChessPieceImages.xaml" />
-                <ResourceDictionary Source="/GUI/ResourceDictionaries/MainWindowStyles.xaml" />
-                <ResourceDictionary Source="/GUI/ResourceDictionaries/SettingsStyles.xaml" />
-                <ResourceDictionary Source="/GUI/ResourceDictionaries/SideMenuStyles.xaml" />
-                <ResourceDictionary Source="/GUI/ResourceDictionaries/NewEmailGameStyles.xaml" />
+                
+                <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/OverlayStyles.xaml" />
+                <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/MainWindowStyles.xaml" />
+                <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/SideMenuStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

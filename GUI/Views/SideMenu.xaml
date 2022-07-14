@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:ChessDotNET.GUI.Views"
              xmlns:vm="clr-namespace:ChessDotNET.GUI.ViewModels.MainWindow"
              mc:Ignorable="d"
+             Grid.Column="0" Grid.Row="0" Panel.ZIndex="40"
+             HorizontalAlignment="Left" Margin="25, 30, 0, 0"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
 
     <Grid>
@@ -19,25 +21,25 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuMainMenuVisibility}">
+                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuMainMenuVisibility]}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
-                        <RowDefinition Height="auto"/>
+                        <!--<RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
                         <RowDefinition Height="auto"/>
-                        <RowDefinition Height="7"/>
+                        <RowDefinition Height="7"/>-->
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameCommand}" Content="Neues Spiel"/>
-                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
-                    <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>
-                    <Button Grid.Row="6" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuSettingsCommand}" Content="Einstellungen"/>
-                    <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuQuitProgramCommand}" Content="Beenden"/>
+                    <!--<Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Laden"/>
+                    <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{}" Content="Speichern"/>-->
+                    <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuSettingsCommand}" Content="Einstellungen"/>
+                    <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuQuitProgramCommand}" Content="Beenden"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuNewGameModeVisibility}">
+                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuNewGameModeVisibility]}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -53,7 +55,7 @@
                     <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeEmailCommand}" Content="Per Email spielen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeGoBackCommand}" Content="Zurück"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsNewGameLocalColorVisibility}">
+                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuButtonsNewGameLocalColorVisibility]}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>

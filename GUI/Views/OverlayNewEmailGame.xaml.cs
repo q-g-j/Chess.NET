@@ -3,11 +3,11 @@
 namespace ChessDotNET.GUI.Views
 {
     /// <summary>
-    /// Interaction logic for NewEmailGame.xaml
+    /// Interaction logic for OverlayNewEmailGame.xaml
     /// </summary>
-    public partial class NewEmailGame : UserControl
+    public partial class OverlayNewEmailGame : UserControl
     {
-        public NewEmailGame()
+        public OverlayNewEmailGame()
         {
             InitializeComponent();
         }
