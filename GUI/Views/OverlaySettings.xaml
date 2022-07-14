@@ -46,7 +46,7 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Adresse:"/>
-                    <TextBox Grid.Row="1" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailAddress], Mode=TwoWay}"/>
+                    <TextBox Grid.Row="1" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[OverlaySettingsTextBoxEmailAddress], Mode=TwoWay}"/>
                     <Label Grid.Row="3" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Password:"/>
                     <PasswordBox x:Name="PasswordBox" Grid.Row="4" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" PasswordChar="*">
                         <behaviors:Interaction.Triggers>
@@ -56,9 +56,9 @@
                         </behaviors:Interaction.Triggers>
                     </PasswordBox>
                     <Label Grid.Row="6" FontFamily="{StaticResource Main}" FontSize="13" Content="POP3-Server:"/>
-                    <TextBox Grid.Row="7" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailPop3Server], Mode=TwoWay}"/>
+                    <TextBox Grid.Row="7" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[OverlaySettingsTextBoxEmailPop3Server], Mode=TwoWay}"/>
                     <Label Grid.Row="9" FontFamily="{StaticResource Main}" FontSize="13" Content="SMTP-Server:"/>
-                    <TextBox Grid.Row="10" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[SettingsOverlayTextBoxEmailSMTPServer], Mode=TwoWay}"/>
+                    <TextBox Grid.Row="10" Padding="2" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[OverlaySettingsTextBoxEmailSMTPServer], Mode=TwoWay}"/>
                     <Button Grid.Row="12" Style="{StaticResource StyleOverlayButton}" Command="{Binding OverlaySettingsSaveCommand}" Content="Speichern"/>
                     <Button Grid.Row="14" Style="{StaticResource StyleOverlayButton}" Command="{Binding OverlaySettingsCancelCommand}" Content="Abbrechen"/>
                 </Grid>

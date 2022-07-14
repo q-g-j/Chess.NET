@@ -27,8 +27,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             if (!vm.WasSideMenuOpen)
             {
                 if (vm.PropertiesDict["SideMenuVisibility"] != "Visible" 
-                    && vm.PropertiesDict["SettingsOverlayVisibility"] == "Hidden" 
-                    && vm.PropertiesDict["NewEmailGameOverlayVisibility"] == "Hidden")
+                    && vm.PropertiesDict["OverlaySettingsVisibility"] == "Hidden" 
+                    && vm.PropertiesDict["OverlayNewEmailGameVisibility"] == "Hidden")
                 {
                     vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
                     vm.PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
@@ -41,7 +41,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 vm.WasSideMenuOpen = false;
             }
-            vm.PropertiesDict = vm.PropertiesDict;
+
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
         internal void WindowMouseMoveAction(object o)
         {
@@ -71,7 +72,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         Canvas.SetLeft(vm.CurrentlyDraggedChessPieceImage, vm.DragOverCanvasPosition.X - vm.DragOverChessPiecePosition.X);
                         Canvas.SetTop(vm.CurrentlyDraggedChessPieceImage, vm.DragOverCanvasPosition.Y - vm.DragOverChessPiecePosition.Y);
                     }
-                    vm.PropertiesDict = vm.PropertiesDict;
+
+                    vm.OnPropertyChangedByPropertyName("PropertiesDict");
                 }
             }
             e.Handled = true;
@@ -94,7 +96,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         vm.WasSideMenuOpen = false;
                     }
 
-                    vm.PropertiesDict = vm.PropertiesDict;
+                    vm.OnPropertyChangedByPropertyName("PropertiesDict");
                 }
             }
         }
@@ -155,14 +157,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     tileDict[newCoords.ToString()].ChessPiece.ChessPieceType = ChessPieceType.Queen;
                                 }
 
-                                vm.TileDict = vm.TileDict;
+                                vm.OnPropertyChangedByPropertyName("TileDict");
 
                                 if (vm.IsEmailGame)
                                 {
                                     if (oldColor == ChessPieceColor.White)
                                     {
                                         if (vm.DeleteOldEmailsTask != null) await vm.DeleteOldEmailsTask;
-                                        await Task.Run(() => EmailChess.Send.SendEmailWhiteMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"]));
+                                        await Task.Run(() => EmailChess.Send.SendEmailWhiteMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["OverlayNewEmailGameTextBoxOpponentEmail"]));
                                         vm.DoWaitForEmail = true;
                                         await Task.Run(() => EmailChess.Receive.WaitForEmailNextBlackMoveTask(vm, tileDict, appSettings));
                                         vm.DoWaitForEmail = false;
@@ -170,7 +172,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     else
                                     {
                                         if (vm.DeleteOldEmailsTask != null) await vm.DeleteOldEmailsTask;
-                                        await Task.Run(() => EmailChess.Send.SendEmailBlackMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"]));
+                                        await Task.Run(() => EmailChess.Send.SendEmailBlackMoveTask(oldCoords, newCoords, appSettings, vm.PropertiesDict["OverlayNewEmailGameTextBoxOpponentEmail"]));
                                         vm.DoWaitForEmail = true;
                                         await Task.Run(() => EmailChess.Receive.WaitForEmailNextWhiteMoveTask(vm, tileDict, appSettings));
                                         vm.DoWaitForEmail = false;

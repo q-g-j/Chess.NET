@@ -58,10 +58,10 @@
             </DockPanel>
             <Grid>
                 <local:SideMenu Visibility="{Binding PropertiesDict[SideMenuVisibility]}"/>
-                <local:OverlayNewEmailGame Visibility="{Binding PropertiesDict[NewEmailGameOverlayVisibility]}"/>
-                <local:OverlaySettings Visibility="{Binding PropertiesDict[SettingsOverlayVisibility]}"/>
-                <local:OverlayInvitation Visibility="{Binding PropertiesDict[InvitationOverlayVisibility]}"/>
-                <local:OverlayInvitationAccepted Visibility="{Binding PropertiesDict[InvitationAcceptedOverlayVisibility]}"/>
+                <local:OverlayNewEmailGame Visibility="{Binding PropertiesDict[OverlayNewEmailGameVisibility]}"/>
+                <local:OverlaySettings Visibility="{Binding PropertiesDict[OverlaySettingsVisibility]}"/>
+                <local:OverlayInvitation Visibility="{Binding PropertiesDict[OverlayInvitationVisibility]}"/>
+                <local:OverlayInvitationAccepted Visibility="{Binding PropertiesDict[OverlayInvitationAcceptedVisibility]}"/>
                 <local:ChessGrid/>
             </Grid>
         </StackPanel>

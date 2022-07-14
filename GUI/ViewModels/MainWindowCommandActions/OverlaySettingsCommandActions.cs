@@ -28,24 +28,24 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             if (vm.EmailPassword != "")
             {
                 AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-                vm.PropertiesDict["SettingsOverlayVisibility"] = "Hidden";
-                vm.PropertiesDict = vm.PropertiesDict;
+                vm.PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
+                vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
-                appSettingsStruct.EmailServer["email_address"] = vm.PropertiesDict["SettingsOverlayTextBoxEmailAddress"];
+                appSettingsStruct.EmailServer["email_address"] = vm.PropertiesDict["OverlaySettingsTextBoxEmailAddress"];
                 if (vm.EmailPassword != null) appSettingsStruct.EmailServer["password"] = vm.EmailPassword;
-                appSettingsStruct.EmailServer["pop3_server"] = vm.PropertiesDict["SettingsOverlayTextBoxEmailPop3Server"];
-                appSettingsStruct.EmailServer["smtp_server"] = vm.PropertiesDict["SettingsOverlayTextBoxEmailSMTPServer"];
+                appSettingsStruct.EmailServer["pop3_server"] = vm.PropertiesDict["OverlaySettingsTextBoxEmailPop3Server"];
+                appSettingsStruct.EmailServer["smtp_server"] = vm.PropertiesDict["OverlaySettingsTextBoxEmailSMTPServer"];
                 appSettings.ChangeEmailServer(appSettingsStruct.EmailServer);
                 vm.isSettingsSaved = true;
                 passwordBox = null;
 
-                vm.PropertiesDict = vm.PropertiesDict;
+                vm.OnPropertyChangedByPropertyName("PropertiesDict");
             }
         }
         internal void OverlaySettingsCancelAction()
         {
-            vm.PropertiesDict["SettingsOverlayVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
             if (passwordBox != null)
             {

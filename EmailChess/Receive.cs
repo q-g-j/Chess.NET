@@ -103,7 +103,8 @@ namespace ChessDotNET.EmailChess
                 tileDict[oldCoordsString].IsOccupied = false;
                 tileDict[newCoordsString].IsOccupied = true;
                 tileDict[newCoordsString].ChessPiece.MoveCount++;
-                vm.TileDict = vm.TileDict;
+
+                vm.OnPropertyChangedByPropertyName("TileDict");
             });
         }
         internal static async Task WaitForEmailNextBlackMoveTask(MainWindowViewModel vm, TileDictionary tileDict, AppSettings appSettings)
@@ -137,7 +138,8 @@ namespace ChessDotNET.EmailChess
                 tileDict[oldCoordsString].IsOccupied = false;
                 tileDict[newCoordsString].IsOccupied = true;
                 tileDict[newCoordsString].ChessPiece.MoveCount++;
-                vm.TileDict = vm.TileDict;
+
+                vm.OnPropertyChangedByPropertyName("TileDict");
             });
         }
     }

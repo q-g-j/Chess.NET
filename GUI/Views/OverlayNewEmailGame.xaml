@@ -43,11 +43,11 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" FontFamily="{StaticResource Main}" FontSize="13" Content="Email-Adresse des Gegners:" />
-                    <TextBox Grid.Row="1" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[NewEmailGameOverlayTextBoxOpponentEmail], Mode=TwoWay}"/>
+                    <TextBox Grid.Row="1" FontFamily="{StaticResource Main}" FontSize="13" Background="White" Text="{Binding PropertiesDict[OverlayNewEmailGameTextBoxOpponentEmail], Mode=TwoWay}"/>
                     <Label Grid.Row="3" FontFamily="{StaticResource Main}" FontSize="13" Content="Eigene Farbe wählen:"/>
-                    <RadioButton Grid.Row="4" Content="Weiß" FontFamily="{StaticResource Main}" FontSize="13" IsChecked="{Binding PropertiesDict[NewEmailGameOverlayRadioButtonWhiteIsChecked], FallbackValue=True}"/>
-                    <RadioButton Grid.Row="6" Content="Schwarz" FontFamily="{StaticResource Main}" FontSize="13" IsChecked="{Binding PropertiesDict[NewEmailGameOverlayRadioButtonBlackIsChecked], FallbackValue=False}"/>
-                    <Label Visibility="{Binding PropertiesDict[NewEmailGameOverlayErrorLabelVisibility]}" Grid.Row="8" FontFamily="{StaticResource Main}" FontWeight="Bold" Foreground="Red" FontSize="13">
+                    <RadioButton Grid.Row="4" Content="Weiß" FontFamily="{StaticResource Main}" FontSize="13" IsChecked="{Binding PropertiesDict[OverlayNewEmailGameRadioButtonWhiteIsChecked], FallbackValue=True}"/>
+                    <RadioButton Grid.Row="6" Content="Schwarz" FontFamily="{StaticResource Main}" FontSize="13" IsChecked="{Binding PropertiesDict[OverlayNewEmailGameRadioButtonBlackIsChecked], FallbackValue=False}"/>
+                    <Label Visibility="{Binding PropertiesDict[OverlayNewEmailGameErrorLabelVisibility]}" Grid.Row="8" FontFamily="{StaticResource Main}" FontWeight="Bold" Foreground="Red" FontSize="13">
                         <Label.Content>
                             <AccessText TextWrapping="WrapWithOverflow" Text="Fehler: Bitte die E-Mail-Server-Einstellungen überprüfen."/>
                         </Label.Content>

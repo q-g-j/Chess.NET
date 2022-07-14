@@ -22,8 +22,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal void OverlayInvitationAcceptedStartGameAction()
         {
 
-            vm.PropertiesDict["InvitationAcceptedOverlayVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.PropertiesDict["OverlayInvitationAcceptedVisibility"] = "Hidden";
+
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
     }
 }

@@ -40,12 +40,12 @@
                     <Label Grid.Row="0" Padding="2" FontFamily="{StaticResource Main}" FontSize="18" FontWeight="Bold" Content="Einladung erhalten"/>
                     <Label Grid.Row="2" FontFamily="{StaticResource Main}" FontSize="13">
                         <Label.Content>
-                            <AccessText TextWrapping="WrapWithOverflow" Text="{Binding PropertiesDict[InvitationOverlayLabelSenderInfoText1]}"/>
+                            <AccessText TextWrapping="WrapWithOverflow" Text="{Binding PropertiesDict[OverlayInvitationLabelSenderInfoText1]}"/>
                         </Label.Content>
                     </Label>
                     <Label Grid.Row="3" FontFamily="{StaticResource Main}" FontSize="13">
                         <Label.Content>
-                            <AccessText TextWrapping="WrapWithOverflow" Text="{Binding PropertiesDict[InvitationOverlayLabelSenderInfoText2]}"/>
+                            <AccessText TextWrapping="WrapWithOverflow" Text="{Binding PropertiesDict[OverlayInvitationLabelSenderInfoText2]}"/>
                         </Label.Content>
                     </Label>
                     <Button Grid.Row="5" Style="{StaticResource StyleOverlayButton}" Command="{Binding OverlayInvitationAcceptCommand}" Content="Annehmen"/>

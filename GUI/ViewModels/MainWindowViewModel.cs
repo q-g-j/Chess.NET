@@ -62,26 +62,27 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ["SideMenuMainMenuVisibility"] = "Visible",
                 ["SideMenuNewGameModeVisibility"] = "Hidden",
                 ["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden",
-                ["NewEmailGameOverlayVisibility"] = "Hidden",
-                ["NewEmailGameOverlayErrorLabelVisibility"] = "Hidden",
-                ["SettingsOverlayVisibility"] = "Hidden",
-                ["InvitationOverlayVisibility"] = "Hidden",
-                ["InvitationAcceptedOverlayVisibility"] = "Hidden",
 
-                ["SettingsOverlayTextBoxEmailAddress"] = " ",
-                ["SettingsOverlayTextBoxEmailPop3Server"] = " ",
-                ["SettingsOverlayTextBoxEmailSMTPServer"] = " ",
+                ["OverlayNewEmailGameVisibility"] = "Hidden",
+                ["OverlayNewEmailGameErrorLabelVisibility"] = "Hidden",
+                ["OverlaySettingsVisibility"] = "Hidden",
+                ["OverlayInvitationVisibility"] = "Hidden",
+                ["OverlayInvitationAcceptedVisibility"] = "Hidden",
 
-                ["NewEmailGameOverlayTextBoxOwnEmail"] = " ",
-                ["NewEmailGameOverlayTextBoxOpponentEmail"] = " ",
+                ["OverlaySettingsTextBoxEmailAddress"] = " ",
+                ["OverlaySettingsTextBoxEmailPop3Server"] = " ",
+                ["OverlaySettingsTextBoxEmailSMTPServer"] = " ",
 
-                ["NewEmailGameOverlayRadioButtonWhiteIsChecked"] = "True",
-                ["NewEmailGameOverlayRadioButtonBlackIsChecked"] = "False",
+                ["OverlayNewEmailGameTextBoxOwnEmail"] = " ",
+                ["OverlayNewEmailGameTextBoxOpponentEmail"] = " ",
 
-                ["InvitationOverlayLabelSenderInfoText1"] = "user@server.com möchte eine Partie E-Mail-Schach spielen!",
-                ["InvitationOverlayLabelSenderInfoText2"] = "Dein Herausforderer hat die Farbe weiß gewählt.",
+                ["OverlayNewEmailGameRadioButtonWhiteIsChecked"] = "True",
+                ["OverlayNewEmailGameRadioButtonBlackIsChecked"] = "False",
 
-                ["InvitationAcceptedOverlayLabelText"] = "user@server.com hat die Einladung angenommen! Du bist am Zug...",
+                ["OverlayInvitationLabelSenderInfoText1"] = "user@server.com möchte eine Partie E-Mail-Schach spielen!",
+                ["OverlayInvitationLabelSenderInfoText2"] = "Dein Herausforderer hat die Farbe weiß gewählt.",
+
+                ["OverlayInvitationAcceptedLabelText"] = "user@server.com hat die Einladung angenommen! Du bist am Zug...",
 
                 ["ChessCanvasRotationAngle"] = "0",
                 ["ChessCanvasRotationCenterX"] = "0",
@@ -220,13 +221,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     else if (i == 7) horizontalNotationList[i] = "A";
 
                 }
-                HorizontalNotationList = horizontalNotationList;
 
                 for (int i = 0; i < 8; i++)
                 {
                     verticalNotationList[i] = (i + 1).ToString();
                 }
-                VerticalNotationList = verticalNotationList;
             }
 
             else
@@ -243,7 +242,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     else if (i == 7) horizontalNotationList[i] = "H";
 
                 }
-                HorizontalNotationList = horizontalNotationList;
 
                 for (int i = 0; i < 8; i++)
                 {
@@ -256,10 +254,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     else if (i == 6) verticalNotationList[i] = "2";
                     else if (i == 7) verticalNotationList[i] = "1";
                 }
-                VerticalNotationList = verticalNotationList;
             }
 
             tileDict = new TileDictionary();
+
             for (int col = 1; col < 9; col++)
             {
                 tileDict.PlaceChessPiece(new Coords(col, 2), ChessPieceColor.White, ChessPieceType.Pawn, doRotate);
@@ -288,15 +286,21 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict.PlaceChessPiece(new Coords(7, 8), ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
             tileDict.PlaceChessPiece(new Coords(8, 8), ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
 
-            PropertiesDict = PropertiesDict;
-            TileDict = TileDict;
+            OnPropertyChangedByPropertyName("PropertiesDict");
+            OnPropertyChangedByPropertyName("TileDict");
+            OnPropertyChangedByPropertyName("HorizontalNotationList");
+            OnPropertyChangedByPropertyName("VerticalNotationList");
         }
         internal bool IsInputAllowed()
         {
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
-            if (propertiesDict["SettingsOverlayVisibility"] == "Visible") return false;
-            if (propertiesDict["NewEmailGameOverlayVisibility"] == "Visible") return false;
+            if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
+            if (propertiesDict["OverlayNewEmailGameVisibility"] == "Visible") return false;
             return true;
+        }
+        internal void OnPropertyChangedByPropertyName(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {

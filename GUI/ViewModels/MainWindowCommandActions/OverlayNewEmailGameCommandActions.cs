@@ -17,25 +17,25 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
         internal async void OverlayNewEmailGameStartAction()
         {
-            if (vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"] == "") return;
+            if (vm.PropertiesDict["OverlayNewEmailGameTextBoxOpponentEmail"] == "") return;
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
 
             vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
             vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
             vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
             var testConnection = EmailChess.Test.TestSMTPConnection(appSettingsStruct.EmailServer);
             if (! await testConnection)
             {
-                vm.PropertiesDict["NewEmailGameOverlayErrorLabelVisibility"] = "Visible";
+                vm.PropertiesDict["OverlayNewEmailGameErrorLabelVisibility"] = "Visible";
             }
             else
             {
                 vm.IsEmailGame = true;
-                vm.PropertiesDict["NewEmailGameOverlayVisibility"] = "Hidden";
+                vm.PropertiesDict["OverlayNewEmailGameVisibility"] = "Hidden";
 
-                if (vm.PropertiesDict["NewEmailGameOverlayRadioButtonWhiteIsChecked"] == "True")
+                if (vm.PropertiesDict["OverlayNewEmailGameRadioButtonWhiteIsChecked"] == "True")
                 {
                     vm.EmailGameOwnColor = ChessPieceColor.White;
                     vm.StartGame(false);
@@ -43,23 +43,23 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 }
             }
 
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
 
         internal async void OverlayNewEmailGameStartActionOld()
         {
-            if (vm.PropertiesDict["NewEmailGameOverlayTextBoxOpponentEmail"] == "") return;
+            if (vm.PropertiesDict["OverlayNewEmailGameTextBoxOpponentEmail"] == "") return;
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
 
-            vm.PropertiesDict["NewEmailGameOverlayVisibility"] = "Hidden";
+            vm.PropertiesDict["OverlayNewEmailGameVisibility"] = "Hidden";
             vm.PropertiesDict["SideMenuVisibility"] = "Hidden";
             vm.PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
             vm.PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
             vm.IsEmailGame = true;
 
-            if (vm.PropertiesDict["NewEmailGameOverlayRadioButtonWhiteIsChecked"] == "True")
+            if (vm.PropertiesDict["OverlayNewEmailGameRadioButtonWhiteIsChecked"] == "True")
             {
                 vm.EmailGameOwnColor = ChessPieceColor.White;
                 vm.StartGame(false);
@@ -85,19 +85,19 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                             if (appSettingsStruct.EmailServer["email_address"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailAddress"] = appSettingsStruct.EmailServer["email_address"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailAddress"] = appSettingsStruct.EmailServer["email_address"];
                             }
                             if (appSettingsStruct.EmailServer["pop3_server"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailPop3Server"] = appSettingsStruct.EmailServer["pop3_server"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailPop3Server"] = appSettingsStruct.EmailServer["pop3_server"];
                             }
                             if (appSettingsStruct.EmailServer["smtp_server"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailSMTPServer"] = appSettingsStruct.EmailServer["smtp_server"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailSMTPServer"] = appSettingsStruct.EmailServer["smtp_server"];
                             }
 
-                            vm.PropertiesDict["SettingsOverlayVisibility"] = "Visible";
-                            vm.PropertiesDict = vm.PropertiesDict;
+                            vm.PropertiesDict["OverlaySettingsVisibility"] = "Visible";
+                            vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
                             await Task.Run(() =>
                             {
@@ -112,7 +112,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     });
                 }
             }
-            else if (vm.PropertiesDict["NewEmailGameOverlayRadioButtonBlackIsChecked"] == "True")
+            else if (vm.PropertiesDict["OverlayNewEmailGameRadioButtonBlackIsChecked"] == "True")
             {
                 vm.EmailGameOwnColor = ChessPieceColor.Black;
                 vm.StartGame(true);
@@ -143,19 +143,19 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                             if (appSettingsStruct.EmailServer["email_address"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailAddress"] = appSettingsStruct.EmailServer["email_address"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailAddress"] = appSettingsStruct.EmailServer["email_address"];
                             }
                             if (appSettingsStruct.EmailServer["pop3_server"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailPop3Server"] = appSettingsStruct.EmailServer["pop3_server"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailPop3Server"] = appSettingsStruct.EmailServer["pop3_server"];
                             }
                             if (appSettingsStruct.EmailServer["smtp_server"] != null)
                             {
-                                vm.PropertiesDict["SettingsOverlayTextBoxEmailSMTPServer"] = appSettingsStruct.EmailServer["smtp_server"];
+                                vm.PropertiesDict["OverlaySettingsTextBoxEmailSMTPServer"] = appSettingsStruct.EmailServer["smtp_server"];
                             }
 
-                            vm.PropertiesDict["SettingsOverlayVisibility"] = "Visible";
-                            vm.PropertiesDict = vm.PropertiesDict;
+                            vm.PropertiesDict["OverlaySettingsVisibility"] = "Visible";
+                            vm.OnPropertyChangedByPropertyName("PropertiesDict");
 
                             await Task.Run(() =>
                             {
@@ -174,8 +174,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         internal void OverlayNewEmailGameCancelAction()
         {
-            vm.PropertiesDict["NewEmailGameOverlayVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.PropertiesDict["OverlayNewEmailGameVisibility"] = "Hidden";
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
     }
 }

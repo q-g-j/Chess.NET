@@ -20,13 +20,13 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal void OverlayInvitationAcceptAction()
         {
 
-            vm.PropertiesDict["InvitationOverlayVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.PropertiesDict["OverlayInvitationVisibility"] = "Hidden";
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
         internal void OverlayInvitationRejectAction()
         {
-            vm.PropertiesDict["InvitationOverlayVisibility"] = "Hidden";
-            vm.PropertiesDict = vm.PropertiesDict;
+            vm.PropertiesDict["OverlayInvitationVisibility"] = "Hidden";
+            vm.OnPropertyChangedByPropertyName("PropertiesDict");
         }
     }
 }
