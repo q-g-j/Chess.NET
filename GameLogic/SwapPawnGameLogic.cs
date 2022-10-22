@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessDotNET.GameLogic
 {
-    internal class SwitchPawn
+    internal class SwapPawnGameLogic
     {
 
     }

@@ -5,40 +5,56 @@ using static ChessDotNET.CustomTypes.Coords;
 
 namespace ChessDotNET.GameLogic
 {
-    internal static class MoveValidatorGameLogic
+    internal static class MoveValidationGameLogic
     {
         public static bool ValidateCurrentMove(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
         {
+            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
+            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
+
             // validate pawn's move:
             if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
-                return ValidatePawn(tileDict, oldCoords, newCoords);
+                return ValidatePawn(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             // validate bishop's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
             {
                 if (oldCoords.Col == newCoords.Col || oldCoords.Row == newCoords.Row) return false;
-                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+
                 return isValidDiagonal;
             }
             // validate queen's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Queen)
             {
-                bool isValidStraight = ValidateRookAndKingStraight(tileDict, oldCoords, newCoords);
-                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords);
+                bool isValidStraight = ValidateRookAndQueenHorizontal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+                bool isValidDiagonal = ValidateBishopAndQueenDiagonal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+
                 return isValidStraight && isValidDiagonal;
+            }
+            // validate king's move:
+            else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.King)
+            {
+                return ValidateKing(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             // validate rook's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Rook)
             {
                 if (oldCoords.Col != newCoords.Col && oldCoords.Row != newCoords.Row) return false;
-                bool isValidStraight = ValidateRookAndKingStraight(tileDict, oldCoords, newCoords);
+                bool isValidStraight = ValidateRookAndQueenHorizontal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+
                 return isValidStraight;
             }
             // validate knight's move:
             else if (tileDict[oldCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Knight)
             {
-                bool isValidStraight = ValidateKnight(tileDict, oldCoords, newCoords);
+                bool isValidStraight = ValidateKnight(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+
                 return isValidStraight;
             }
             else
@@ -46,11 +62,13 @@ namespace ChessDotNET.GameLogic
                 return true;
             }
         }
-        private static bool ValidateRookAndKingStraight(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidateRookAndQueenHorizontal(
+            Dictionary<string, Tile> tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
         {
-            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
-
             // don't allow to capture same color:
             if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
             // check if the path towards top is free:
@@ -88,11 +106,13 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValidateBishopAndQueenDiagonal(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidateBishopAndQueenDiagonal(
+            Dictionary<string, Tile> tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
         {
-            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
-
             // don't allow to capture same color:
             if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
@@ -138,11 +158,13 @@ namespace ChessDotNET.GameLogic
             }
             return true;
         }
-        private static bool ValidatePawn(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidatePawn(
+            Dictionary<string, Tile> tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
         {
-            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
-
             if (oldCoordsColor == ChessPieceColor.White)
             {
                 // don't allow to move backwards:
@@ -202,24 +224,44 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValidateKnight(Dictionary<string, Tile> tileDict, Coords oldCoords, Coords newCoords)
+        private static bool ValidateKing(
+            Dictionary<string, Tile> tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
         {
-            ChessPieceColor oldCoordsColor = tileDict[oldCoords.ToString()].ChessPiece.ChessPieceColor;
-            ChessPieceColor newCoordsColor = tileDict[newCoords.ToString()].ChessPiece.ChessPieceColor;
+            // don't allow to capture same color:
+            if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
+            // don't allow to move farther than 1 tile:
+            if (newCoords.Col > oldCoords.Col + 1
+                || newCoords.Col < oldCoords.Col - 1
+                || newCoords.Row > oldCoords.Row + 1
+                || newCoords.Row < oldCoords.Row - 1) return false;
+
+            return true;
+        }
+        private static bool ValidateKnight(
+            Dictionary<string, Tile> tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
+        {
             // don't allow to capture same color:
             if (tileDict[newCoords.ToString()].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
             // check each possible move:
             if (
-                   !(oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == +1) // -2 +1
-                && !(oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == -1) // -2 -1
-                && !(oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == +1) // +2 +1
-                && !(oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == -1) // +2 -1
-                && !(oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == +2) // -1 +2
-                && !(oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == -2) // -1 -2
-                && !(oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == +2) // +1 +2
-                && !(oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == -2) // +1 -2
+                   ! (oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == +1) // -2 +1
+                && ! (oldCoords.Row - newCoords.Row == -2 && oldCoords.Col - newCoords.Col == -1) // -2 -1
+                && ! (oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == +1) // +2 +1
+                && ! (oldCoords.Row - newCoords.Row == +2 && oldCoords.Col - newCoords.Col == -1) // +2 -1
+                && ! (oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == +2) // -1 +2
+                && ! (oldCoords.Row - newCoords.Row == -1 && newCoords.Col - oldCoords.Col == -2) // -1 -2
+                && ! (oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == +2) // +1 +2
+                && ! (oldCoords.Row - newCoords.Row == +1 && newCoords.Col - oldCoords.Col == -2) // +1 -2
                 )
             {
                 return false;

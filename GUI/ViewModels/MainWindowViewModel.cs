@@ -245,7 +245,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                             && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
                         {
 
-                            bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(TileDictReadOnly, oldCoords, newCoords);
+                            bool isValidMove = MoveValidationGameLogic.ValidateCurrentMove(TileDictReadOnly, oldCoords, newCoords);
 
                             if (isValidMove)
                             {

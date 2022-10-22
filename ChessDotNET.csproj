@@ -133,7 +133,7 @@
     <Compile Include="EmailChess\Delete.cs" />
     <Compile Include="EmailChess\Receive.cs" />
     <Compile Include="EmailChess\Test.cs" />
-    <Compile Include="GameLogic\SwitchPawn.cs" />
+    <Compile Include="GameLogic\SwapPawnGameLogic.cs" />
     <Compile Include="GUI\Views\ChessGrid.xaml.cs">
       <DependentUpon>ChessGrid.xaml</DependentUpon>
     </Compile>
