@@ -5,11 +5,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
-using CommunityToolkit.Mvvm.Input;
 using ChessDotNET.CustomTypes;
+using ChessDotNET.GUI.ViewHelpers;
 using ChessDotNET.Settings;
 using System.Collections.Generic;
 using System.Linq;
+using ChessDotNET.GameLogic;
+using System.Windows.Input;
+using System.Windows.Media;
+using CommunityToolkit.Mvvm.Input;
 
 namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
@@ -21,40 +25,23 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             AppSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
             appSettings = new AppSettings(AppSettingsFolder);
 
-            GeneralCommandActions generalCommandActions = new GeneralCommandActions(this, appSettings);
-            SideMenuCommandActions sideMenuCommandActions = new SideMenuCommandActions(this, appSettings);
-            OverlayInvitationCommandActions overlayInvitationCommandActions = new OverlayInvitationCommandActions(this, appSettings);
-            OverlayInvitationAcceptedCommandActions overlayInvitationAcceptedCommandActions = new OverlayInvitationAcceptedCommandActions(this, appSettings);
-            OverlaySettingsCommandActions overlaySettingsCommandActions = new OverlaySettingsCommandActions(this, appSettings);
-            OverlayNewEmailGameCommandActions overlayNewEmailGameCommandActions = new OverlayNewEmailGameCommandActions(this, appSettings);
+            WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
+            WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
+            WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o, tileDict));
+            ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => ChessPieceMouseleftDownAction(o));
+            OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
 
-            WindowMouseMoveCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseMoveAction(o));
-            WindowMouseLeftDownCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseLeftDownAction(o));
-            WindowMouseLeftUpCommand = new RelayCommand<object>(o => generalCommandActions.WindowMouseLeftUpAction(o, tileDict));
-            ChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => generalCommandActions.ChessPieceMouseleftDownAction(o));
-            OpenSideMenuCommand = new RelayCommand(generalCommandActions.OpenSideMenuAction);
+            SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
+            SideMenuNewGameModeLocalCommand = new RelayCommand(SideMenuNewGameModeLocalAction);
+            SideMenuNewGameModeGoBackCommand = new RelayCommand(SideMenuNewGameModeGoBackAction);
+            SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
+            SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
+            SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
+            SideMenuSettingsCommand = new RelayCommand(SideMenuSettingsAction);
+            SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
 
-            SideMenuNewGameCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameAction);
-            SideMenuNewGameModeLocalCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameModeLocalAction);
-            SideMenuNewGameModeEmailCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameModeEmailAction);
-            SideMenuNewGameModeGoBackCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameModeGoBackAction);
-            SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameLocalAsWhiteAction);
-            SideMenuNewGameLocalAsBlackCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameLocalAsBlackAction);
-            SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(sideMenuCommandActions.SideMenuNewGameLocalColorGoBackAction);
-            SideMenuSettingsCommand = new RelayCommand(sideMenuCommandActions.SideMenuSettingsAction);
-            SideMenuQuitProgramCommand = new RelayCommand(sideMenuCommandActions.SideMenuQuitProgramAction);
-
-            OverlaySettingsPasswordBoxCommand = new RelayCommand<object>(o => overlaySettingsCommandActions.OverlaySettingsPasswordBoxAction(o));
-            OverlaySettingsSaveCommand = new RelayCommand(overlaySettingsCommandActions.OverlaySettingsSaveAction);
-            OverlaySettingsCancelCommand = new RelayCommand(overlaySettingsCommandActions.OverlaySettingsCancelAction);
-
-            OverlayNewEmailGameStartCommand = new RelayCommand(overlayNewEmailGameCommandActions.OverlayNewEmailGameStartAction);
-            OverlayNewEmailGameCancelCommand = new RelayCommand(overlayNewEmailGameCommandActions.OverlayNewEmailGameCancelAction);
-
-            OverlayInvitationAcceptCommand = new RelayCommand(overlayInvitationCommandActions.OverlayInvitationAcceptAction);
-            OverlayInvitationRejectCommand = new RelayCommand(overlayInvitationCommandActions.OverlayInvitationRejectAction);
-
-            OverlayInvitationAcceptedCommand = new RelayCommand(overlayInvitationAcceptedCommandActions.OverlayInvitationAcceptedStartGameAction);
+            OverlaySettingsSaveCommand = new RelayCommand(OverlaySettingsSaveAction);
+            OverlaySettingsCancelCommand = new RelayCommand(OverlaySettingsCancelAction);
 
             propertiesDict = new Dictionary<string, string>()
             {
@@ -63,38 +50,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ["SideMenuNewGameModeVisibility"] = "Hidden",
                 ["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden",
 
-                ["OverlayNewEmailGameVisibility"] = "Hidden",
-                ["OverlayNewEmailGameErrorLabelVisibility"] = "Hidden",
                 ["OverlaySettingsVisibility"] = "Hidden",
-                ["OverlayInvitationVisibility"] = "Hidden",
-                ["OverlayInvitationAcceptedVisibility"] = "Hidden",
-
-                ["OverlaySettingsTextBoxEmailAddress"] = " ",
-                ["OverlaySettingsTextBoxEmailPop3Server"] = " ",
-                ["OverlaySettingsTextBoxEmailSMTPServer"] = " ",
-
-                ["OverlayNewEmailGameTextBoxOwnEmail"] = " ",
-                ["OverlayNewEmailGameTextBoxOpponentEmail"] = " ",
-
-                ["OverlayNewEmailGameRadioButtonWhiteIsChecked"] = "True",
-                ["OverlayNewEmailGameRadioButtonBlackIsChecked"] = "False",
-
-                ["OverlayInvitationLabelSenderInfoText1"] = "user@server.com möchte eine Partie E-Mail-Schach spielen!",
-                ["OverlayInvitationLabelSenderInfoText2"] = "Dein Herausforderer hat die Farbe weiß gewählt.",
-
-                ["OverlayInvitationAcceptedLabelText"] = "user@server.com hat die Einladung angenommen! Du bist am Zug...",
 
                 ["ChessCanvasRotationAngle"] = "0",
                 ["ChessCanvasRotationCenterX"] = "0",
                 ["ChessCanvasRotationCenterY"] = "-200",
-
-                ["InvitationLabelSenderInfo1"] = " ",
-                ["InvitationLabelSenderInfo2"] = " ",
             };
 
             WasSideMenuOpen = false;
-            IsEmailGame = false;
-            DoWaitForEmail = false;
             isSettingsSaved = false;
 
             if (!Directory.Exists(AppSettingsFolder))
@@ -110,7 +73,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private readonly AppSettings appSettings;
 
         internal readonly string AppSettingsFolder;
-        internal ChessPieceColor EmailGameOwnColor;
         internal Canvas ChessCanvas;
         internal Image CurrentlyDraggedChessPieceImage;
         internal int CurrentlyDraggedChessPieceOriginalCanvasLeft;
@@ -119,11 +81,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         internal Point DragOverChessPiecePosition;
         internal bool IsMouseMoving;
         internal bool WasSideMenuOpen;
-        internal bool IsEmailGame;
-        internal bool DoWaitForEmail;
         internal bool isSettingsSaved;
-        internal Task DeleteOldEmailsTask;
-        internal string EmailPassword;
         #endregion Fields
 
         #region Property-Values
@@ -184,6 +142,269 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         public RelayCommand<object> WindowMouseLeftUpCommand { get; }
         public RelayCommand<object> ChessPieceMouseLeftDownCommand { get; }
         #endregion Commands
+
+        #region CommandActions
+        internal void OpenSideMenuAction()
+        {
+            if (!WasSideMenuOpen)
+            {
+                if (PropertiesDict["SideMenuVisibility"] != "Visible"
+                    && PropertiesDict["OverlaySettingsVisibility"] == "Hidden")
+                {
+                    PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+                    PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
+                    PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+                    PropertiesDict["SideMenuVisibility"] = "Visible";
+                }
+                else PropertiesDict["SideMenuVisibility"] = "Hidden";
+            }
+            else
+            {
+                WasSideMenuOpen = false;
+            }
+
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void WindowMouseMoveAction(object o)
+        {
+            MouseEventArgs e = o as MouseEventArgs;
+
+            if (CurrentlyDraggedChessPieceImage != null)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+
+                    if (!WasSideMenuOpen)
+                    {
+                        if (!IsMouseMoving)
+                        {
+                            DragOverCanvasPosition = e.GetPosition(ChessCanvas);
+                            DragOverChessPiecePosition = e.GetPosition(CurrentlyDraggedChessPieceImage);
+                        }
+                        IsMouseMoving = true;
+                        DragOverCanvasPosition = e.GetPosition(ChessCanvas);
+                        CurrentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+
+                        Canvas.SetLeft(CurrentlyDraggedChessPieceImage, DragOverCanvasPosition.X - DragOverChessPiecePosition.X);
+                        Canvas.SetTop(CurrentlyDraggedChessPieceImage, DragOverCanvasPosition.Y - DragOverChessPiecePosition.Y);
+                    }
+
+                    OnPropertyChangedByPropertyName("PropertiesDict");
+                }
+            }
+            e.Handled = true;
+        }
+        internal void WindowMouseLeftDownAction(object o)
+        {
+            var e = o as MouseEventArgs;
+
+            if (e.Source != null)
+            {
+                if (e.Source.ToString() != "ChessDotNET.GUI.Views.SideMenu")
+                {
+                    if (PropertiesDict["SideMenuVisibility"] == "Visible")
+                    {
+                        WasSideMenuOpen = true;
+                        PropertiesDict["SideMenuVisibility"] = "Hidden";
+                    }
+                    else
+                    {
+                        WasSideMenuOpen = false;
+                    }
+
+                    OnPropertyChangedByPropertyName("PropertiesDict");
+                }
+            }
+        }
+        internal void WindowMouseLeftUpAction(object o, TileDictionary tileDict)
+        {
+            if (IsInputAllowed())
+            {
+                MouseEventArgs e = o as MouseEventArgs;
+
+                if (CurrentlyDraggedChessPieceImage == null) return;
+                if (CurrentlyDraggedChessPieceImage.IsMouseCaptured) CurrentlyDraggedChessPieceImage.ReleaseMouseCapture();
+
+                if (IsMouseMoving)
+                {
+                    IsMouseMoving = false;
+                    if (DragOverCanvasPosition.X < 0 || DragOverCanvasPosition.X > 400 || DragOverCanvasPosition.Y < 0 || DragOverCanvasPosition.Y > 400)
+                    {
+                        Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                        Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                        CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                        CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    }
+                    else
+                    {
+                        Point oldPoint = new Point(CurrentlyDraggedChessPieceOriginalCanvasLeft, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                        Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
+                        Coords newCoords = Coords.CanvasPositionToCoords(DragOverCanvasPosition);
+
+                        if (newCoords.Col >= 1 && newCoords.Col <= 8 && newCoords.Row >= 1 && newCoords.Row <= 8
+                            && !(newCoords.Col == oldCoords.Col && newCoords.Row == oldCoords.Row))
+                        {
+
+                            bool isValidMove = MoveValidatorGameLogic.ValidateCurrentMove(TileDictReadOnly, oldCoords, newCoords);
+
+                            if (isValidMove)
+                            {
+                                Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                                //Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+
+                                tileDict[newCoords.ToString()].SetChessPiece(tileDict[oldCoords.ToString()].ChessPiece.ChessPieceImage);
+                                tileDict[oldCoords.ToString()].SetChessPiece(ChessPieceImages.Empty);
+                                tileDict[newCoords.ToString()].ChessPiece.MoveCount++;
+
+
+                                // Get a queen if your pawn is on opposite of the field
+                                if (tileDict[newCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn && newCoords.Row == 8)
+                                {
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceImage = ChessPieceImages.WhiteQueen;
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceType = ChessPieceType.Queen;
+                                }
+                                if (tileDict[newCoords.ToString()].ChessPiece.ChessPieceType == ChessPieceType.Pawn && newCoords.Row == 1)
+                                {
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceImage = ChessPieceImages.BlackQueen;
+                                    tileDict[newCoords.ToString()].ChessPiece.ChessPieceType = ChessPieceType.Queen;
+                                }
+
+                                // store a list of threatening tiles:
+                                tileDict[newCoords.ToString()].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords);
+
+                                //Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
+                                //Console.WriteLine("MoveCount: " + tileDict[newCoordsString.ToString()].ChessPiece.MoveCount);
+                                //Console.WriteLine();
+
+                                OnPropertyChangedByPropertyName("TileDict");
+                            }
+                            else
+                            {
+                                Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                            }
+                        }
+                        else
+                        {
+                            Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                            Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                        }
+                    }
+                    CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                    CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    CurrentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
+                }
+                CurrentlyDraggedChessPieceImage = null;
+                e.Handled = true;
+            }
+        }
+        internal void ChessPieceMouseleftDownAction(object o)
+        {
+            if (IsInputAllowed())
+            {
+                object param = ((CompositeCommandParameter)o).Parameter;
+                MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
+                CurrentlyDraggedChessPieceImage = null;
+                CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                CurrentlyDraggedChessPieceImage = param as Image;
+                if (!ChessPieceImages.IsEmpty(CurrentlyDraggedChessPieceImage.Source))
+                {
+                    ChessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
+
+                    if (CurrentlyDraggedChessPieceOriginalCanvasLeft < 0 && CurrentlyDraggedChessPieceOriginalCanvasTop < 0)
+                    {
+                        CurrentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(CurrentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
+                        CurrentlyDraggedChessPieceOriginalCanvasTop = int.Parse(CurrentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
+                    }
+                    CurrentlyDraggedChessPieceImage.CaptureMouse();
+                }
+                WasSideMenuOpen = false;
+                e.Handled = true;
+            }
+        }
+        internal void SideMenuNewGameAction()
+        {
+            PropertiesDict["SideMenuMainMenuVisibility"] = "Hidden";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuNewGameModeLocalAction()
+        {
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Visible";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuNewGameModeEmailAction()
+        {
+            PropertiesDict["SideMenuVisibility"] = "Hidden";
+            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            PropertiesDict["OverlayNewEmailGameErrorLabelVisibility"] = "Hidden";
+            PropertiesDict["OverlayNewEmailGameVisibility"] = "Visible";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuNewGameLocalColorGoBackAction()
+        {
+            PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuNewGameLocalAsWhiteAction()
+        {
+            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            PropertiesDict["SideMenuVisibility"] = "Hidden";
+            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+
+            StartGame(false);
+        }
+        internal void SideMenuNewGameLocalAsBlackAction()
+        {
+            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+
+            PropertiesDict["SideMenuVisibility"] = "Hidden";
+            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+
+            StartGame(true);
+        }
+        internal void SideMenuNewGameModeGoBackAction()
+        {
+            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
+            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuSettingsAction()
+        {
+            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+            PropertiesDict["SideMenuVisibility"] = "Hidden";
+            PropertiesDict["OverlaySettingsVisibility"] = "Visible";
+
+            isSettingsSaved = false;
+
+            OnPropertyChangedByPropertyName("PropertiesDict");
+        }
+        internal void SideMenuQuitProgramAction()
+        {
+            Application.Current.Shutdown();
+        }
+        internal void OverlaySettingsSaveAction()
+        {
+        }
+        internal void OverlaySettingsCancelAction()
+        {
+            PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
+        }
+        #endregion CommandActions
 
         #region Methods
         internal void StartGame(bool doRotate)
@@ -295,7 +516,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
             if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
-            if (propertiesDict["OverlayNewEmailGameVisibility"] == "Visible") return false;
             return true;
         }
         internal void OnPropertyChangedByPropertyName(string name)

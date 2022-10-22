@@ -134,26 +134,8 @@
     <Compile Include="EmailChess\Receive.cs" />
     <Compile Include="EmailChess\Test.cs" />
     <Compile Include="GameLogic\SwitchPawn.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\GeneralCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayInvitationAcceptedCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayNewEmailGameCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlayInvitationCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\OverlaySettingsCommandActions.cs" />
-    <Compile Include="GUI\ViewModels\MainWindowCommandActions\SideMenuCommandActions.cs" />
     <Compile Include="GUI\Views\ChessGrid.xaml.cs">
       <DependentUpon>ChessGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Views\OverlayInvitationAccepted.xaml.cs">
-      <DependentUpon>OverlayInvitationAccepted.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Views\OverlayNewEmailGame.xaml.cs">
-      <DependentUpon>OverlayNewEmailGame.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Views\OverlayInvitation.xaml.cs">
-      <DependentUpon>OverlayInvitation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="GUI\Views\OverlaySettings.xaml.cs">
-      <DependentUpon>OverlaySettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Views\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
@@ -182,10 +164,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\Views\OverlayInvitationAccepted.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="GUI\Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -213,18 +191,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="GUI\Views\OverlayNewEmailGame.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\Views\OverlayInvitation.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="GUI\Views\OverlaySettings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="GUI\Views\SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
