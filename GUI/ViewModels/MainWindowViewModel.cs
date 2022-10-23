@@ -66,8 +66,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 Directory.CreateDirectory(AppSettingsFolder);
             }
 
-            //StartGame(false);
-            StartGameTestCastling(false);
+            StartGame(false);
+            //StartGameTestCastling(false);
         }
         #endregion Constuctors
 
