@@ -9,16 +9,14 @@ namespace ChessDotNET.CustomTypes
     {
         public Coords(int x, int y)
         {
-            Col = x;
-            Row = y; 
-            _string = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
+            X = x;
+            Y = y; 
+            String = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
         }
 
-        public int Col { get; }
-        public int Row { get; }
-        private readonly string _string;
-
-        public override string ToString() => _string;
+        public int X { get; }
+        public int Y { get; }
+        public string String { get; }
 
         internal static Coords StringToCoords(string coordsString)
         {

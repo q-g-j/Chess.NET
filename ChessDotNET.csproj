@@ -130,9 +130,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="EmailChess\Delete.cs" />
-    <Compile Include="EmailChess\Receive.cs" />
-    <Compile Include="EmailChess\Test.cs" />
     <Compile Include="GameLogic\SwapPawnGameLogic.cs" />
     <Compile Include="GUI\Views\ChessGrid.xaml.cs">
       <DependentUpon>ChessGrid.xaml</DependentUpon>
@@ -174,7 +171,6 @@
     </Compile>
     <Compile Include="CustomTypes\ChessPiece.cs" />
     <Compile Include="CustomTypes\TileDictionary.cs" />
-    <Compile Include="EmailChess\Send.cs" />
     <Compile Include="GameLogic\CheckMateGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
     <Compile Include="GameLogic\ThreatDetectionGameLogic.cs" />

@@ -12,24 +12,24 @@ namespace ChessDotNET.GameLogic
 
             foreach (var tile in tileDict.Values)
             {
-                if (!(tile.Col == currentCoords.Col && tile.Row == currentCoords.Row)
-                    && tile.ChessPiece.ChessPieceColor != tileDict[currentCoords.ToString()].ChessPiece.ChessPieceColor
+                if (!(tile.Col == currentCoords.X && tile.Row == currentCoords.Y)
+                    && tile.ChessPiece.ChessPieceColor != tileDict[currentCoords.String].ChessPiece.ChessPieceColor
                     && tile.ChessPiece.ChessPieceColor != ChessPieceColor.Empty)
                 {
                     if (tile.ChessPiece.ChessPieceType == ChessPieceType.Pawn)
                     {
-                        //if (tileDict[currentCoords.ToString()].ChessPiece.ChessPieceColor == bottomColor)
+                        //if (tileDict[currentCoords.String].ChessPiece.ChessPieceColor == bottomColor)
                         {
-                            if ((currentCoords.Col == tile.Col + 1 || currentCoords.Col == tile.Col - 1)
-                                && tile.Row - 1 == currentCoords.Row)
+                            if ((currentCoords.X == tile.Col + 1 || currentCoords.X == tile.Col - 1)
+                                && tile.Row - 1 == currentCoords.Y)
                             {
                                 returnList.Add(tile);
                             }
                         }
                         //else
                         //{
-                        //    if ((currentCoords.Col == tile.Col + 1 || currentCoords.Col == tile.Col - 1)
-                        //        && tile.Row + 1 == currentCoords.Row)
+                        //    if ((currentCoords.X == tile.X + 1 || currentCoords.X == tile.X - 1)
+                        //        && tile.Y + 1 == currentCoords.Y)
                         //    {
                         //        returnList.Add(tile);
                         //    }
