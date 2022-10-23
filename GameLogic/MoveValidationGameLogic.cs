@@ -240,7 +240,7 @@ namespace ChessDotNET.GameLogic
             // don't allow to capture same color:
             if (tileDict[newCoords.String].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
-            if (! CastlingValidationGameLogic.CanCastle(tileDict, oldCoords, newCoords, oldCoordsColor))
+            if (! CastlingValidationGameLogic.CanCastle(tileDict, oldCoords, newCoords))
             {
                 // don't allow to move farther than 1 tile:
                 if (newCoords.X > oldCoords.X + 1

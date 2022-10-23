@@ -10,13 +10,13 @@ namespace ChessDotNET.GameLogic
 {
     internal static class CastlingValidationGameLogic
     {
-        internal static bool CanCastle(TileDictionary tileDict, Coords oldCoords, Coords newCoords, ChessPieceColor ownColor)
+        internal static bool CanCastle(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
         {
             // rules for castling:
             // 1. king must not have moved ### done
             // 2. rook must not have moved ### done
             // 3. there must not be any pieces between both ### done
-            // 4. the king's old and new position and the crossed tile must not be threatened
+            // 4. the king's old and new position and the crossed tile must not be threatened ### done
             
             // rule 1: has king moved?
             if (tileDict[oldCoords.String].ChessPiece.HasMoved)
