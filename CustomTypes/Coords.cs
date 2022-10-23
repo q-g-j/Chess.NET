@@ -13,6 +13,12 @@ namespace ChessDotNET.CustomTypes
             Y = y; 
             String = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
         }
+        public Coords(Columns x, int y)
+        {
+            X = (int)x;
+            Y = y;
+            String = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
+        }
 
         public int X { get; }
         public int Y { get; }

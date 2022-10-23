@@ -130,6 +130,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
     <Compile Include="GameLogic\SwapPawnGameLogic.cs" />
     <Compile Include="GUI\Views\ChessGrid.xaml.cs">
       <DependentUpon>ChessGrid.xaml</DependentUpon>
@@ -172,7 +173,7 @@
     <Compile Include="CustomTypes\ChessPiece.cs" />
     <Compile Include="CustomTypes\TileDictionary.cs" />
     <Compile Include="GameLogic\CheckMateGameLogic.cs" />
-    <Compile Include="GameLogic\MoveValidatorGameLogic.cs" />
+    <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
     <Compile Include="GameLogic\ThreatDetectionGameLogic.cs" />
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />

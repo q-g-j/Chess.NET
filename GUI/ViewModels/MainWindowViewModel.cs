@@ -59,20 +59,22 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             WasSideMenuOpen = false;
             isSettingsSaved = false;
+            coordsPawnMovedTwoTiles = null;
 
             if (!Directory.Exists(AppSettingsFolder))
             {
                 Directory.CreateDirectory(AppSettingsFolder);
             }
 
-            StartGame(false);
-            //StartGameTestCastling(false);
+            //StartGame(false);
+            StartGameTestCastling(false);
         }
         #endregion Constuctors
 
         #region Fields
         private readonly AppSettings appSettings;
         private bool isRotated;
+        private Coords coordsPawnMovedTwoTiles;
 
         internal readonly string AppSettingsFolder;
         internal Canvas ChessCanvas;
@@ -264,27 +266,72 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 //Console.WriteLine("MoveCount: " + tileDict[newCoordsString.ToString()].ChessPiece.MoveCount);
                                 //Console.WriteLine();
 
+                                // has pawn moved 2 tiles?
+                                if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn
+                                    && Math.Abs(newCoords.Y - oldCoords.Y) == 2)
+                                {
+                                    coordsPawnMovedTwoTiles = newCoords;
+                                    tileDict[oldCoords.String].ChessPiece.CanBeCapturedEnPassant = true;
+                                }
+                                else if (coordsPawnMovedTwoTiles != null)
+                                {
+                                    tileDict[coordsPawnMovedTwoTiles.String].ChessPiece.CanBeCapturedEnPassant = false;
+                                    coordsPawnMovedTwoTiles = null;
+                                }
+
                                 // get a queen if your pawn is on opposite of the field:
                                 if (SwapPawnGameLogic.CanSwap(tileDict, oldCoords, newCoords))
                                 {
-                                    if (tileDict[oldCoords.String].ChessPiece.ChessPieceColor == ChessPieceColor.White)
+                                    tileDict[newCoords.String].ChessPiece = new ChessPiece(tileDict[oldCoords.String].ChessPiece.ChessPieceColor, ChessPieceType.Queen, isRotated);
+                                    tileDict[oldCoords.String].ChessPiece = new ChessPiece();
+                                }
+                                // check if a king tries to castle:
+                                else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.King
+                                    && Math.Abs(newCoords.X - oldCoords.X) > 1 && newCoords.Y == oldCoords.Y)
+                                {
+                                    MoveChessPiece(oldCoords, newCoords);
+                                    Coords rookOldCoords = null;
+                                    Coords rookNewCoords = null;
+
+                                    if (oldCoords.Y == 1)
                                     {
-                                        tileDict[newCoords.String].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Queen, isRotated);
+                                        if (newCoords.X == 3)
+                                        {
+                                            rookOldCoords = new Coords(Columns.A, 1);
+                                            rookNewCoords = new Coords(Columns.D, 1);
+                                        }
+                                        else if (newCoords.X == 7)
+                                        {
+                                            rookOldCoords = new Coords(Columns.H, 1);
+                                            rookNewCoords = new Coords(Columns.F, 1);
+                                        }
                                     }
-                                    else
+                                    else if (oldCoords.Y == 8)
                                     {
-                                        tileDict[newCoords.String].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Queen, isRotated);
+                                        if (newCoords.X == 3)
+                                        {
+                                            rookOldCoords = new Coords(Columns.A, 8);
+                                            rookNewCoords = new Coords(Columns.D, 8);
+                                        }
+                                        else if (newCoords.X == 7)
+                                        {
+                                            rookOldCoords = new Coords(Columns.H, 8);
+                                            rookNewCoords = new Coords(Columns.F, 8);
+                                        }
                                     }
+
+                                    MoveChessPiece(rookOldCoords, rookNewCoords);
+
+                                    tileDict[rookNewCoords.String].ChessPiece.MoveCount++;
+                                    tileDict[rookNewCoords.String].ChessPiece.HasMoved = true;
                                 }
                                 else
                                 {
-                                    tileDict[newCoords.String].ChessPiece = tileDict[oldCoords.String].ChessPiece;
+                                    MoveChessPiece(oldCoords, newCoords);
                                 }
 
                                 tileDict[newCoords.String].ChessPiece.MoveCount++;
                                 tileDict[newCoords.String].ChessPiece.HasMoved = true;
-
-                                tileDict[oldCoords.String].ChessPiece = new ChessPiece();
 
                                 OnPropertyChangedByPropertyName("TileDict");
                             }
@@ -441,7 +488,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    if      (i == 0) horizontalNotationList[i] = "H";
+                    if (i == 0) horizontalNotationList[i] = "H";
                     else if (i == 1) horizontalNotationList[i] = "G";
                     else if (i == 2) horizontalNotationList[i] = "F";
                     else if (i == 3) horizontalNotationList[i] = "E";
@@ -462,7 +509,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 for (int i = 0; i < 8; i++)
                 {
-                    if      (i == 0) horizontalNotationList[i] = "A";
+                    if (i == 0) horizontalNotationList[i] = "A";
                     else if (i == 1) horizontalNotationList[i] = "B";
                     else if (i == 2) horizontalNotationList[i] = "C";
                     else if (i == 3) horizontalNotationList[i] = "D";
@@ -475,7 +522,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                 for (int i = 0; i < 8; i++)
                 {
-                    if      (i == 0) verticalNotationList[i] = "8";
+                    if (i == 0) verticalNotationList[i] = "8";
                     else if (i == 1) verticalNotationList[i] = "7";
                     else if (i == 2) verticalNotationList[i] = "6";
                     else if (i == 3) verticalNotationList[i] = "5";
@@ -593,6 +640,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             }
 
             tileDict = new TileDictionary();
+
+            tileDict["B6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
+            tileDict["C6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
+            tileDict["D6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
+            tileDict["E6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Bishop, doRotate);
+            tileDict["F6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Queen, doRotate);
+            tileDict["G6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
+
             tileDict["A1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
             tileDict["E1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.King, doRotate);
             tileDict["H1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
@@ -611,6 +666,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
             if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
             return true;
+        }
+        internal void MoveChessPiece(Coords oldCoords, Coords newCoords)
+        {
+            tileDict[newCoords.String].ChessPiece = tileDict[oldCoords.String].ChessPiece;
+            tileDict[oldCoords.String].ChessPiece = new ChessPiece();
         }
         internal void OnPropertyChangedByPropertyName(string name)
         {

@@ -148,6 +148,7 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;
             HasMoved = false;
+            CanBeCapturedEnPassant = false;
             MoveCount = 0;
         }
 
@@ -157,6 +158,7 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = ChessPieceColor.Empty;
             ChessPieceType = ChessPieceType.Empty;
             HasMoved = false;
+            CanBeCapturedEnPassant = false;
             MoveCount = 0;
         }
 
@@ -164,6 +166,7 @@ namespace ChessDotNET.CustomTypes
         internal ChessPieceColor ChessPieceColor { get; set; }
         internal ChessPieceType ChessPieceType { get; set; }
         internal bool HasMoved { get; set; }
+        internal bool CanBeCapturedEnPassant { get; set; }
         internal int MoveCount { get; set; }
     }
     internal enum ChessPieceColor

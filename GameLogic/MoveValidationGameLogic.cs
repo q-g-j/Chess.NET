@@ -63,7 +63,7 @@ namespace ChessDotNET.GameLogic
                 return true;
             }
         }
-        private static bool ValidateRookAndQueenHorizontal(
+        public static bool ValidateRookAndQueenHorizontal(
             Dictionary<string, Tile> tileDict,
             Coords oldCoords,
             Coords newCoords,
@@ -114,7 +114,7 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValidateBishopAndQueenDiagonal(
+        public static bool ValidateBishopAndQueenDiagonal(
             Dictionary<string, Tile> tileDict,
             Coords oldCoords,
             Coords newCoords,
@@ -164,7 +164,7 @@ namespace ChessDotNET.GameLogic
             }
             return true;
         }
-        private static bool ValidatePawn(
+        public static bool ValidatePawn(
             Dictionary<string, Tile> tileDict,
             Coords oldCoords,
             Coords newCoords,
@@ -230,8 +230,8 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValidateKing(
-            Dictionary<string, Tile> tileDict,
+        public static bool ValidateKing(
+            TileDictionary tileDict,
             Coords oldCoords,
             Coords newCoords,
             ChessPieceColor oldCoordsColor,
@@ -240,6 +240,26 @@ namespace ChessDotNET.GameLogic
             // don't allow to capture same color:
             if (tileDict[newCoords.String].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
+            if (! CastlingValidationGameLogic.CanCastle(tileDict, oldCoords, newCoords, oldCoordsColor))
+            {
+                // don't allow to move farther than 1 tile:
+                if (newCoords.X > oldCoords.X + 1
+                    || newCoords.X < oldCoords.X - 1
+                    || newCoords.Y > oldCoords.Y + 1
+                    || newCoords.Y < oldCoords.Y - 1) return false;
+            }
+
+            return true;
+        }
+        public static bool ValidateKingCastling(
+            TileDictionary tileDict,
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor,
+            ChessPieceColor newCoordsColor)
+        {
+            // don't allow to capture same color:
+            if (tileDict[newCoords.String].IsOccupied && oldCoordsColor == newCoordsColor) return false;
             // don't allow to move farther than 1 tile:
             if (newCoords.X > oldCoords.X + 1
                 || newCoords.X < oldCoords.X - 1
@@ -248,7 +268,8 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        private static bool ValidateKnight(
+
+        public static bool ValidateKnight(
             Dictionary<string, Tile> tileDict,
             Coords oldCoords,
             Coords newCoords,
