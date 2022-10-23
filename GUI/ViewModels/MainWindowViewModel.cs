@@ -22,8 +22,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #region Constructors
         public MainWindowViewModel()
         {
-            AppSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
-            appSettings = new AppSettings(AppSettingsFolder);
+            appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
+            appSettings = new AppSettings(appSettingsFolder);
 
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
@@ -58,12 +58,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             };
 
             WasSideMenuOpen = false;
-            isSettingsSaved = false;
             coordsPawnMovedTwoTiles = null;
 
-            if (!Directory.Exists(AppSettingsFolder))
+            if (!Directory.Exists(appSettingsFolder))
             {
-                Directory.CreateDirectory(AppSettingsFolder);
+                Directory.CreateDirectory(appSettingsFolder);
             }
 
             StartGame(false);
@@ -75,17 +74,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private readonly AppSettings appSettings;
         private bool isRotated;
         private Coords coordsPawnMovedTwoTiles;
-
-        internal readonly string AppSettingsFolder;
-        internal Canvas ChessCanvas;
-        internal Image CurrentlyDraggedChessPieceImage;
-        internal int CurrentlyDraggedChessPieceOriginalCanvasLeft;
-        internal int CurrentlyDraggedChessPieceOriginalCanvasTop;
-        internal Point DragOverCanvasPosition;
-        internal Point DragOverChessPiecePosition;
-        internal bool IsMouseMoving;
-        internal bool WasSideMenuOpen;
-        internal bool isSettingsSaved;
+        private readonly string appSettingsFolder;
+        private Canvas chessCanvas;
+        private Image currentlyDraggedChessPieceImage;
+        private int currentlyDraggedChessPieceOriginalCanvasLeft;
+        private int currentlyDraggedChessPieceOriginalCanvasTop;
+        private Point DragOverCanvasPosition;
+        private Point DragOverChessPiecePosition;
+        private bool IsMouseMoving;
+        private bool WasSideMenuOpen;
         #endregion Fields
 
         #region Property-Values
@@ -173,7 +170,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             MouseEventArgs e = o as MouseEventArgs;
 
-            if (CurrentlyDraggedChessPieceImage != null)
+            if (currentlyDraggedChessPieceImage != null)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
@@ -182,15 +179,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     {
                         if (!IsMouseMoving)
                         {
-                            DragOverCanvasPosition = e.GetPosition(ChessCanvas);
-                            DragOverChessPiecePosition = e.GetPosition(CurrentlyDraggedChessPieceImage);
+                            DragOverCanvasPosition = e.GetPosition(chessCanvas);
+                            DragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
                         }
                         IsMouseMoving = true;
-                        DragOverCanvasPosition = e.GetPosition(ChessCanvas);
-                        CurrentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
+                        DragOverCanvasPosition = e.GetPosition(chessCanvas);
+                        currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
 
-                        Canvas.SetLeft(CurrentlyDraggedChessPieceImage, DragOverCanvasPosition.X - DragOverChessPiecePosition.X);
-                        Canvas.SetTop(CurrentlyDraggedChessPieceImage, DragOverCanvasPosition.Y - DragOverChessPiecePosition.Y);
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, DragOverCanvasPosition.X - DragOverChessPiecePosition.X);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, DragOverCanvasPosition.Y - DragOverChessPiecePosition.Y);
                     }
 
                     OnPropertyChangedByPropertyName("PropertiesDict");
@@ -226,22 +223,22 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 MouseEventArgs e = o as MouseEventArgs;
 
-                if (CurrentlyDraggedChessPieceImage == null) return;
-                if (CurrentlyDraggedChessPieceImage.IsMouseCaptured) CurrentlyDraggedChessPieceImage.ReleaseMouseCapture();
+                if (currentlyDraggedChessPieceImage == null) return;
+                if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
 
                 if (IsMouseMoving)
                 {
                     IsMouseMoving = false;
                     if (DragOverCanvasPosition.X < 0 || DragOverCanvasPosition.X > 400 || DragOverCanvasPosition.Y < 0 || DragOverCanvasPosition.Y > 400)
                     {
-                        Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
-                        Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
-                        CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                        CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                        currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                        currentlyDraggedChessPieceOriginalCanvasTop = -1000;
                     }
                     else
                     {
-                        Point oldPoint = new Point(CurrentlyDraggedChessPieceOriginalCanvasLeft, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
                         Coords newCoords = Coords.CanvasPositionToCoords(DragOverCanvasPosition);
 
@@ -253,8 +250,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                             if (isValidMove)
                             {
-                                Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
-                                Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                                 //Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
                                 //Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
 
@@ -289,7 +286,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.King
                                     && Math.Abs(newCoords.X - oldCoords.X) > 1 && newCoords.Y == oldCoords.Y)
                                 {
-                                    MoveChessPiece(oldCoords, newCoords);
                                     Coords rookOldCoords = null;
                                     Coords rookNewCoords = null;
 
@@ -320,38 +316,33 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                         }
                                     }
 
-                                    MoveChessPiece(rookOldCoords, rookNewCoords);
-
-                                    tileDict[rookNewCoords.String].ChessPiece.MoveCount++;
-                                    tileDict[rookNewCoords.String].ChessPiece.HasMoved = true;
+                                    tileDict.MoveChessPiece(oldCoords, newCoords);
+                                    tileDict.MoveChessPiece(rookOldCoords, rookNewCoords);
                                 }
                                 else
                                 {
-                                    MoveChessPiece(oldCoords, newCoords);
+                                    tileDict.MoveChessPiece(oldCoords, newCoords);
                                 }
-
-                                tileDict[newCoords.String].ChessPiece.MoveCount++;
-                                tileDict[newCoords.String].ChessPiece.HasMoved = true;
 
                                 OnPropertyChangedByPropertyName("TileDict");
                             }
                             else
                             {
-                                Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
-                                Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                             }
                         }
                         else
                         {
-                            Canvas.SetLeft(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasLeft);
-                            Canvas.SetTop(CurrentlyDraggedChessPieceImage, CurrentlyDraggedChessPieceOriginalCanvasTop);
+                            Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
+                            Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
                         }
                     }
-                    CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                    CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                    CurrentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
+                    currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                    currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
                 }
-                CurrentlyDraggedChessPieceImage = null;
+                currentlyDraggedChessPieceImage = null;
                 e.Handled = true;
             }
         }
@@ -361,20 +352,20 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 object param = ((CompositeCommandParameter)o).Parameter;
                 MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-                CurrentlyDraggedChessPieceImage = null;
-                CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                CurrentlyDraggedChessPieceImage = param as Image;
-                if (!ChessPieceImages.IsEmpty(CurrentlyDraggedChessPieceImage.Source))
+                currentlyDraggedChessPieceImage = null;
+                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                currentlyDraggedChessPieceImage = param as Image;
+                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
                 {
-                    ChessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
+                    chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
-                    if (CurrentlyDraggedChessPieceOriginalCanvasLeft < 0 && CurrentlyDraggedChessPieceOriginalCanvasTop < 0)
+                    if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
                     {
-                        CurrentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(CurrentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
-                        CurrentlyDraggedChessPieceOriginalCanvasTop = int.Parse(CurrentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
+                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
+                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
                     }
-                    CurrentlyDraggedChessPieceImage.CaptureMouse();
+                    currentlyDraggedChessPieceImage.CaptureMouse();
                 }
                 WasSideMenuOpen = false;
                 e.Handled = true;
@@ -409,8 +400,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         internal void SideMenuNewGameLocalAsWhiteAction()
         {
-            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             PropertiesDict["SideMenuVisibility"] = "Hidden";
             PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
@@ -421,8 +412,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         internal void SideMenuNewGameLocalAsBlackAction()
         {
-            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             PropertiesDict["SideMenuVisibility"] = "Hidden";
             PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
@@ -442,8 +433,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
             PropertiesDict["SideMenuVisibility"] = "Hidden";
             PropertiesDict["OverlaySettingsVisibility"] = "Visible";
-
-            isSettingsSaved = false;
 
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
@@ -465,8 +454,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             isRotated = doRotate;
 
-            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             horizontalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
             verticalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
@@ -571,8 +560,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             isRotated = doRotate;
 
-            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             horizontalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
             verticalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
@@ -666,11 +655,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
             if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
             return true;
-        }
-        internal void MoveChessPiece(Coords oldCoords, Coords newCoords)
-        {
-            tileDict[newCoords.String].ChessPiece = tileDict[oldCoords.String].ChessPiece;
-            tileDict[oldCoords.String].ChessPiece = new ChessPiece();
         }
         internal void OnPropertyChangedByPropertyName(string name)
         {
