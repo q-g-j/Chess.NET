@@ -8,14 +8,14 @@ namespace ChessDotNET.CustomTypes
     {
         public Tile(int col, int row, bool occupied, ChessPiece chessPiece)
         {
-            Col = col;
-            Row = row;
+            X = col;
+            Y = row;
             IsOccupied = occupied;
             ChessPiece = chessPiece;
             ThreatenedByTileList = new List<Tile>();
         }
-        public int Col { get; set; }
-        public int Row { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
         public bool IsOccupied { get; set; }
         public List<Tile> ThreatenedByTileList { get; set; }
         public ChessPiece ChessPiece { get; set; }

@@ -10,18 +10,24 @@ namespace ChessDotNET.GameLogic
 {
     internal static class CastlingValidationGameLogic
     {
-        internal static bool CanCastle(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
+        internal static MoveValidationStruct CanCastle(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
         {
             // rules for castling:
             // 1. king must not have moved ### done
             // 2. rook must not have moved ### done
             // 3. there must not be any pieces between both ### done
             // 4. the king's old and new position and the crossed tile must not be threatened ### done
-            
+
+            MoveValidationStruct returnStruct = new MoveValidationStruct
+            {
+                Coords = new List<Coords>(),
+                CanCastle = false
+            };
+
             // rule 1: has king moved?
             if (tileDict[oldCoords.String].ChessPiece.HasMoved)
             {
-                return false;
+                return returnStruct;
             }
 
             // check row 1:
@@ -30,59 +36,71 @@ namespace ChessDotNET.GameLogic
                 // king wants to move left:
                 if (newCoords.X == 3)
                 {
+                    // return the coords of the associated rook:
+                    returnStruct.Coords.Add(new Coords(1, 1));
+                    returnStruct.Coords.Add(new Coords(4, 1));
+
                     // rule 2: has the associated rook moved?
                     if (tileDict[Coords.IntsToCoordsString(1, 1)].ChessPiece.HasMoved)
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // rule 3: is there a chess piece in between?
-                    if    (tileDict[Coords.IntsToCoordsString(2, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                    if    (
+                        tileDict[Coords.IntsToCoordsString(2, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
                         || tileDict[Coords.IntsToCoordsString(3, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
-                        || tileDict[Coords.IntsToCoordsString(4, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty)
+                        || tileDict[Coords.IntsToCoordsString(4, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        )
                     {
-                        return false;
+                        return returnStruct;
                     }
-                    // is the king (old or new coords) or the crossed tile threatened?
+                    // rule 4: is the king (old or new coords) or the crossed tile threatened?
                     List<Coords> coordsListToCheck = new List<Coords>
                     {
                         oldCoords,
                         newCoords,
                         new Coords(4, 1)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, newCoords, coordsListToCheck))
+                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
-                        return false;
+                        return returnStruct;
                     }
                 }
                 // king wants to move right:
                 else if (newCoords.X == 7)
                 {
+                    // return the coords of the associated rook:
+                    returnStruct.Coords.Add(new Coords(8, 1));
+                    returnStruct.Coords.Add(new Coords(6, 1));
+
                     // rule 2: has the associated rook moved?
                     if (tileDict[Coords.IntsToCoordsString(8, 1)].ChessPiece.HasMoved)
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // rule 3: is there a chess piece in between?
-                    if (tileDict[Coords.IntsToCoordsString(6, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
-                        || tileDict[Coords.IntsToCoordsString(7, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty)
+                    if (
+                        tileDict[Coords.IntsToCoordsString(6, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        || tileDict[Coords.IntsToCoordsString(7, 1)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        )
                     {
-                        return false;
+                        return returnStruct;
                     }
-                    // is the king (old or new coords) or the crossed tile threatened?
+                    // rule 4: is the king (old or new coords) or the crossed tile threatened?
                     List<Coords> coordsListToCheck = new List<Coords>
                     {
                         oldCoords,
                         newCoords,
                         new Coords(6, 1)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, newCoords, coordsListToCheck))
+                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
-                        return false;
+                        return returnStruct;
                     }
                 }
                 else
                 {
-                    return false;
+                    return returnStruct;
                 }
             }
             // check row 8:
@@ -91,17 +109,23 @@ namespace ChessDotNET.GameLogic
                 // king wants to move left:
                 if (newCoords.X == 3)
                 {
+                    // return the coords of the associated rook:
+                    returnStruct.Coords.Add(new Coords(1, 8));
+                    returnStruct.Coords.Add(new Coords(4, 8));
+
                     // rule 2: has the associated rook moved?
                     if (tileDict[Coords.IntsToCoordsString(1, 8)].ChessPiece.HasMoved)
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // rule 3: is there a chess piece in between?
-                    if (tileDict[Coords.IntsToCoordsString(2, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                    if (
+                        tileDict[Coords.IntsToCoordsString(2, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
                         || tileDict[Coords.IntsToCoordsString(3, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
-                        || tileDict[Coords.IntsToCoordsString(4, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty)
+                        || tileDict[Coords.IntsToCoordsString(4, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        )
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // is the king or the crossed tile threatened?
                     List<Coords> coordsListToCheck = new List<Coords>
@@ -110,24 +134,30 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(4, 8)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, newCoords, coordsListToCheck))
+                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
-                        return false;
+                        return returnStruct;
                     }
                 }
                 // king wants to move right:
                 else if (newCoords.X == 7)
                 {
+                    // return the coords of the associated rook:
+                    returnStruct.Coords.Add(new Coords(8, 8));
+                    returnStruct.Coords.Add(new Coords(6, 8));
+
                     // has the associated rook moved?
                     if (tileDict[Coords.IntsToCoordsString(8, 8)].ChessPiece.HasMoved)
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // rule 3: is there a chess piece in between?
-                    if (tileDict[Coords.IntsToCoordsString(6, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
-                        || tileDict[Coords.IntsToCoordsString(7, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty)
+                    if (
+                        tileDict[Coords.IntsToCoordsString(6, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        || tileDict[Coords.IntsToCoordsString(7, 8)].ChessPiece.ChessPieceType != ChessPieceType.Empty
+                        )
                     {
-                        return false;
+                        return returnStruct;
                     }
                     // is the king (old or new coords) or the crossed tile threatened?
                     List<Coords> coordsListToCheck = new List<Coords>
@@ -136,26 +166,27 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(6, 8)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, newCoords, coordsListToCheck))
+                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
-                        return false;
+                        return returnStruct;
                     }
                 }
                 else
                 {
-                    return false;
+                    return returnStruct;
                 }
             }
             // if not in row 1 or 8, return false:
             else
             {
-                return false;
+                return returnStruct;
             }
 
-            return true;
+            returnStruct.CanCastle = true;
+            return returnStruct;
         }
 
-        private static bool AreTilesThreatened(TileDictionary tileDict, Coords oldCoords, Coords newCoords, List<Coords> coordsListToCheck)
+        private static bool AreTilesThreatened(TileDictionary tileDict, Coords oldCoords, List<Coords> coordsListToCheck)
         {
             for (int i = 1; i < 9; i++)
             {
@@ -170,7 +201,7 @@ namespace ChessDotNET.GameLogic
                         foreach (Coords coordsToCheck in coordsListToCheck)
                         {
                             if (chessPiece.ChessPieceType == ChessPieceType.Pawn
-                                && MoveValidationGameLogic.ValidatePawn(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
+                                && MoveValidationGameLogic.ValidatePawn(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty).IsValid)
                             {
                                 return true;
                             }

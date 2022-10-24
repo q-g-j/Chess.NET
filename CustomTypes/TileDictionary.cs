@@ -18,11 +18,17 @@ namespace ChessDotNET.CustomTypes
                 }
             }
         }
+
+        private Coords coordsPawnMovedTwoTiles = null;
+        internal Coords CoordsPawnMovedTwoTiles { get => coordsPawnMovedTwoTiles; set { coordsPawnMovedTwoTiles = value; } }
+
         internal void MoveChessPiece(Coords oldCoords, Coords newCoords)
         {
             this[newCoords.String].ChessPiece = this[oldCoords.String].ChessPiece;
+
             this[oldCoords.String].ChessPiece = new ChessPiece();
             this[oldCoords.String].IsOccupied = false;
+
             this[newCoords.String].IsOccupied = true;
             this[newCoords.String].ChessPiece.MoveCount++;
             this[newCoords.String].ChessPiece.HasMoved = true;

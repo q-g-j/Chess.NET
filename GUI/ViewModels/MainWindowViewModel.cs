@@ -22,8 +22,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #region Constructors
         public MainWindowViewModel()
         {
-            appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
-            appSettings = new AppSettings(appSettingsFolder);
+            //appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
+            //appSettings = new AppSettings(appSettingsFolder);
 
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
@@ -37,11 +37,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
             SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
             SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
-            SideMenuSettingsCommand = new RelayCommand(SideMenuSettingsAction);
+            //SideMenuSettingsCommand = new RelayCommand(SideMenuSettingsAction);
             SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
 
-            OverlaySettingsSaveCommand = new RelayCommand(OverlaySettingsSaveAction);
-            OverlaySettingsCancelCommand = new RelayCommand(OverlaySettingsCancelAction);
+            //OverlaySettingsSaveCommand = new RelayCommand(OverlaySettingsSaveAction);
+            //OverlaySettingsCancelCommand = new RelayCommand(OverlaySettingsCancelAction);
 
             propertiesDict = new Dictionary<string, string>()
             {
@@ -58,12 +58,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             };
 
             WasSideMenuOpen = false;
-            coordsPawnMovedTwoTiles = null;
 
-            if (!Directory.Exists(appSettingsFolder))
-            {
-                Directory.CreateDirectory(appSettingsFolder);
-            }
+            //if (!Directory.Exists(appSettingsFolder))
+            //{
+            //    Directory.CreateDirectory(appSettingsFolder);
+            //}
 
             StartGame(false);
             //StartGameTestCastling(false);
@@ -71,10 +70,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #endregion Constuctors
 
         #region Fields
-        private readonly AppSettings appSettings;
+        //private readonly AppSettings appSettings;
+        //private readonly string appSettingsFolder;
         private bool isRotated;
-        private Coords coordsPawnMovedTwoTiles;
-        private readonly string appSettingsFolder;
         private Canvas chessCanvas;
         private Image currentlyDraggedChessPieceImage;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
@@ -145,7 +143,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #endregion Commands
 
         #region CommandActions
-        internal void OpenSideMenuAction()
+        private void OpenSideMenuAction()
         {
             if (!WasSideMenuOpen)
             {
@@ -166,7 +164,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        internal void WindowMouseMoveAction(object o)
+        private void WindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
 
@@ -195,7 +193,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             }
             e.Handled = true;
         }
-        internal void WindowMouseLeftDownAction(object o)
+        private void WindowMouseLeftDownAction(object o)
         {
             var e = o as MouseEventArgs;
 
@@ -217,7 +215,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 }
             }
         }
-        internal void WindowMouseLeftUpAction(object o, TileDictionary tileDict)
+        private void WindowMouseLeftUpAction(object o, TileDictionary tileDict)
         {
             if (IsInputAllowed())
             {
@@ -229,7 +227,12 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (IsMouseMoving)
                 {
                     IsMouseMoving = false;
-                    if (DragOverCanvasPosition.X < 0 || DragOverCanvasPosition.X > 400 || DragOverCanvasPosition.Y < 0 || DragOverCanvasPosition.Y > 400)
+                    if (
+                        DragOverCanvasPosition.X < 0
+                        || DragOverCanvasPosition.X > 400
+                        || DragOverCanvasPosition.Y < 0
+                        || DragOverCanvasPosition.Y > 400
+                        )
                     {
                         Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
                         Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
@@ -238,85 +241,61 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     }
                     else
                     {
-                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft, currentlyDraggedChessPieceOriginalCanvasTop);
+                        Point oldPoint = new Point(
+                            currentlyDraggedChessPieceOriginalCanvasLeft,
+                            currentlyDraggedChessPieceOriginalCanvasTop
+                            );
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
                         Coords newCoords = Coords.CanvasPositionToCoords(DragOverCanvasPosition);
 
                         if (newCoords.X >= 1 && newCoords.X <= 8 && newCoords.Y >= 1 && newCoords.Y <= 8
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
                         {
+                            MoveValidationStruct moveValidationStruct = MoveValidationGameLogic.ValidateCurrentMove(
+                                TileDictReadOnly, oldCoords, newCoords
+                                );
 
-                            bool isValidMove = MoveValidationGameLogic.ValidateCurrentMove(TileDictReadOnly, oldCoords, newCoords);
-
-                            if (isValidMove)
+                            if (moveValidationStruct.IsValid)
                             {
+                                // reset the currently dragged image's position:
                                 Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
                                 Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
-                                //Console.WriteLine("Old Coords before: " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
-                                //Console.WriteLine("New Coords before: " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
 
-                                // store a list of threatening tiles:
-                                //tileDict[newCoords.String].ThreatenedByTileList = ThreatDetectionGameLogic.GetThreateningTilesList(tileDict, newCoords);
-
-                                //Console.WriteLine("Old Coords after : " + "Is occupied? " + tileDict[oldCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + oldCoordsString.ToString() + "\t| Color = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[oldCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
-                                //Console.WriteLine("New Coords after : " + "Is occupied? " + tileDict[newCoordsString.ToString()].IsOccupied.ToString() + "\t| Coords: " + newCoordsString.ToString() + "\t| Color = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceColor.ToString() + "\t| Type = " + tileDict[newCoordsString.ToString()].ChessPiece.ChessPieceType.ToString());
-                                //Console.WriteLine("MoveCount: " + tileDict[newCoordsString.ToString()].ChessPiece.MoveCount);
-                                //Console.WriteLine();
-
-                                // has pawn moved 2 tiles?
-                                if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn
-                                    && Math.Abs(newCoords.Y - oldCoords.Y) == 2)
+                                // can an opponent's pawn be captured en passant?
+                                if (moveValidationStruct.CanCaptureEnPassant)
                                 {
-                                    coordsPawnMovedTwoTiles = newCoords;
-                                    tileDict[oldCoords.String].ChessPiece.CanBeCapturedEnPassant = true;
+                                    tileDict[tileDict.CoordsPawnMovedTwoTiles.String].ChessPiece = new ChessPiece();
+                                    tileDict[tileDict.CoordsPawnMovedTwoTiles.String].IsOccupied = false;
+                                    tileDict.CoordsPawnMovedTwoTiles = null;
                                 }
-                                else if (coordsPawnMovedTwoTiles != null)
+
+                                // has a pawn moved two tiles at once? Store its coords for the next turn...
+                                if (moveValidationStruct.MovedTwoTiles)
                                 {
-                                    tileDict[coordsPawnMovedTwoTiles.String].ChessPiece.CanBeCapturedEnPassant = false;
-                                    coordsPawnMovedTwoTiles = null;
+                                    tileDict.CoordsPawnMovedTwoTiles = moveValidationStruct.Coords[0];
+                                }
+                                else
+                                {
+                                    tileDict.CoordsPawnMovedTwoTiles = null;
                                 }
 
                                 // get a queen if your pawn is on opposite of the field:
                                 if (SwapPawnGameLogic.CanSwap(tileDict, oldCoords, newCoords))
                                 {
-                                    tileDict[newCoords.String].ChessPiece = new ChessPiece(tileDict[oldCoords.String].ChessPiece.ChessPieceColor, ChessPieceType.Queen, isRotated);
+                                    tileDict[newCoords.String].ChessPiece = new ChessPiece(
+                                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor, ChessPieceType.Queen, isRotated
+                                        );
                                     tileDict[oldCoords.String].ChessPiece = new ChessPiece();
+                                    tileDict[newCoords.String].IsOccupied = true;
+                                    tileDict[oldCoords.String].IsOccupied = false;
                                 }
+
                                 // check if a king tries to castle:
-                                else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.King
-                                    && Math.Abs(newCoords.X - oldCoords.X) > 1 && newCoords.Y == oldCoords.Y)
+                                else if (moveValidationStruct.CanCastle)
                                 {
-                                    Coords rookOldCoords = null;
-                                    Coords rookNewCoords = null;
-
-                                    if (oldCoords.Y == 1)
-                                    {
-                                        if (newCoords.X == 3)
-                                        {
-                                            rookOldCoords = new Coords(Columns.A, 1);
-                                            rookNewCoords = new Coords(Columns.D, 1);
-                                        }
-                                        else if (newCoords.X == 7)
-                                        {
-                                            rookOldCoords = new Coords(Columns.H, 1);
-                                            rookNewCoords = new Coords(Columns.F, 1);
-                                        }
-                                    }
-                                    else if (oldCoords.Y == 8)
-                                    {
-                                        if (newCoords.X == 3)
-                                        {
-                                            rookOldCoords = new Coords(Columns.A, 8);
-                                            rookNewCoords = new Coords(Columns.D, 8);
-                                        }
-                                        else if (newCoords.X == 7)
-                                        {
-                                            rookOldCoords = new Coords(Columns.H, 8);
-                                            rookNewCoords = new Coords(Columns.F, 8);
-                                        }
-                                    }
-
                                     tileDict.MoveChessPiece(oldCoords, newCoords);
+                                    Coords rookOldCoords = moveValidationStruct.Coords[0];
+                                    Coords rookNewCoords = moveValidationStruct.Coords[1];
                                     tileDict.MoveChessPiece(rookOldCoords, rookNewCoords);
                                 }
                                 else
@@ -325,6 +304,22 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 }
 
                                 OnPropertyChangedByPropertyName("TileDict");
+
+                                // Debug: Print occupation state of all tiles:
+                                for (int i = 8; i > 0; i--)
+                                {
+                                    for (int j = 1; j < 9; j++)
+                                    {
+                                        Coords c = new Coords(j, i);
+                                        char oc = tileDict[c.String].IsOccupied ? 'O' : ' ';
+                                        System.Diagnostics.Debug.Write(c.String + ":" + oc + " ");
+                                        if (j == 8)
+                                        {
+                                            System.Diagnostics.Debug.WriteLine("");
+                                        }
+                                    }
+                                }
+                                System.Diagnostics.Debug.WriteLine("");
                             }
                             else
                             {
@@ -346,7 +341,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 e.Handled = true;
             }
         }
-        internal void ChessPieceMouseleftDownAction(object o)
+        private void ChessPieceMouseleftDownAction(object o)
         {
             if (IsInputAllowed())
             {
@@ -356,14 +351,18 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                 currentlyDraggedChessPieceOriginalCanvasTop = -1000;
                 currentlyDraggedChessPieceImage = param as Image;
-                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
+                if (! ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
                 {
                     chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
                     if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
                     {
-                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString());
-                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString());
+                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(
+                            currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString()
+                            );
+                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(
+                            currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString()
+                            );
                     }
                     currentlyDraggedChessPieceImage.CaptureMouse();
                 }
@@ -371,34 +370,25 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 e.Handled = true;
             }
         }
-        internal void SideMenuNewGameAction()
+        private void SideMenuNewGameAction()
         {
             PropertiesDict["SideMenuMainMenuVisibility"] = "Hidden";
             PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        internal void SideMenuNewGameModeLocalAction()
+        private void SideMenuNewGameModeLocalAction()
         {
             PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
             PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Visible";
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        internal void SideMenuNewGameModeEmailAction()
-        {
-            PropertiesDict["SideMenuVisibility"] = "Hidden";
-            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            PropertiesDict["OverlayNewEmailGameErrorLabelVisibility"] = "Hidden";
-            PropertiesDict["OverlayNewEmailGameVisibility"] = "Visible";
-            OnPropertyChangedByPropertyName("PropertiesDict");
-        }
-        internal void SideMenuNewGameLocalColorGoBackAction()
+        private void SideMenuNewGameLocalColorGoBackAction()
         {
             PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
             PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        internal void SideMenuNewGameLocalAsWhiteAction()
+        private void SideMenuNewGameLocalAsWhiteAction()
         {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
@@ -410,7 +400,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             StartGame(false);
         }
-        internal void SideMenuNewGameLocalAsBlackAction()
+        private void SideMenuNewGameLocalAsBlackAction()
         {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
@@ -422,45 +412,43 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             StartGame(true);
         }
-        internal void SideMenuNewGameModeGoBackAction()
+        private void SideMenuNewGameModeGoBackAction()
         {
             PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
             PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        internal void SideMenuSettingsAction()
-        {
-            AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-            PropertiesDict["SideMenuVisibility"] = "Hidden";
-            PropertiesDict["OverlaySettingsVisibility"] = "Visible";
+        //private void SideMenuSettingsAction()
+        //{
+        //    AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
+        //    PropertiesDict["SideMenuVisibility"] = "Hidden";
+        //    PropertiesDict["OverlaySettingsVisibility"] = "Visible";
 
-            OnPropertyChangedByPropertyName("PropertiesDict");
-        }
-        internal void SideMenuQuitProgramAction()
+        //    OnPropertyChangedByPropertyName("PropertiesDict");
+        //}
+        //private void OverlaySettingsSaveAction()
+        //{
+        //}
+        //private void OverlaySettingsCancelAction()
+        //{
+        //    PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
+        //}
+        private void SideMenuQuitProgramAction()
         {
             Application.Current.Shutdown();
-        }
-        internal void OverlaySettingsSaveAction()
-        {
-        }
-        internal void OverlaySettingsCancelAction()
-        {
-            PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
         }
         #endregion CommandActions
 
         #region Methods
-        internal void StartGame(bool doRotate)
+        private void CreateNotation()
         {
-            isRotated = doRotate;
-
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            horizontalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
-            verticalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
+            horizontalNotationList = Enumerable.Repeat("0", 8).ToList();
+            verticalNotationList = Enumerable.Repeat("0", 8).ToList();
 
-            if (doRotate)
+            if (isRotated)
             {
                 propertiesDict["ChessCanvasRotationAngle"] = "180";
                 propertiesDict["ChessCanvasRotationCenterX"] = "200";
@@ -473,7 +461,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 propertiesDict["ChessCanvasRotationCenterY"] = " -200";
             }
 
-            if (doRotate)
+            if (isRotated)
             {
                 for (int i = 0; i < 8; i++)
                 {
@@ -522,11 +510,20 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 }
             }
 
+            OnPropertyChangedByPropertyName("HorizontalNotationList");
+            OnPropertyChangedByPropertyName("VerticalNotationList");
+        }
+        private void StartGame(bool doRotate)
+        {
+            isRotated = doRotate;
             tileDict = new TileDictionary();
+
+            CreateNotation();
 
             for (int col = 1; col < 9; col++)
             {
                 tileDict[Coords.IntsToCoordsString(col, 2)].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Pawn, doRotate);
+                tileDict[Coords.IntsToCoordsString(col, 2)].IsOccupied = true;
             }
             tileDict["A1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
             tileDict["B1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Knight, doRotate);
@@ -537,9 +534,19 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["G1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Knight, doRotate);
             tileDict["H1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
 
+            tileDict["A1"].IsOccupied = true;
+            tileDict["B1"].IsOccupied = true;
+            tileDict["C1"].IsOccupied = true;
+            tileDict["D1"].IsOccupied = true;
+            tileDict["E1"].IsOccupied = true;
+            tileDict["F1"].IsOccupied = true;
+            tileDict["G1"].IsOccupied = true;
+            tileDict["H1"].IsOccupied = true;
+
             for (int col = 1; col < 9; col++)
             {
                 tileDict[Coords.IntsToCoordsString(col, 7)].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
+                tileDict[Coords.IntsToCoordsString(col, 7)].IsOccupied = true;
             }
 
             tileDict["A8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
@@ -551,84 +558,24 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["G8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
             tileDict["H8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
 
+            tileDict["A8"].IsOccupied = true;
+            tileDict["B8"].IsOccupied = true;
+            tileDict["C8"].IsOccupied = true;
+            tileDict["D8"].IsOccupied = true;
+            tileDict["E8"].IsOccupied = true;
+            tileDict["F8"].IsOccupied = true;
+            tileDict["G8"].IsOccupied = true;
+            tileDict["H8"].IsOccupied = true;
+
             OnPropertyChangedByPropertyName("PropertiesDict");
             OnPropertyChangedByPropertyName("TileDict");
-            OnPropertyChangedByPropertyName("HorizontalNotationList");
-            OnPropertyChangedByPropertyName("VerticalNotationList");
         }
-        internal void StartGameTestCastling(bool doRotate)
+        private void StartGameTestCastling(bool doRotate)
         {
             isRotated = doRotate;
-
-            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-
-            horizontalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
-            verticalNotationList = Enumerable.Repeat<string>("0", 8).ToList<string>();
-
-            if (doRotate)
-            {
-                propertiesDict["ChessCanvasRotationAngle"] = "180";
-                propertiesDict["ChessCanvasRotationCenterX"] = "200";
-                propertiesDict["ChessCanvasRotationCenterY"] = "200";
-            }
-            else
-            {
-                propertiesDict["ChessCanvasRotationAngle"] = "0";
-                propertiesDict["ChessCanvasRotationCenterX"] = "0";
-                propertiesDict["ChessCanvasRotationCenterY"] = " -200";
-            }
-
-            if (doRotate)
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    if (i == 0) horizontalNotationList[i] = "H";
-                    else if (i == 1) horizontalNotationList[i] = "G";
-                    else if (i == 2) horizontalNotationList[i] = "F";
-                    else if (i == 3) horizontalNotationList[i] = "E";
-                    else if (i == 4) horizontalNotationList[i] = "D";
-                    else if (i == 5) horizontalNotationList[i] = "C";
-                    else if (i == 6) horizontalNotationList[i] = "B";
-                    else if (i == 7) horizontalNotationList[i] = "A";
-
-                }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    verticalNotationList[i] = (i + 1).ToString();
-                }
-            }
-
-            else
-            {
-                for (int i = 0; i < 8; i++)
-                {
-                    if (i == 0) horizontalNotationList[i] = "A";
-                    else if (i == 1) horizontalNotationList[i] = "B";
-                    else if (i == 2) horizontalNotationList[i] = "C";
-                    else if (i == 3) horizontalNotationList[i] = "D";
-                    else if (i == 4) horizontalNotationList[i] = "E";
-                    else if (i == 5) horizontalNotationList[i] = "F";
-                    else if (i == 6) horizontalNotationList[i] = "G";
-                    else if (i == 7) horizontalNotationList[i] = "H";
-
-                }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    if (i == 0) verticalNotationList[i] = "8";
-                    else if (i == 1) verticalNotationList[i] = "7";
-                    else if (i == 2) verticalNotationList[i] = "6";
-                    else if (i == 3) verticalNotationList[i] = "5";
-                    else if (i == 4) verticalNotationList[i] = "4";
-                    else if (i == 5) verticalNotationList[i] = "3";
-                    else if (i == 6) verticalNotationList[i] = "2";
-                    else if (i == 7) verticalNotationList[i] = "1";
-                }
-            }
-
             tileDict = new TileDictionary();
+
+            CreateNotation();
 
             tileDict["B6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
             tileDict["C6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
@@ -645,22 +592,35 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["E8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
             tileDict["H8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
 
+            tileDict["B6"]. IsOccupied = true;
+            tileDict["C6"]. IsOccupied = true;
+            tileDict["D6"]. IsOccupied = true;
+            tileDict["E6"]. IsOccupied = true;
+            tileDict["F6"]. IsOccupied = true;
+            tileDict["G6"]. IsOccupied = true;
+
+            tileDict["A1"]. IsOccupied = true;
+            tileDict["E1"]. IsOccupied = true;
+            tileDict["H1"]. IsOccupied = true;
+
+            tileDict["A8"]. IsOccupied = true;
+            tileDict["E8"]. IsOccupied = true;
+            tileDict["H8"].IsOccupied = true;
+
             OnPropertyChangedByPropertyName("PropertiesDict");
             OnPropertyChangedByPropertyName("TileDict");
-            OnPropertyChangedByPropertyName("HorizontalNotationList");
-            OnPropertyChangedByPropertyName("VerticalNotationList");
         }
-        internal bool IsInputAllowed()
+        private bool IsInputAllowed()
         {
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
             if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
             return true;
         }
-        internal void OnPropertyChangedByPropertyName(string name)
+        private void OnPropertyChangedByPropertyName(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        private void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
