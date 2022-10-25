@@ -31,17 +31,12 @@ namespace ChessDotNET.GameLogic
             // validate pawn's move:
             if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
-                return ValidatePawn(
+                moveValidationData = ValidatePawn(
                     tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             // validate bishop's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
             {
-                if (oldCoords.X == newCoords.X || oldCoords.Y == newCoords.Y)
-                {
-                    moveValidationData.IsValid = false;
-                    return moveValidationData;
-                }
                 moveValidationData.IsValid = ValidateBishopAndQueenDiagonal(
                     tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
@@ -235,6 +230,10 @@ namespace ChessDotNET.GameLogic
             ChessPieceColor oldCoordsColor,
             ChessPieceColor newCoordsColor)
         {
+            if (oldCoords.X == newCoords.X || oldCoords.Y == newCoords.Y)
+            {                
+                return false;
+            }
             // don't allow to capture same color:
             if (tileDict[newCoords.String].IsOccupied && oldCoordsColor == newCoordsColor) return false;
 
