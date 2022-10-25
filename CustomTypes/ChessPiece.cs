@@ -40,7 +40,6 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;
             HasMoved = false;
-            CanBeCapturedEnPassant = false;
             MoveCount = 0;
         }
 
@@ -50,7 +49,6 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = ChessPieceColor.Empty;
             ChessPieceType = ChessPieceType.Empty;
             HasMoved = false;
-            CanBeCapturedEnPassant = false;
             MoveCount = 0;
         }
 
