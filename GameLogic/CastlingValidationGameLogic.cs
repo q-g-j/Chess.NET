@@ -16,7 +16,7 @@ namespace ChessDotNET.GameLogic
             // 1. king must not have moved ### done
             // 2. rook must not have moved ### done
             // 3. there must not be any pieces between both ### done
-            // 4. the king's old and new position and the crossed tile must not be threatened ### done
+            // 4. the king's old and new position and the tile that the king is passing may not be threatened ### done
 
             MoveValidationData moveValidationData = new MoveValidationData
             {
