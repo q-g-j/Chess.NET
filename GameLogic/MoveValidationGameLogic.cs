@@ -69,6 +69,7 @@ namespace ChessDotNET.GameLogic
             {
                 moveValidationData.IsValid = true;
             }
+
             return moveValidationData;
         }
         internal static MoveValidationData ValidatePawn(
@@ -78,6 +79,7 @@ namespace ChessDotNET.GameLogic
             ChessPieceColor oldCoordsColor,
             ChessPieceColor newCoordsColor)
         {
+            // initialize return type:
             MoveValidationData moveValidationData = new MoveValidationData
             {
                 IsValid = false
@@ -100,6 +102,7 @@ namespace ChessDotNET.GameLogic
             // dont't allow to capture a piece of the same color:
             if (oldCoordsColor == newCoordsColor) return moveValidationData;
 
+            // validate white pawns:
             if (oldCoordsColor == ChessPieceColor.White)
             {
                 // don't allow to move backwards:
@@ -132,6 +135,7 @@ namespace ChessDotNET.GameLogic
                 // don't allow to move other than vertically:
                 else if (oldCoords.X != newCoords.X) return moveValidationData;
             }
+            // validate black pawns:
             else
             {
                 // don't allow to move backwards:

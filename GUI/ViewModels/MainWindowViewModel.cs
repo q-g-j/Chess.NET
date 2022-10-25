@@ -22,9 +22,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #region Constructors
         public MainWindowViewModel()
         {
-            //appSettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chess.NET");
-            //appSettings = new AppSettings(appSettingsFolder);
-
             WindowMouseMoveCommand = new RelayCommand<object>(o => WindowMouseMoveAction(o));
             WindowMouseLeftDownCommand = new RelayCommand<object>(o => WindowMouseLeftDownAction(o));
             WindowMouseLeftUpCommand = new RelayCommand<object>(o => WindowMouseLeftUpAction(o, tileDict));
@@ -37,11 +34,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
             SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
             SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
-            //SideMenuSettingsCommand = new RelayCommand(SideMenuSettingsAction);
             SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
+            SwapPawnSelectChessPieceCommand = new RelayCommand<object>(SwapPawnSelectChessPieceAction);
 
-            //OverlaySettingsSaveCommand = new RelayCommand(OverlaySettingsSaveAction);
-            //OverlaySettingsCancelCommand = new RelayCommand(OverlaySettingsCancelAction);
+            swapPawnList = new List<ImageSource>()
+            {
+                ChessPieceImages.Empty,
+                ChessPieceImages.Empty,
+                ChessPieceImages.Empty,
+                ChessPieceImages.Empty
+            };
 
             propertiesDict = new Dictionary<string, string>()
             {
@@ -50,19 +52,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ["SideMenuNewGameModeVisibility"] = "Hidden",
                 ["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden",
 
-                ["OverlaySettingsVisibility"] = "Hidden",
+                ["OverlaySwapPawnVisibility"] = "Hidden",
 
                 ["ChessCanvasRotationAngle"] = "0",
                 ["ChessCanvasRotationCenterX"] = "0",
                 ["ChessCanvasRotationCenterY"] = "-200",
             };
 
-            WasSideMenuOpen = false;
-
-            //if (!Directory.Exists(appSettingsFolder))
-            //{
-            //    Directory.CreateDirectory(appSettingsFolder);
-            //}
+            wasSideMenuOpen = false;
 
             StartGame(false);
             //StartGameTestCastling(false);
@@ -70,21 +67,21 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #endregion Constuctors
 
         #region Fields
-        //private readonly AppSettings appSettings;
-        //private readonly string appSettingsFolder;
         private bool isRotated;
         private Canvas chessCanvas;
         private Image currentlyDraggedChessPieceImage;
         private int currentlyDraggedChessPieceOriginalCanvasLeft;
         private int currentlyDraggedChessPieceOriginalCanvasTop;
-        private Point DragOverCanvasPosition;
-        private Point DragOverChessPiecePosition;
-        private bool IsMouseMoving;
-        private bool WasSideMenuOpen;
+        private Point dragOverCanvasPosition;
+        private Point dragOverChessPiecePosition;
+        private bool isMouseMoving;
+        private bool wasSideMenuOpen;
+        private Coords swapPawnCoords;
         #endregion Fields
 
         #region Property-Values
         private TileDictionary tileDict;
+        private List<ImageSource> swapPawnList;
         private Dictionary<string, string> propertiesDict;
         private List<string> horizontalNotationList;
         private List<string> verticalNotationList;
@@ -95,6 +92,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             get => tileDict;
             set { tileDict = value; OnPropertyChanged(); }
+        }
+        public List<ImageSource> SwapPawnList
+        {
+            get => swapPawnList;
+            set { swapPawnList = value; OnPropertyChanged(); }
         }
         internal TileDictionary TileDictReadOnly
         {
@@ -121,34 +123,25 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         public RelayCommand OpenSideMenuCommand { get; }
         public RelayCommand SideMenuNewGameCommand { get; }
         public RelayCommand SideMenuNewGameModeLocalCommand { get; }
-        public RelayCommand SideMenuNewGameModeEmailCommand { get; }
         public RelayCommand SideMenuNewGameModeGoBackCommand { get; }
         public RelayCommand SideMenuNewGameLocalAsWhiteCommand { get; }
         public RelayCommand SideMenuNewGameLocalAsBlackCommand { get; }
         public RelayCommand SideMenuNewGameLocalColorGoBackCommand { get; }
-        public RelayCommand SideMenuSettingsCommand { get; }
-        public RelayCommand<object> OverlaySettingsPasswordBoxCommand { get; }
-        public RelayCommand OverlaySettingsSaveCommand { get; }
-        public RelayCommand OverlaySettingsCancelCommand { get; }
-        public RelayCommand OverlayNewEmailGameStartCommand { get; }
-        public RelayCommand OverlayNewEmailGameCancelCommand { get; }
-        public RelayCommand OverlayInvitationAcceptCommand { get; }
-        public RelayCommand OverlayInvitationAcceptedCommand { get; }
-        public RelayCommand OverlayInvitationRejectCommand { get; }
         public RelayCommand SideMenuQuitProgramCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
         public RelayCommand<object> WindowMouseLeftUpCommand { get; }
         public RelayCommand<object> ChessPieceMouseLeftDownCommand { get; }
+        public RelayCommand<object> SwapPawnSelectChessPieceCommand { get; }
         #endregion Commands
 
         #region CommandActions
         private void OpenSideMenuAction()
         {
-            if (!WasSideMenuOpen)
+            if (!wasSideMenuOpen)
             {
                 if (PropertiesDict["SideMenuVisibility"] != "Visible"
-                    && PropertiesDict["OverlaySettingsVisibility"] == "Hidden")
+                    && PropertiesDict["OverlaySwapPawnVisibility"] == "Hidden")
                 {
                     PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
                     PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
@@ -159,7 +152,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             }
             else
             {
-                WasSideMenuOpen = false;
+                wasSideMenuOpen = false;
             }
 
             OnPropertyChangedByPropertyName("PropertiesDict");
@@ -173,19 +166,19 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
 
-                    if (!WasSideMenuOpen)
+                    if (!wasSideMenuOpen)
                     {
-                        if (!IsMouseMoving)
+                        if (!isMouseMoving)
                         {
-                            DragOverCanvasPosition = e.GetPosition(chessCanvas);
-                            DragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
+                            dragOverCanvasPosition = e.GetPosition(chessCanvas);
+                            dragOverChessPiecePosition = e.GetPosition(currentlyDraggedChessPieceImage);
                         }
-                        IsMouseMoving = true;
-                        DragOverCanvasPosition = e.GetPosition(chessCanvas);
+                        isMouseMoving = true;
+                        dragOverCanvasPosition = e.GetPosition(chessCanvas);
                         currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 20);
 
-                        Canvas.SetLeft(currentlyDraggedChessPieceImage, DragOverCanvasPosition.X - DragOverChessPiecePosition.X);
-                        Canvas.SetTop(currentlyDraggedChessPieceImage, DragOverCanvasPosition.Y - DragOverChessPiecePosition.Y);
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
                     }
 
                     OnPropertyChangedByPropertyName("PropertiesDict");
@@ -203,16 +196,45 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 {
                     if (PropertiesDict["SideMenuVisibility"] == "Visible")
                     {
-                        WasSideMenuOpen = true;
+                        wasSideMenuOpen = true;
                         PropertiesDict["SideMenuVisibility"] = "Hidden";
                     }
                     else
                     {
-                        WasSideMenuOpen = false;
+                        wasSideMenuOpen = false;
                     }
 
                     OnPropertyChangedByPropertyName("PropertiesDict");
                 }
+            }
+        }
+        private void ChessPieceMouseleftDownAction(object o)
+        {
+            if (IsInputAllowed())
+            {
+                object param = ((CompositeCommandParameter)o).Parameter;
+                MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
+                currentlyDraggedChessPieceImage = null;
+                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                currentlyDraggedChessPieceImage = param as Image;
+                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
+                {
+                    chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
+
+                    if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
+                    {
+                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(
+                            currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString()
+                            );
+                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(
+                            currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString()
+                            );
+                    }
+                    currentlyDraggedChessPieceImage.CaptureMouse();
+                }
+                wasSideMenuOpen = false;
+                e.Handled = true;
             }
         }
         private void WindowMouseLeftUpAction(object o, TileDictionary tileDict)
@@ -224,13 +246,13 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (currentlyDraggedChessPieceImage == null) return;
                 if (currentlyDraggedChessPieceImage.IsMouseCaptured) currentlyDraggedChessPieceImage.ReleaseMouseCapture();
 
-                if (IsMouseMoving)
+                if (isMouseMoving)
                 {
-                    IsMouseMoving = false;
-                    if (DragOverCanvasPosition.X < 0
-                        || DragOverCanvasPosition.X > 400
-                        || DragOverCanvasPosition.Y < 0
-                        || DragOverCanvasPosition.Y > 400)
+                    isMouseMoving = false;
+                    if (dragOverCanvasPosition.X < 0
+                        || dragOverCanvasPosition.X > 400
+                        || dragOverCanvasPosition.Y < 0
+                        || dragOverCanvasPosition.Y > 400)
                     {
                         Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
                         Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
@@ -242,7 +264,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft,
                             currentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
-                        Coords newCoords = Coords.CanvasPositionToCoords(DragOverCanvasPosition);
+                        Coords newCoords = Coords.CanvasPositionToCoords(dragOverCanvasPosition);
 
                         if (newCoords.X >= 1 && newCoords.X <= 8 && newCoords.Y >= 1 && newCoords.Y <= 8
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
@@ -277,12 +299,60 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 // get a queen if your pawn is on opposite of the field:
                                 if (SwapPawnGameLogic.CanSwap(tileDict, oldCoords, newCoords))
                                 {
-                                    tileDict[newCoords.String].ChessPiece = new ChessPiece(
-                                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor, ChessPieceType.Queen, isRotated
-                                        );
-                                    tileDict[oldCoords.String].ChessPiece = new ChessPiece();
-                                    tileDict[newCoords.String].IsOccupied = true;
-                                    tileDict[oldCoords.String].IsOccupied = false;
+                                    ChessPieceColor ownColor = tileDict[oldCoords.String].ChessPiece.ChessPieceColor;
+                                    tileDict.MoveChessPiece(oldCoords, newCoords);
+                                    swapPawnCoords = newCoords;
+
+                                    if (ownColor == ChessPieceColor.White)
+                                    {
+                                        if (isRotated)
+                                        {
+                                            SwapPawnList = new List<ImageSource>()
+                                            {
+                                                ChessPieceImages.WhiteBishopRotated,
+                                                ChessPieceImages.WhiteKnightRotated,
+                                                ChessPieceImages.WhiteRookRotated,
+                                                ChessPieceImages.WhiteQueenRotated
+                                            };
+                                        }
+                                        else
+                                        {
+                                            SwapPawnList = new List<ImageSource>()
+                                            {
+                                                ChessPieceImages.WhiteBishop,
+                                                ChessPieceImages.WhiteKnight,
+                                                ChessPieceImages.WhiteRook,
+                                                ChessPieceImages.WhiteQueen
+                                            };
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (isRotated)
+                                        {
+                                            SwapPawnList = new List<ImageSource>()
+                                            {
+                                                ChessPieceImages.BlackBishopRotated,
+                                                ChessPieceImages.BlackKnightRotated,
+                                                ChessPieceImages.BlackRookRotated,
+                                                ChessPieceImages.BlackQueenRotated
+                                            };
+                                        }
+                                        else
+                                        {
+                                            SwapPawnList = new List<ImageSource>()
+                                            {
+                                                ChessPieceImages.BlackBishop,
+                                                ChessPieceImages.BlackKnight,
+                                                ChessPieceImages.BlackRook,
+                                                ChessPieceImages.BlackQueen
+                                            };
+                                        }
+                                    }
+
+
+                                    PropertiesDict["OverlaySwapPawnVisibility"] = "Visible";
+                                    OnPropertyChangedByPropertyName("PropertiesDict");
                                 }
 
                                 // check if a king tries to castle:
@@ -330,35 +400,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
                 }
                 currentlyDraggedChessPieceImage = null;
-                e.Handled = true;
-            }
-        }
-        private void ChessPieceMouseleftDownAction(object o)
-        {
-            if (IsInputAllowed())
-            {
-                object param = ((CompositeCommandParameter)o).Parameter;
-                MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
-                currentlyDraggedChessPieceImage = null;
-                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-                currentlyDraggedChessPieceImage = param as Image;
-                if (! ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
-                {
-                    chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
-
-                    if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
-                    {
-                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(
-                            currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString()
-                            );
-                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(
-                            currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString()
-                            );
-                    }
-                    currentlyDraggedChessPieceImage.CaptureMouse();
-                }
-                WasSideMenuOpen = false;
                 e.Handled = true;
             }
         }
@@ -410,24 +451,32 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
             OnPropertyChangedByPropertyName("PropertiesDict");
         }
-        //private void SideMenuSettingsAction()
-        //{
-        //    AppSettingsStruct appSettingsStruct = appSettings.LoadSettings();
-        //    PropertiesDict["SideMenuVisibility"] = "Hidden";
-        //    PropertiesDict["OverlaySettingsVisibility"] = "Visible";
-
-        //    OnPropertyChangedByPropertyName("PropertiesDict");
-        //}
-        //private void OverlaySettingsSaveAction()
-        //{
-        //}
-        //private void OverlaySettingsCancelAction()
-        //{
-        //    PropertiesDict["OverlaySettingsVisibility"] = "Hidden";
-        //}
         private void SideMenuQuitProgramAction()
         {
             Application.Current.Shutdown();
+        }
+        private void SwapPawnSelectChessPieceAction(object o)
+        {
+            string chessPieceString = (string)o;
+            ChessPieceColor ownColor = tileDict[swapPawnCoords.String].ChessPiece.ChessPieceColor;
+            ChessPiece chessPiece = null;
+
+            if (chessPieceString == "Bishop")
+                chessPiece = new ChessPiece(ownColor, ChessPieceType.Bishop, isRotated);
+            else if (chessPieceString == "Knight")
+                chessPiece = new ChessPiece(ownColor, ChessPieceType.Knight, isRotated);
+            else if (chessPieceString == "Rook")
+                chessPiece = new ChessPiece(ownColor, ChessPieceType.Rook, isRotated);
+            else if (chessPieceString == "Queen")
+                chessPiece = new ChessPiece(ownColor, ChessPieceType.Queen, isRotated);
+
+            tileDict[swapPawnCoords.String].ChessPiece = chessPiece;
+            swapPawnCoords = null;
+
+            propertiesDict["OverlaySwapPawnVisibility"] = "Hidden";
+
+            OnPropertyChangedByPropertyName("TileDict");
+            OnPropertyChangedByPropertyName("PropertiesDict");
         }
         #endregion CommandActions
 
@@ -605,7 +654,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private bool IsInputAllowed()
         {
             if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
-            if (propertiesDict["OverlaySettingsVisibility"] == "Visible") return false;
+            if (propertiesDict["OverlaySwapPawnVisibility"] == "Visible") return false;
             return true;
         }
         private void OnPropertyChangedByPropertyName(string name)
