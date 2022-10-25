@@ -227,12 +227,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (IsMouseMoving)
                 {
                     IsMouseMoving = false;
-                    if (
-                        DragOverCanvasPosition.X < 0
+                    if (DragOverCanvasPosition.X < 0
                         || DragOverCanvasPosition.X > 400
                         || DragOverCanvasPosition.Y < 0
-                        || DragOverCanvasPosition.Y > 400
-                        )
+                        || DragOverCanvasPosition.Y > 400)
                     {
                         Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
                         Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
@@ -241,28 +239,26 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     }
                     else
                     {
-                        Point oldPoint = new Point(
-                            currentlyDraggedChessPieceOriginalCanvasLeft,
-                            currentlyDraggedChessPieceOriginalCanvasTop
-                            );
+                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft,
+                            currentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
                         Coords newCoords = Coords.CanvasPositionToCoords(DragOverCanvasPosition);
 
                         if (newCoords.X >= 1 && newCoords.X <= 8 && newCoords.Y >= 1 && newCoords.Y <= 8
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
                         {
-                            MoveValidationStruct moveValidationStruct = MoveValidationGameLogic.ValidateCurrentMove(
+                            MoveValidationData moveValidationData = MoveValidationGameLogic.ValidateCurrentMove(
                                 TileDictReadOnly, oldCoords, newCoords
                                 );
 
-                            if (moveValidationStruct.IsValid)
+                            if (moveValidationData.IsValid)
                             {
                                 // reset the currently dragged image's position:
                                 Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
                                 Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
 
                                 // can an opponent's pawn be captured en passant?
-                                if (moveValidationStruct.CanCaptureEnPassant)
+                                if (moveValidationData.CanCaptureEnPassant)
                                 {
                                     tileDict[tileDict.CoordsPawnMovedTwoTiles.String].ChessPiece = new ChessPiece();
                                     tileDict[tileDict.CoordsPawnMovedTwoTiles.String].IsOccupied = false;
@@ -270,9 +266,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 }
 
                                 // has a pawn moved two tiles at once? Store its coords for the next turn...
-                                if (moveValidationStruct.MovedTwoTiles)
+                                if (moveValidationData.MovedTwoTiles)
                                 {
-                                    tileDict.CoordsPawnMovedTwoTiles = moveValidationStruct.Coords[0];
+                                    tileDict.CoordsPawnMovedTwoTiles = moveValidationData.Coords[0];
                                 }
                                 else
                                 {
@@ -291,11 +287,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 }
 
                                 // check if a king tries to castle:
-                                else if (moveValidationStruct.CanCastle)
+                                else if (moveValidationData.CanCastle)
                                 {
                                     tileDict.MoveChessPiece(oldCoords, newCoords);
-                                    Coords rookOldCoords = moveValidationStruct.Coords[0];
-                                    Coords rookNewCoords = moveValidationStruct.Coords[1];
+                                    Coords rookOldCoords = moveValidationData.Coords[0];
+                                    Coords rookNewCoords = moveValidationData.Coords[1];
                                     tileDict.MoveChessPiece(rookOldCoords, rookNewCoords);
                                 }
                                 else

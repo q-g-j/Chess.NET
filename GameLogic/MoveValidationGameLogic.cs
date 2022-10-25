@@ -6,19 +6,24 @@ using static ChessDotNET.CustomTypes.Coords;
 
 namespace ChessDotNET.GameLogic
 {
-    internal struct MoveValidationStruct
+    internal class MoveValidationData
     {
-        public bool IsValid { get; set; }
-        public bool CanCastle { get; set; }
-        public bool CanCaptureEnPassant { get; set; }
-        public bool MovedTwoTiles { get; set; }
-        public List<Coords> Coords { get; set; }
+        internal bool IsValid { get; set; }
+        internal bool CanCastle { get; set; }
+        internal bool CanCaptureEnPassant { get; set; }
+        internal bool MovedTwoTiles { get; set; }
+        internal List<Coords> Coords { get; set; }
+
+        internal MoveValidationData()
+        {
+            Coords = new List<Coords>();
+        }
     }
     internal static class MoveValidationGameLogic
     {
-        internal static MoveValidationStruct ValidateCurrentMove(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
+        internal static MoveValidationData ValidateCurrentMove(TileDictionary tileDict, Coords oldCoords, Coords newCoords)
         {
-            MoveValidationStruct returnStruct = new MoveValidationStruct();
+            MoveValidationData moveValidationData = new MoveValidationData();
 
             ChessPieceColor oldCoordsColor = tileDict[oldCoords.String].ChessPiece.ChessPieceColor;
             ChessPieceColor newCoordsColor = tileDict[newCoords.String].ChessPiece.ChessPieceColor;
@@ -34,17 +39,11 @@ namespace ChessDotNET.GameLogic
             {
                 if (oldCoords.X == newCoords.X || oldCoords.Y == newCoords.Y)
                 {
-                    returnStruct.IsValid = true;
-                    return returnStruct;
+                    moveValidationData.IsValid = false;
+                    return moveValidationData;
                 }
-                if (ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor))
-                {
-                    returnStruct.IsValid = true;;
-                }
-                else
-                {
-                    returnStruct.IsValid = false;
-                }
+                moveValidationData.IsValid = ValidateBishopAndQueenDiagonal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             // validate queen's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Queen)
@@ -52,14 +51,7 @@ namespace ChessDotNET.GameLogic
                 bool isValidStraight = ValidateRookAndQueenHorizontal(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
                 bool isValidDiagonal = ValidateBishopAndQueenDiagonal(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
 
-                if (isValidStraight || isValidDiagonal)
-                {
-                    returnStruct.IsValid = true;
-                }
-                else
-                {
-                    returnStruct.IsValid = false;
-                }
+                moveValidationData.IsValid = isValidStraight || isValidDiagonal;
             }
             // validate king's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.King)
@@ -70,43 +62,29 @@ namespace ChessDotNET.GameLogic
             // validate rook's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Rook)
             {
-                if (ValidateRookAndQueenHorizontal(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor))
-                {
-                    returnStruct.IsValid = true;
-                }
-                else
-                {
-                    returnStruct.IsValid = false;
-                }
+                moveValidationData.IsValid = ValidateRookAndQueenHorizontal(
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             // validate knight's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Knight)
             {
-                if (ValidateKnight(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor))
-                {
-                    returnStruct.IsValid = true;
-                }
-                else
-                {
-                    returnStruct.IsValid = false;
-                }
+                moveValidationData.IsValid = ValidateKnight(tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
             }
             else
             {
-                returnStruct.IsValid = true;
+                moveValidationData.IsValid = true;
             }
-            return returnStruct;
+            return moveValidationData;
         }
-        internal static MoveValidationStruct ValidatePawn(
+        internal static MoveValidationData ValidatePawn(
             TileDictionary tileDict,
             Coords oldCoords,
             Coords newCoords,
             ChessPieceColor oldCoordsColor,
             ChessPieceColor newCoordsColor)
         {
-            MoveValidationStruct returnStruct = new MoveValidationStruct
+            MoveValidationData moveValidationData = new MoveValidationData
             {
-                Coords = new List<Coords>(),
                 IsValid = false
             };
 
@@ -116,88 +94,88 @@ namespace ChessDotNET.GameLogic
                 // validate if it can be captured:
                 if (EnPassantValidationGameLogic.CanCaptureEnPassant(tileDict, oldCoords, newCoords))
                 {
-                    returnStruct.IsValid = true;
-                    returnStruct.CanCaptureEnPassant = true;
-                    return returnStruct;
+                    moveValidationData.IsValid = true;
+                    moveValidationData.CanCaptureEnPassant = true;
+                    return moveValidationData;
                 }
             }
 
             // don't allow to move along the same row:
-            if (oldCoords.Y == newCoords.Y) return returnStruct;
+            if (oldCoords.Y == newCoords.Y) return moveValidationData;
             // dont't allow to capture a piece of the same color:
-            if (oldCoordsColor == newCoordsColor) return returnStruct;
+            if (oldCoordsColor == newCoordsColor) return moveValidationData;
 
             if (oldCoordsColor == ChessPieceColor.White)
             {
                 // don't allow to move backwards:
-                if (oldCoords.Y > newCoords.Y) return returnStruct;
+                if (oldCoords.Y > newCoords.Y) return moveValidationData;
                 // if it's the pawn's first move:
                 if (oldCoords.Y == 2)
                 {
                     if (newCoords.Y - 2 == oldCoords.Y)
                     {
-                        returnStruct.MovedTwoTiles = true;
-                        returnStruct.Coords.Add(newCoords);
+                        moveValidationData.MovedTwoTiles = true;
+                        moveValidationData.Coords.Add(newCoords);
                         tileDict.CoordsPawnMovedTwoTiles = null;
                     }
 
                     // don't allow to move forward more than 2 tiles, 
-                    if (newCoords.X == oldCoords.X && newCoords.Y - 2 > oldCoords.Y) return returnStruct;
+                    if (newCoords.X == oldCoords.X && newCoords.Y - 2 > oldCoords.Y) return moveValidationData;
                     // don't allow to jump over another piece:
                     if (
                         newCoords.Y == oldCoords.Y + 2
                         && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y + 1)].IsOccupied
-                        ) return returnStruct;
+                        ) return moveValidationData;
                 }
                 // don't allow to move forward more than 1 tile in any following move:
-                if (oldCoords.Y != 2 && newCoords.X == oldCoords.X && newCoords.Y - 1 > oldCoords.Y) return returnStruct;
+                if (oldCoords.Y != 2 && newCoords.X == oldCoords.X && newCoords.Y - 1 > oldCoords.Y) return moveValidationData;
                 // only allow to capture an ememie's piece, if it's 1 diagonal tile away:
                 else if (newCoordsColor != ChessPieceColor.Empty)
                 {
-                    if (newCoords.Y > oldCoords.Y + 1) return returnStruct;
-                    if (oldCoords.X == newCoords.X) return returnStruct;
-                    else if (newCoords.X < oldCoords.X - 1 || newCoords.X > oldCoords.X + 1) return returnStruct;
+                    if (newCoords.Y > oldCoords.Y + 1) return moveValidationData;
+                    if (oldCoords.X == newCoords.X) return moveValidationData;
+                    else if (newCoords.X < oldCoords.X - 1 || newCoords.X > oldCoords.X + 1) return moveValidationData;
                 }
                 // don't allow to move other than vertically:
-                else if (oldCoords.X != newCoords.X) return returnStruct;
+                else if (oldCoords.X != newCoords.X) return moveValidationData;
             }
             else
             {
                 // don't allow to move backwards:
-                if (oldCoords.Y < newCoords.Y) return returnStruct;
+                if (oldCoords.Y < newCoords.Y) return moveValidationData;
                 // if it's the pawn's first move:
                 if (oldCoords.Y == 7)
                 {
                     if (newCoords.Y + 2 == oldCoords.Y)
                     {
-                        returnStruct.MovedTwoTiles = true;
-                        returnStruct.Coords.Add(newCoords);
+                        moveValidationData.MovedTwoTiles = true;
+                        moveValidationData.Coords.Add(newCoords);
                         tileDict.CoordsPawnMovedTwoTiles = null;
                     }
 
                     // don't allow to move forward more than 2 tiles, 
-                    if (newCoords.X == oldCoords.X && newCoords.Y + 2 < oldCoords.Y) return returnStruct;
+                    if (newCoords.X == oldCoords.X && newCoords.Y + 2 < oldCoords.Y) return moveValidationData;
                     // don't allow to jump over another piece:
                     if (
                         newCoords.Y == oldCoords.Y - 2
                         && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y - 1)].IsOccupied
-                        ) return returnStruct;
+                        ) return moveValidationData;
                 }
                 // don't allow to move forward more than 1 tile in any following move:
-                if (oldCoords.Y != 7 && newCoords.X == oldCoords.X && newCoords.Y + 1 < oldCoords.Y) return returnStruct;
+                if (oldCoords.Y != 7 && newCoords.X == oldCoords.X && newCoords.Y + 1 < oldCoords.Y) return moveValidationData;
                 // only allow to capture an ememie's piece, if it's 1 diagonal tile away:
                 else if (newCoordsColor != ChessPieceColor.Empty)
                 {
-                    if (newCoords.Y < oldCoords.Y - 1) return returnStruct;
-                    if (oldCoords.X == newCoords.X) return returnStruct;
-                    else if (newCoords.X < oldCoords.X - 1 || newCoords.X > oldCoords.X + 1) return returnStruct;
+                    if (newCoords.Y < oldCoords.Y - 1) return moveValidationData;
+                    if (oldCoords.X == newCoords.X) return moveValidationData;
+                    else if (newCoords.X < oldCoords.X - 1 || newCoords.X > oldCoords.X + 1) return moveValidationData;
                 }
                 // don't allow to move other than vertically:
-                else if (oldCoords.X != newCoords.X) return returnStruct;
+                else if (oldCoords.X != newCoords.X) return moveValidationData;
             }
 
-            returnStruct.IsValid = true;
-            return returnStruct;
+            moveValidationData.IsValid = true;
+            return moveValidationData;
         }
         internal static bool ValidateRookAndQueenHorizontal(
             TileDictionary tileDict,
@@ -327,14 +305,14 @@ namespace ChessDotNET.GameLogic
 
             return true;
         }
-        internal static MoveValidationStruct ValidateKing(
+        internal static MoveValidationData ValidateKing(
             TileDictionary tileDict,
             Coords oldCoords,
             Coords newCoords,
             ChessPieceColor oldCoordsColor,
             ChessPieceColor newCoordsColor)
         {
-            MoveValidationStruct returnStruct = new MoveValidationStruct
+            MoveValidationData returnStruct = new MoveValidationData
             {
                 IsValid = false
             };
