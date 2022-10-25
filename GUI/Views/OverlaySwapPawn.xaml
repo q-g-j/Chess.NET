@@ -29,42 +29,40 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[0]}" Panel.ZIndex="10">
-                        <behaviors:Interaction.Triggers>
-                            <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Bishop"/>
-                            </behaviors:EventTrigger>
-                        </behaviors:Interaction.Triggers>
-                    </Image>
-                    <Image Grid.Column="1" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[1]}" Panel.ZIndex="10">
-                        <behaviors:Interaction.Triggers>
-                            <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Knight"/>
-                            </behaviors:EventTrigger>
-                        </behaviors:Interaction.Triggers>
-                    </Image>
-                    <Image Grid.Column="2" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[2]}" Panel.ZIndex="10">
-                        <behaviors:Interaction.Triggers>
-                            <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Rook"/>
-                            </behaviors:EventTrigger>
-                        </behaviors:Interaction.Triggers>
-                    </Image>
-                    <Image Grid.Column="3" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[3]}" Panel.ZIndex="10">
-                        <behaviors:Interaction.Triggers>
-                            <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Queen"/>
-                            </behaviors:EventTrigger>
-                        </behaviors:Interaction.Triggers>
-                    </Image>
-                </Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image Grid.Column="0" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[0]}" Panel.ZIndex="10">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Bishop"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Image>
+                <Image Grid.Column="1" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[1]}" Panel.ZIndex="10">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Knight"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Image>
+                <Image Grid.Column="2" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[2]}" Panel.ZIndex="10">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Rook"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Image>
+                <Image Grid.Column="3" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding SwapPawnList[3]}" Panel.ZIndex="10">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <behaviors:InvokeCommandAction Command="{Binding SwapPawnSelectChessPieceCommand}" CommandParameter="Queen"/>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Image>
             </Grid>
         </Border>
     </Grid>

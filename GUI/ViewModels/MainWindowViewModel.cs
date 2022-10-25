@@ -296,7 +296,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     tileDict.CoordsPawnMovedTwoTiles = null;
                                 }
 
-                                // get a queen if your pawn is on opposite of the field:
+                                // swap your pawn if it is on the opposite of the field:
                                 if (SwapPawnGameLogic.CanSwap(tileDict, oldCoords, newCoords))
                                 {
                                     ChessPieceColor ownColor = tileDict[oldCoords.String].ChessPiece.ChessPieceColor;
