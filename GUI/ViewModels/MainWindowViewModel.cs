@@ -305,51 +305,24 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                                     if (ownColor == ChessPieceColor.White)
                                     {
-                                        if (isRotated)
+                                        SwapPawnList = new List<ImageSource>()
                                         {
-                                            SwapPawnList = new List<ImageSource>()
-                                            {
-                                                ChessPieceImages.WhiteBishopRotated,
-                                                ChessPieceImages.WhiteKnightRotated,
-                                                ChessPieceImages.WhiteRookRotated,
-                                                ChessPieceImages.WhiteQueenRotated
-                                            };
-                                        }
-                                        else
-                                        {
-                                            SwapPawnList = new List<ImageSource>()
-                                            {
-                                                ChessPieceImages.WhiteBishop,
-                                                ChessPieceImages.WhiteKnight,
-                                                ChessPieceImages.WhiteRook,
-                                                ChessPieceImages.WhiteQueen
-                                            };
-                                        }
+                                            ChessPieceImages.WhiteBishop,
+                                            ChessPieceImages.WhiteKnight,
+                                            ChessPieceImages.WhiteRook,
+                                            ChessPieceImages.WhiteQueen
+                                        };
                                     }
                                     else
                                     {
-                                        if (isRotated)
+                                        SwapPawnList = new List<ImageSource>()
                                         {
-                                            SwapPawnList = new List<ImageSource>()
-                                            {
-                                                ChessPieceImages.BlackBishopRotated,
-                                                ChessPieceImages.BlackKnightRotated,
-                                                ChessPieceImages.BlackRookRotated,
-                                                ChessPieceImages.BlackQueenRotated
-                                            };
-                                        }
-                                        else
-                                        {
-                                            SwapPawnList = new List<ImageSource>()
-                                            {
-                                                ChessPieceImages.BlackBishop,
-                                                ChessPieceImages.BlackKnight,
-                                                ChessPieceImages.BlackRook,
-                                                ChessPieceImages.BlackQueen
-                                            };
-                                        }
+                                            ChessPieceImages.BlackBishop,
+                                            ChessPieceImages.BlackKnight,
+                                            ChessPieceImages.BlackRook,
+                                            ChessPieceImages.BlackQueen
+                                        };
                                     }
-
 
                                     PropertiesDict["OverlaySwapPawnVisibility"] = "Visible";
                                     OnPropertyChangedByPropertyName("PropertiesDict");
