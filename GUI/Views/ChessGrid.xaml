@@ -31,7 +31,7 @@
                 x:Name="ChessFieldCanvas"
                 Background="Transparent">
                 <Canvas.RenderTransform>
-                    <RotateTransform Angle="{Binding PropertiesDict[ChessCanvasRotationAngle]}" CenterX="{Binding PropertiesDict[ChessCanvasRotationCenterX]}" CenterY="{Binding PropertiesDict[ChessCanvasRotationCenterY]}"/>
+                    <RotateTransform Angle="{Binding ChessCanvasRotationAngle}" CenterX="{Binding ChessCanvasRotationCenterX}" CenterY="{Binding ChessCanvasRotationCenterY}"/>
                 </Canvas.RenderTransform>
                 <!-- Row 1 -->
                 <Rectangle Canvas.Left="0"   Canvas.Top="0"   Style="{StaticResource StyleGridWhiteTile}"/>

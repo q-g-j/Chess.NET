@@ -44,19 +44,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ChessPieceImages.WhiteQueen
             };
 
-            propertiesDict = new Dictionary<string, string>()
-            {
-                ["SideMenuVisibility"] = "Hidden",
-                ["SideMenuMainMenuVisibility"] = "Visible",
-                ["SideMenuNewGameModeVisibility"] = "Hidden",
-                ["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden",
+            sideMenuVisibility = "Hidden";
+            sideMenuMainMenuVisibility = "Visible";
+            sideMenuNewGameModeVisibility = "Hidden";
+            sideMenuButtonsNewGameLocalColorVisibility = "Hidden";
 
-                ["OverlaySwapPawnVisibility"] = "Hidden",
+            overlaySwapPawnVisibility = "Hidden";
 
-                ["ChessCanvasRotationAngle"] = "0",
-                ["ChessCanvasRotationCenterX"] = "0",
-                ["ChessCanvasRotationCenterY"] = "-200",
-            };
+            chessCanvasRotationAngle = "0";
+            chessCanvasRotationCenterX = "0";
+            chessCanvasRotationCenterY = "-200";
 
             wasSideMenuOpen = false;
 
@@ -81,9 +78,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         #region Property-Values
         private TileDictionary tileDict;
         private List<ImageSource> swapPawnList;
-        private Dictionary<string, string> propertiesDict;
         private List<string> horizontalNotationList;
         private List<string> verticalNotationList;
+        private string sideMenuVisibility;
+        private string sideMenuMainMenuVisibility;
+        private string sideMenuNewGameModeVisibility;
+        private string sideMenuButtonsNewGameLocalColorVisibility;
+        private string overlaySwapPawnVisibility;
+        private string chessCanvasRotationAngle;
+        private string chessCanvasRotationCenterX;
+        private string chessCanvasRotationCenterY;
         #endregion Property-Values
 
         #region Properties
@@ -97,15 +101,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             get => swapPawnList;
             set { swapPawnList = value; OnPropertyChanged(); }
         }
-        internal TileDictionary TileDictReadOnly
-        {
-            get => TileDict;
-        }
-        public Dictionary<string, string> PropertiesDict
-        {
-            get => propertiesDict;
-            set { propertiesDict = value; OnPropertyChanged(); }
-        }
         public List<string> HorizontalNotationList
         {
             get => horizontalNotationList;
@@ -115,6 +110,46 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             get => verticalNotationList;
             set { verticalNotationList = value; OnPropertyChanged(); }
+        }
+        public string SideMenuVisibility
+        {
+            get => sideMenuVisibility;
+            set { sideMenuVisibility = value; OnPropertyChanged(); }
+        }
+        public string SideMenuMainMenuVisibility
+        {
+            get => sideMenuMainMenuVisibility;
+            set { sideMenuMainMenuVisibility = value; OnPropertyChanged(); }
+        }
+        public string SideMenuNewGameModeVisibility
+        {
+            get => sideMenuNewGameModeVisibility;
+            set { sideMenuNewGameModeVisibility = value; OnPropertyChanged(); }
+        }
+        public string SideMenuButtonsNewGameLocalColorVisibility
+        {
+            get => sideMenuButtonsNewGameLocalColorVisibility;
+            set { sideMenuButtonsNewGameLocalColorVisibility = value; OnPropertyChanged(); }
+        }
+        public string OverlaySwapPawnVisibility
+        {
+            get => overlaySwapPawnVisibility;
+            set { overlaySwapPawnVisibility = value; OnPropertyChanged(); }
+        }
+        public string ChessCanvasRotationAngle
+        {
+            get => chessCanvasRotationAngle;
+            set { chessCanvasRotationAngle = value; OnPropertyChanged(); }
+        }
+        public string ChessCanvasRotationCenterX
+        {
+            get => chessCanvasRotationCenterX;
+            set { chessCanvasRotationCenterX = value; OnPropertyChanged(); }
+        }
+        public string ChessCanvasRotationCenterY
+        {
+            get => chessCanvasRotationCenterY;
+            set { chessCanvasRotationCenterY = value; OnPropertyChanged(); }
         }
         #endregion Properties
 
@@ -139,22 +174,20 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         {
             if (!wasSideMenuOpen)
             {
-                if (PropertiesDict["SideMenuVisibility"] != "Visible"
-                    && PropertiesDict["OverlaySwapPawnVisibility"] == "Hidden")
+                if (SideMenuVisibility != "Visible"
+                    && OverlaySwapPawnVisibility == "Hidden")
                 {
-                    PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-                    PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
-                    PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
-                    PropertiesDict["SideMenuVisibility"] = "Visible";
+                    SideMenuNewGameModeVisibility = "Hidden";
+                    SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
+                    SideMenuMainMenuVisibility = "Visible";
+                    SideMenuVisibility = "Visible";
                 }
-                else PropertiesDict["SideMenuVisibility"] = "Hidden";
+                else SideMenuVisibility = "Hidden";
             }
             else
             {
                 wasSideMenuOpen = false;
             }
-
-            OnPropertyChangedByPropertyName("PropertiesDict");
         }
         private void WindowMouseMoveAction(object o)
         {
@@ -179,8 +212,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         Canvas.SetLeft(currentlyDraggedChessPieceImage, dragOverCanvasPosition.X - dragOverChessPiecePosition.X);
                         Canvas.SetTop(currentlyDraggedChessPieceImage, dragOverCanvasPosition.Y - dragOverChessPiecePosition.Y);
                     }
-
-                    OnPropertyChangedByPropertyName("PropertiesDict");
                 }
             }
             e.Handled = true;
@@ -193,17 +224,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             {
                 if (e.Source.ToString() != "ChessDotNET.GUI.Views.SideMenu")
                 {
-                    if (PropertiesDict["SideMenuVisibility"] == "Visible")
+                    if (SideMenuVisibility == "Visible")
                     {
                         wasSideMenuOpen = true;
-                        PropertiesDict["SideMenuVisibility"] = "Hidden";
+                        SideMenuVisibility = "Hidden";
                     }
                     else
                     {
                         wasSideMenuOpen = false;
                     }
-
-                    OnPropertyChangedByPropertyName("PropertiesDict");
                 }
             }
         }
@@ -269,7 +298,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
                         {
                             MoveValidationData moveValidationData = MoveValidationGameLogic.ValidateCurrentMove(
-                                TileDictReadOnly, oldCoords, newCoords);
+                                tileDict, oldCoords, newCoords);
 
                             if (moveValidationData.IsValid)
                             {
@@ -323,8 +352,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                         };
                                     }
 
-                                    PropertiesDict["OverlaySwapPawnVisibility"] = "Visible";
-                                    OnPropertyChangedByPropertyName("PropertiesDict");
+                                    OverlaySwapPawnVisibility = "Visible";
                                 }
 
                                 // check if a king tries to castle:
@@ -377,31 +405,27 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         private void SideMenuNewGameAction()
         {
-            PropertiesDict["SideMenuMainMenuVisibility"] = "Hidden";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuMainMenuVisibility = "Hidden";
+            SideMenuNewGameModeVisibility = "Visible";
         }
         private void SideMenuNewGameModeLocalAction()
         {
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Visible";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuNewGameModeVisibility = "Hidden";
+            SideMenuButtonsNewGameLocalColorVisibility = "Visible";
         }
         private void SideMenuNewGameLocalColorGoBackAction()
         {
-            PropertiesDict["SideMenuButtonsNewGameLocalColorVisibility"] = "Hidden";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Visible";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
+            SideMenuNewGameModeVisibility = "Visible";
         }
         private void SideMenuNewGameLocalAsWhiteAction()
         {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            PropertiesDict["SideMenuVisibility"] = "Hidden";
-            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuVisibility = "Hidden";
+            SideMenuMainMenuVisibility = "Visible";
+            SideMenuNewGameModeVisibility = "Hidden";
 
             StartGame(false);
         }
@@ -410,18 +434,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
-            PropertiesDict["SideMenuVisibility"] = "Hidden";
-            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuVisibility = "Hidden";
+            SideMenuMainMenuVisibility = "Visible";
+            SideMenuNewGameModeVisibility = "Hidden";
 
             StartGame(true);
         }
         private void SideMenuNewGameModeGoBackAction()
         {
-            PropertiesDict["SideMenuMainMenuVisibility"] = "Visible";
-            PropertiesDict["SideMenuNewGameModeVisibility"] = "Hidden";
-            OnPropertyChangedByPropertyName("PropertiesDict");
+            SideMenuMainMenuVisibility = "Visible";
+            SideMenuNewGameModeVisibility = "Hidden";
         }
         private void SideMenuQuitProgramAction()
         {
@@ -445,10 +467,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict[swapPawnCoords.String].ChessPiece = chessPiece;
             swapPawnCoords = null;
 
-            propertiesDict["OverlaySwapPawnVisibility"] = "Hidden";
+            OverlaySwapPawnVisibility = "Hidden";
 
             OnPropertyChangedByPropertyName("TileDict");
-            OnPropertyChangedByPropertyName("PropertiesDict");
         }
         #endregion CommandActions
 
@@ -463,15 +484,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             if (isRotated)
             {
-                propertiesDict["ChessCanvasRotationAngle"] = "180";
-                propertiesDict["ChessCanvasRotationCenterX"] = "200";
-                propertiesDict["ChessCanvasRotationCenterY"] = "200";
+                ChessCanvasRotationAngle = "180";
+                ChessCanvasRotationCenterX = "200";
+                ChessCanvasRotationCenterY = "200";
             }
             else
             {
-                propertiesDict["ChessCanvasRotationAngle"] = "0";
-                propertiesDict["ChessCanvasRotationCenterX"] = "0";
-                propertiesDict["ChessCanvasRotationCenterY"] = " -200";
+                ChessCanvasRotationAngle = "0";
+                ChessCanvasRotationCenterX = "0";
+                ChessCanvasRotationCenterY = " -200";
             }
 
             if (isRotated)
@@ -580,7 +601,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["G8"].IsOccupied = true;
             tileDict["H8"].IsOccupied = true;
 
-            OnPropertyChangedByPropertyName("PropertiesDict");
             OnPropertyChangedByPropertyName("TileDict");
         }
         private void StartGameTestCastling(bool doRotate)
@@ -620,13 +640,12 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["E8"]. IsOccupied = true;
             tileDict["H8"].IsOccupied = true;
 
-            OnPropertyChangedByPropertyName("PropertiesDict");
             OnPropertyChangedByPropertyName("TileDict");
         }
         private bool IsInputAllowed()
         {
-            if (propertiesDict["SideMenuVisibility"] == "Visible") return false;
-            if (propertiesDict["OverlaySwapPawnVisibility"] == "Visible") return false;
+            if (SideMenuVisibility == "Visible") return false;
+            if (OverlaySwapPawnVisibility == "Visible") return false;
             return true;
         }
         private void OnPropertyChangedByPropertyName(string name)

@@ -21,7 +21,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuMainMenuVisibility]}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuMainMenuVisibility}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -39,7 +39,7 @@
                     <!--<Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuSettingsCommand}" Content="Einstellungen"/>-->
                     <Button Grid.Row="4" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuQuitProgramCommand}" Content="Beenden"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuNewGameModeVisibility], FallbackValue=Hidden}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuNewGameModeVisibility, FallbackValue=Hidden}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
@@ -54,7 +54,7 @@
                     <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeLocalCommand}" Content="Lokal spielen"/>
                     <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuNewGameModeGoBackCommand}" Content="Zurück"/>
                 </Grid>
-                <Grid Grid.Row="0" Visibility="{Binding PropertiesDict[SideMenuButtonsNewGameLocalColorVisibility], FallbackValue=Hidden}">
+                <Grid Grid.Row="0" Visibility="{Binding SideMenuButtonsNewGameLocalColorVisibility, FallbackValue=Hidden}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="7"/>
