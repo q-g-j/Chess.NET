@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.IO;
 using ChessDotNET.CustomTypes;
 using ChessDotNET.GUI.ViewHelpers;
-using ChessDotNET.Settings;
 using System.Collections.Generic;
 using System.Linq;
 using ChessDotNET.GameLogic;
@@ -39,10 +38,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             swapPawnList = new List<ImageSource>()
             {
-                ChessPieceImages.Empty,
-                ChessPieceImages.Empty,
-                ChessPieceImages.Empty,
-                ChessPieceImages.Empty
+                ChessPieceImages.WhiteBishop,
+                ChessPieceImages.WhiteKnight,
+                ChessPieceImages.WhiteRook,
+                ChessPieceImages.WhiteQueen
             };
 
             propertiesDict = new Dictionary<string, string>()

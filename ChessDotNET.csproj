@@ -180,7 +180,6 @@
     <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
-    <Compile Include="Settings\AppSettings.cs" />
     <Compile Include="GUI\ViewHelpers\AdvancedInvokeCommandAction.cs" />
     <Compile Include="CustomTypes\ChessPieceImages.cs" />
     <Compile Include="GUI\ViewHelpers\CompositeCommandParameter.cs" />
@@ -236,6 +235,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
+    <Folder Include="Settings\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="GUI\Resources\Images\black_bishop.png" />
