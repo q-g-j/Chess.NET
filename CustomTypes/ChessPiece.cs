@@ -10,140 +10,32 @@ namespace ChessDotNET.CustomTypes
             if (chessPieceColor == ChessPieceColor.White)
             {
                 if (chessPieceType == ChessPieceType.Pawn)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhitePawnRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhitePawn;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhitePawnRotated : ChessPieceImages.WhitePawn;
                 else if (chessPieceType == ChessPieceType.Rook)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteRookRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteRook;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhiteRookRotated : ChessPieceImages.WhiteRook;
                 else if (chessPieceType == ChessPieceType.Knight)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteKnightRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteKnight;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhiteKnightRotated : ChessPieceImages.WhiteKnight;
                 else if (chessPieceType == ChessPieceType.Bishop)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteBishopRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteBishop;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhiteBishopRotated : ChessPieceImages.WhiteBishop;
                 else if (chessPieceType == ChessPieceType.Queen)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteQueenRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteQueen;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhiteQueenRotated : ChessPieceImages.WhiteQueen;
                 else if (chessPieceType == ChessPieceType.King)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteKingRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.WhiteKing;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.WhiteKingRotated : ChessPieceImages.WhiteKing;
             }
             if (chessPieceColor == ChessPieceColor.Black)
             {
                 if (chessPieceType == ChessPieceType.Pawn)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackPawnRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackPawn;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackPawnRotated : ChessPieceImages.BlackPawn;
                 else if (chessPieceType == ChessPieceType.Rook)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackRookRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackRook;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackRookRotated : ChessPieceImages.BlackRook;
                 else if (chessPieceType == ChessPieceType.Knight)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackKnightRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackKnight;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackKnightRotated : ChessPieceImages.BlackKnight;
                 else if (chessPieceType == ChessPieceType.Bishop)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackBishopRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackBishop;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackBishopRotated : ChessPieceImages.BlackBishop;
                 else if (chessPieceType == ChessPieceType.Queen)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackQueenRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackQueen;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackQueenRotated : ChessPieceImages.BlackQueen;
                 else if (chessPieceType == ChessPieceType.King)
-                {
-                    if (isRotated)
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackKingRotated;
-                    }
-                    else
-                    {
-                        ChessPieceImage = ChessPieceImages.BlackKing;
-                    }
-                }
+                    ChessPieceImage = isRotated ? ChessPieceImages.BlackKingRotated : ChessPieceImages.BlackKing;
             }
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;

@@ -117,10 +117,8 @@ namespace ChessDotNET.GameLogic
                     // don't allow to move forward more than 2 tiles, 
                     if (newCoords.X == oldCoords.X && newCoords.Y - 2 > oldCoords.Y) return moveValidationData;
                     // don't allow to jump over another piece:
-                    if (
-                        newCoords.Y == oldCoords.Y + 2
-                        && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y + 1)].IsOccupied
-                        ) return moveValidationData;
+                    if (newCoords.Y == oldCoords.Y + 2
+                        && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y + 1)].IsOccupied) return moveValidationData;
                 }
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Y != 2 && newCoords.X == oldCoords.X && newCoords.Y - 1 > oldCoords.Y) return moveValidationData;
@@ -151,10 +149,8 @@ namespace ChessDotNET.GameLogic
                     // don't allow to move forward more than 2 tiles, 
                     if (newCoords.X == oldCoords.X && newCoords.Y + 2 < oldCoords.Y) return moveValidationData;
                     // don't allow to jump over another piece:
-                    if (
-                        newCoords.Y == oldCoords.Y - 2
-                        && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y - 1)].IsOccupied
-                        ) return moveValidationData;
+                    if (newCoords.Y == oldCoords.Y - 2
+                        && tileDict[IntsToCoordsString(oldCoords.X, oldCoords.Y - 1)].IsOccupied) return moveValidationData;
                 }
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Y != 7 && newCoords.X == oldCoords.X && newCoords.Y + 1 < oldCoords.Y) return moveValidationData;

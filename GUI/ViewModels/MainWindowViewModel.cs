@@ -248,8 +248,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
                         {
                             MoveValidationData moveValidationData = MoveValidationGameLogic.ValidateCurrentMove(
-                                TileDictReadOnly, oldCoords, newCoords
-                                );
+                                TileDictReadOnly, oldCoords, newCoords);
 
                             if (moveValidationData.IsValid)
                             {
@@ -309,11 +308,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                         Coords c = new Coords(j, i);
                                         char oc = tileDict[c.String].IsOccupied ? 'O' : ' ';
                                         System.Diagnostics.Debug.Write(c.String + ":" + oc + " ");
-                                        if (j == 8)
-                                        {
-                                            System.Diagnostics.Debug.WriteLine("");
-                                        }
                                     }
+                                    System.Diagnostics.Debug.WriteLine("");
                                 }
                                 System.Diagnostics.Debug.WriteLine("");
                             }
