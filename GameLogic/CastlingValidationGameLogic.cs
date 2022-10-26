@@ -18,10 +18,7 @@ namespace ChessDotNET.GameLogic
             // 3. there must not be any pieces between both ### done
             // 4. the king's old and new position and the tile that the king is passing may not be threatened ### done
 
-            MoveValidationData moveValidationData = new MoveValidationData
-            {
-                CanCastle = false
-            };
+            MoveValidationData moveValidationData = new MoveValidationData();
 
             // rule 1: has king moved?
             if (tileDict[oldCoords.String].ChessPiece.HasMoved)
@@ -172,7 +169,7 @@ namespace ChessDotNET.GameLogic
             {
                 return moveValidationData;
             }
-
+            moveValidationData.IsValid = true;
             moveValidationData.CanCastle = true;
             return moveValidationData;
         }

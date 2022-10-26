@@ -29,22 +29,22 @@ namespace ChessDotNET.GameLogic
                                 return true;
                             }
                             if ((chessPiece.ChessPieceType == ChessPieceType.Rook || chessPiece.ChessPieceType == ChessPieceType.Queen)
-                                && MoveValidationGameLogic.ValidateRookAndQueenHorizontal(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
+                                && MoveValidationGameLogic.ValidateRookAndQueenHorizontal(tileDict, coords, coordsToCheck))
                             {
                                 return true;
                             }
                             if (chessPiece.ChessPieceType == ChessPieceType.Knight
-                                && MoveValidationGameLogic.ValidateKnight(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
+                                && MoveValidationGameLogic.ValidateKnight(coords, coordsToCheck))
                             {
                                 return true;
                             }
                             if ((chessPiece.ChessPieceType == ChessPieceType.Bishop || chessPiece.ChessPieceType == ChessPieceType.Queen)
-                                && MoveValidationGameLogic.ValidateBishopAndQueenDiagonal(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
+                                && MoveValidationGameLogic.ValidateBishopAndQueenDiagonal(tileDict, coords, coordsToCheck))
                             {
                                 return true;
                             }
                             if (chessPiece.ChessPieceType == ChessPieceType.King
-                                && MoveValidationGameLogic.ValidateKingCastling(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
+                                && MoveValidationGameLogic.ValidateKing(coords, coordsToCheck))
                             {
                                 return true;
                             }
