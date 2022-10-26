@@ -13,6 +13,12 @@ namespace ChessDotNET.CustomTypes
             Y = y; 
             String = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
         }
+        public Coords(Columns col, int y)
+        {
+            X = (int)col;
+            Y = y;
+            String = Enum.GetName(typeof(Columns), col).ToString() + y.ToString();
+        }
 
         public int X { get; }
         public int Y { get; }
@@ -37,6 +43,11 @@ namespace ChessDotNET.CustomTypes
             else if (row == 8) row = 1;
 
             return new Coords(col, row);
+        }
+
+        public override string ToString()
+        {
+            return String;
         }
     }
 

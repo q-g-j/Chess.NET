@@ -58,7 +58,7 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(4, 1)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -88,7 +88,7 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(6, 1)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -127,7 +127,7 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(4, 8)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -157,7 +157,7 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(6, 8)
                     };
-                    if (AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -175,52 +175,6 @@ namespace ChessDotNET.GameLogic
 
             moveValidationData.CanCastle = true;
             return moveValidationData;
-        }
-
-        private static bool AreTilesThreatened(TileDictionary tileDict, Coords oldCoords, List<Coords> coordsListToCheck)
-        {
-            for (int i = 1; i < 9; i++)
-            {
-                for (int j = 1; j < 9; j++)
-                {
-                    Coords coords = new Coords(i, j);
-                    Tile tile = tileDict[coords.String];
-                    ChessPiece chessPiece = tile.ChessPiece;
-                    if (chessPiece.ChessPieceColor != ChessPieceColor.Empty
-                        && chessPiece.ChessPieceColor != tileDict[oldCoords.String].ChessPiece.ChessPieceColor)
-                    {
-                        foreach (Coords coordsToCheck in coordsListToCheck)
-                        {
-                            if (chessPiece.ChessPieceType == ChessPieceType.Pawn
-                                && MoveValidationGameLogic.ValidatePawn(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty).IsValid)
-                            {
-                                return true;
-                            }
-                            if ((chessPiece.ChessPieceType == ChessPieceType.Rook || chessPiece.ChessPieceType == ChessPieceType.Queen)
-                                && MoveValidationGameLogic.ValidateRookAndQueenHorizontal(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
-                            {
-                                return true;
-                            }
-                            if (chessPiece.ChessPieceType == ChessPieceType.Knight
-                                && MoveValidationGameLogic.ValidateKnight(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
-                            {
-                                return true;
-                            }
-                            if ((chessPiece.ChessPieceType == ChessPieceType.Bishop || chessPiece.ChessPieceType == ChessPieceType.Queen)
-                                && MoveValidationGameLogic.ValidateBishopAndQueenDiagonal(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
-                            {
-                                return true;
-                            }
-                            if (chessPiece.ChessPieceType == ChessPieceType.King
-                                && MoveValidationGameLogic.ValidateKingCastling(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ChessPieceColor.Empty))
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
         }
     }
 }

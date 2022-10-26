@@ -8,13 +8,11 @@ namespace ChessDotNET.CustomTypes
     {
         public Tile(int col, int row, bool occupied, ChessPiece chessPiece)
         {
-            X = col;
-            Y = row;
+            Coords = new Coords(col, row);
             IsOccupied = occupied;
             ChessPiece = chessPiece;
         }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public Coords Coords { get; set; }
         public bool IsOccupied { get; set; }
         public ChessPiece ChessPiece { get; set; }
     }

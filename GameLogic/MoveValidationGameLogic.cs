@@ -17,6 +17,8 @@ namespace ChessDotNET.GameLogic
         internal MoveValidationData()
         {
             Coords = new List<Coords>();
+            IsValid = false;
+            CanCastle = false;
         }
     }
     internal static class MoveValidationGameLogic
@@ -27,6 +29,12 @@ namespace ChessDotNET.GameLogic
 
             ChessPieceColor oldCoordsColor = tileDict[oldCoords.String].ChessPiece.ChessPieceColor;
             ChessPieceColor newCoordsColor = tileDict[newCoords.String].ChessPiece.ChessPieceColor;
+
+            // would own king be threatened:
+            if (CheckValidationGameLogic.IsCheck(tileDict, oldCoords, newCoords))
+            {
+                return moveValidationData;
+            }
 
             // validate pawn's move:
             if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
@@ -80,10 +88,7 @@ namespace ChessDotNET.GameLogic
             ChessPieceColor newCoordsColor)
         {
             // initialize return type:
-            MoveValidationData moveValidationData = new MoveValidationData
-            {
-                IsValid = false
-            };
+            MoveValidationData moveValidationData = new MoveValidationData();
 
             // has a pawn move two tiles in the last turn:
             if (tileDict.CoordsPawnMovedTwoTiles != null)
@@ -171,6 +176,26 @@ namespace ChessDotNET.GameLogic
 
             moveValidationData.IsValid = true;
             return moveValidationData;
+        }
+        internal static bool ValidatePawnThreatening(
+            Coords oldCoords,
+            Coords newCoords,
+            ChessPieceColor oldCoordsColor)
+        {
+            // validate white pawns:
+            if (oldCoordsColor == ChessPieceColor.White)
+            {
+                if (newCoords.Y == oldCoords.Y + 1 && (newCoords.X == oldCoords.X + 1 || newCoords.X == oldCoords.X - 1))
+                    return true;
+            }
+            // validate black pawns:
+            else
+            {
+                if (newCoords.Y == oldCoords.Y - 1 && (newCoords.X == oldCoords.X + 1 || newCoords.X == oldCoords.X - 1))
+                    return true;
+            }
+
+            return false;
         }
         internal static bool ValidateRookAndQueenHorizontal(
             TileDictionary tileDict,
@@ -311,10 +336,7 @@ namespace ChessDotNET.GameLogic
             ChessPieceColor oldCoordsColor,
             ChessPieceColor newCoordsColor)
         {
-            MoveValidationData returnStruct = new MoveValidationData
-            {
-                IsValid = false
-            };
+            MoveValidationData returnStruct = new MoveValidationData();
 
             // don't allow to capture same color:
             if (tileDict[newCoords.String].IsOccupied && oldCoordsColor == newCoordsColor) return returnStruct;

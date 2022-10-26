@@ -40,6 +40,7 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = chessPieceColor;
             ChessPieceType = chessPieceType;
             HasMoved = false;
+            IsRotated = isRotated;
             MoveCount = 0;
         }
 
@@ -49,12 +50,24 @@ namespace ChessDotNET.CustomTypes
             ChessPieceColor = ChessPieceColor.Empty;
             ChessPieceType = ChessPieceType.Empty;
             HasMoved = false;
+            IsRotated = false;
             MoveCount = 0;
+        }
+
+        internal ChessPiece(ChessPiece chessPiece)
+        {
+            ChessPieceImage = chessPiece.ChessPieceImage;
+            ChessPieceColor = chessPiece.ChessPieceColor;
+            ChessPieceType = chessPiece.ChessPieceType;
+            HasMoved = chessPiece.HasMoved;
+            IsRotated = chessPiece.IsRotated;
+            MoveCount = chessPiece.MoveCount;
         }
 
         public ImageSource ChessPieceImage { get; set; }
         internal ChessPieceColor ChessPieceColor { get; set; }
         internal ChessPieceType ChessPieceType { get; set; }
+        internal bool IsRotated { get; set; }
         internal bool HasMoved { get; set; }
         internal bool CanBeCapturedEnPassant { get; set; }
         internal int MoveCount { get; set; }

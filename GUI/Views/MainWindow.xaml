@@ -58,7 +58,7 @@
             </DockPanel>
             <Grid>
                 <local:SideMenu Visibility="{Binding SideMenuVisibility}"/>
-                <local:OverlaySwapPawn Visibility="{Binding OverlaySwapPawnVisibility}"/>
+                <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility}"/>
                 <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->
                 <local:ChessGrid/>
             </Grid>

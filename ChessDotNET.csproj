@@ -125,13 +125,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
+    <Compile Include="GameLogic\CheckValidationGameLogic.cs" />
     <Compile Include="GameLogic\EnPassantValidationGameLogic.cs" />
-    <Compile Include="GameLogic\SwapPawnGameLogic.cs" />
+    <Compile Include="GameLogic\PromotePawnGameLogic.cs" />
+    <Compile Include="GameLogic\ThreateningValidationGameLogic.cs" />
     <Compile Include="GUI\Views\ChessGrid.xaml.cs">
       <DependentUpon>ChessGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\Views\OverlaySwapPawn.xaml.cs">
-      <DependentUpon>OverlaySwapPawn.xaml</DependentUpon>
+    <Compile Include="GUI\Views\OverlayPromotePawn.xaml.cs">
+      <DependentUpon>OverlayPromotePawn.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\Views\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
@@ -170,7 +172,7 @@
     </Compile>
     <Compile Include="CustomTypes\ChessPiece.cs" />
     <Compile Include="CustomTypes\TileDictionary.cs" />
-    <Compile Include="GameLogic\CheckMateGameLogic.cs" />
+    <Compile Include="GameLogic\CheckMateValidationGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
@@ -184,7 +186,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="GUI\Views\OverlaySwapPawn.xaml">
+    <Page Include="GUI\Views\OverlayPromotePawn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

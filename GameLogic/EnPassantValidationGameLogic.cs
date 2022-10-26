@@ -16,10 +16,10 @@ namespace ChessDotNET.GameLogic
 
             if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn
                 && oldCoordsColor != pawnMovedTwoTilesColor
-                && tileDict[oldCoords.String].Y == tileDict.CoordsPawnMovedTwoTiles.Y
+                && tileDict[oldCoords.String].Coords.Y == tileDict.CoordsPawnMovedTwoTiles.Y
                 && tileDict.CoordsPawnMovedTwoTiles.X == newCoords.X
-                && (oldCoordsColor == ChessPieceColor.White && tileDict[newCoords.String].Y - tileDict.CoordsPawnMovedTwoTiles.Y == 1
-                || oldCoordsColor == ChessPieceColor.Black && tileDict[newCoords.String].Y - tileDict.CoordsPawnMovedTwoTiles.Y == -1))
+                && (oldCoordsColor == ChessPieceColor.White && tileDict[newCoords.String].Coords.Y - tileDict.CoordsPawnMovedTwoTiles.Y == 1
+                || oldCoordsColor == ChessPieceColor.Black && tileDict[newCoords.String].Coords.Y - tileDict.CoordsPawnMovedTwoTiles.Y == -1))
             {
                 return true;
             }
