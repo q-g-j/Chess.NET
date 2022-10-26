@@ -370,7 +370,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                                 OnPropertyChangedByPropertyName("TileDict");
 
-                                // Debug: Print occupation state of all tiles:
+                                //// Debug: Print occupation state of all tiles:
                                 //for (int i = 8; i > 0; i--)
                                 //{
                                 //    for (int j = 1; j < 9; j++)

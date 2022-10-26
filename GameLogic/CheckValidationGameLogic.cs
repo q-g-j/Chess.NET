@@ -36,6 +36,7 @@ namespace ChessDotNET.GameLogic
             tileDict.MoveChessPiece(newCoords, oldCoords, false);
             tileDict[newCoords.String].ChessPiece = chessPieceOnNewCoordsBackup;
 
+
             return isCheck;
         }
     }
