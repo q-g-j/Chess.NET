@@ -55,7 +55,10 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(4, 1)
                     };
-                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(
+                        tileDict,
+                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor,
+                        coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -85,7 +88,10 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(6, 1)
                     };
-                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(
+                        tileDict,
+                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor,
+                        coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -124,7 +130,10 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(4, 8)
                     };
-                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(
+                        tileDict,
+                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor,
+                        coordsListToCheck))
                     {
                         return moveValidationData;
                     }
@@ -154,7 +163,10 @@ namespace ChessDotNET.GameLogic
                         newCoords,
                         new Coords(6, 8)
                     };
-                    if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, oldCoords, coordsListToCheck))
+                    if (ThreateningValidationGameLogic.AreTilesThreatened(
+                        tileDict,
+                        tileDict[oldCoords.String].ChessPiece.ChessPieceColor,
+                        coordsListToCheck))
                     {
                         return moveValidationData;
                     }

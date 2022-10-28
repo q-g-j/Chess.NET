@@ -21,14 +21,18 @@ namespace ChessDotNET.GameLogic
 
             if (kingColor == ChessPieceColor.White)
             {
-                kingCoords = tileDict.KingsCoords["WhiteKing"];
+                kingCoords = tileDict.WhiteKingCoords;
             }
             else
             {
-                kingCoords = tileDict.KingsCoords["BlackKing"];
+                kingCoords = tileDict.BlackKingCoords;
             }
 
-            if (ThreateningValidationGameLogic.AreTilesThreatened(tileDict, newCoords, new List<Coords>() { kingCoords }))
+            if (ThreateningValidationGameLogic.IsTileThreatened(
+                tileDict,
+                tileDict[newCoords.String].ChessPiece.ChessPieceColor,
+                kingCoords,
+                false))
             {
                 isCheck = true;
             }

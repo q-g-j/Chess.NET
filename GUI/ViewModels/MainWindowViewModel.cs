@@ -57,8 +57,13 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
             wasSideMenuOpen = false;
 
+            MoveList = new List<Move>();
+
             StartGame(false);
             //StartGameTestCastling(false);
+            //StartGameTestCheckMate(false);
+
+            //debugNoTurns = true;
         }
         #endregion Constuctors
 
@@ -73,6 +78,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private bool isMouseMoving;
         private bool wasSideMenuOpen;
         private Coords promotePawnCoords;
+        private List<Move> MoveList;
+        private bool debugNoTurns = false;
         #endregion Fields
 
         #region Property-Values
@@ -88,9 +95,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private string chessCanvasRotationAngle;
         private string chessCanvasRotationCenterX;
         private string chessCanvasRotationCenterY;
+        private string labelMoveInfo;
         #endregion Property-Values
 
-        #region Properties
+        #region Bindable Properties
+        public string LabelMoveInfo
+        {
+            get => labelMoveInfo;
+            set { labelMoveInfo = value; OnPropertyChanged(); }
+        }
         public TileDictionary TileDict
         {
             get => tileDict;
@@ -151,7 +164,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             get => chessCanvasRotationCenterY;
             set { chessCanvasRotationCenterY = value; OnPropertyChanged(); }
         }
-        #endregion Properties
+        #endregion Bindable Properties
 
         #region Commands
         public RelayCommand OpenSideMenuCommand { get; }
@@ -297,10 +310,33 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                         if (newCoords.X >= 1 && newCoords.X <= 8 && newCoords.Y >= 1 && newCoords.Y <= 8
                             && !(newCoords.X == oldCoords.X && newCoords.Y == oldCoords.Y))
                         {
+                            ChessPiece currentlyDraggedChessPiece = tileDict[oldCoords.String].ChessPiece;
+                            ChessPieceColor currentlyDraggedChessPieceColor = currentlyDraggedChessPiece.ChessPieceColor;
+                            ChessPieceType currentlyDraggedChessPieceType = currentlyDraggedChessPiece.ChessPieceType;
+
                             MoveValidationData moveValidationData = MoveValidationGameLogic.ValidateCurrentMove(
                                 tileDict, oldCoords, newCoords);
 
-                            if (moveValidationData.IsValid)
+                            bool isFirstMoveValid = true;
+                            if (MoveList.Count == 0)
+                            {
+                                isFirstMoveValid = currentlyDraggedChessPieceColor == ChessPieceColor.White;
+                            }
+
+                            bool isTurnCorrectColor = true;
+                            if (MoveList.Count > 0)
+                            {
+                                isTurnCorrectColor = MoveList[MoveList.Count - 1].ChessPieceColor != currentlyDraggedChessPieceColor;
+                            }
+
+                            if (debugNoTurns)
+                            {
+                                isTurnCorrectColor = true;
+                            }
+
+                            if (isFirstMoveValid
+                                && isTurnCorrectColor
+                                && moveValidationData.IsValid)
                             {
                                 // reset the currently dragged image's position:
                                 Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
@@ -327,11 +363,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 // promote your pawn if it is on the opposite of the field:
                                 if (PromotePawnGameLogic.CanPromote(tileDict, oldCoords, newCoords))
                                 {
-                                    ChessPieceColor ownColor = tileDict[oldCoords.String].ChessPiece.ChessPieceColor;
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     promotePawnCoords = newCoords;
 
-                                    if (ownColor == ChessPieceColor.White)
+                                    if (currentlyDraggedChessPieceColor == ChessPieceColor.White)
                                     {
                                         OverlayPromotePawnList = new List<ImageSource>()
                                         {
@@ -367,6 +402,38 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 {
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                 }
+
+                                string labelMoveInfoText = oldCoords.String + " -> " + newCoords.String;
+                                if (ThreateningValidationGameLogic.IsTileThreatened(
+                                    tileDict, ChessPieceColor.White, tileDict.WhiteKingCoords, false))
+                                {
+                                    labelMoveInfoText += ", White king is in check!";
+                                }
+                                else if (ThreateningValidationGameLogic.IsTileThreatened(
+                                    tileDict, ChessPieceColor.Black, tileDict.BlackKingCoords, false))
+                                {
+                                    labelMoveInfoText += ", Black king is in check!";
+                                }
+
+                                if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
+                                {
+                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, ChessPieceColor.White, tileDict.WhiteKingCoords))
+                                    {
+                                        labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", White is check mate!";
+                                    }
+                                }
+                                else if (currentlyDraggedChessPieceColor == ChessPieceColor.White)
+                                {
+                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, ChessPieceColor.Black, tileDict.BlackKingCoords))
+                                    {
+                                        labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", White is check mate!";
+                                    }
+                                }
+
+                                LabelMoveInfo = labelMoveInfoText;
+
+                                MoveList.Add(new Move(oldCoords, newCoords, currentlyDraggedChessPieceColor, currentlyDraggedChessPieceType));
+
 
                                 OnPropertyChangedByPropertyName("TileDict");
 
@@ -600,8 +667,8 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["G8"].IsOccupied = true;
             tileDict["H8"].IsOccupied = true;
 
-            tileDict.KingsCoords["WhiteKing"] = new Coords(Columns.E, 1);
-            tileDict.KingsCoords["BlackKing"] = new Coords(Columns.E, 8);
+            LabelMoveInfo = "";
+            MoveList = new List<Move>();
 
             OnPropertyChangedByPropertyName("TileDict");
         }
@@ -659,8 +726,41 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["E8"].IsOccupied = true;
             tileDict["H8"].IsOccupied = true;
 
-            tileDict.KingsCoords["WhiteKing"] = new Coords(Columns.E, 1);
-            tileDict.KingsCoords["BlackKing"] = new Coords(Columns.E, 8);
+            OnPropertyChangedByPropertyName("TileDict");
+        }
+        private void StartGameTestCheckMate(bool doRotate)
+        {
+            isRotated = doRotate;
+            tileDict = new TileDictionary();
+
+            CreateNotation();
+
+            tileDict["H7"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
+            tileDict["H7"].IsOccupied = true;
+            tileDict.BlackKingCoords = new Coords(Columns.H, 7);
+
+            tileDict["E1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.King, doRotate);
+            tileDict["E1"].IsOccupied = true;
+            tileDict.WhiteKingCoords = new Coords(Columns.E, 1);
+
+            tileDict["D2"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Queen, doRotate);
+            tileDict["D2"].IsOccupied = true;
+
+            tileDict["C3"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Bishop, doRotate);
+            tileDict["C3"].IsOccupied = true;
+
+            tileDict["A6"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
+            tileDict["A6"].IsOccupied = true;
+
+            tileDict["A8"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
+            tileDict["A8"].IsOccupied = true;
+
+            tileDict["H8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
+            tileDict["H8"].IsOccupied = true;
+
+            tileDict["G4"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Pawn, doRotate);
+            tileDict["G4"].IsOccupied = true;
+
 
             OnPropertyChangedByPropertyName("TileDict");
         }

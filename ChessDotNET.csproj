@@ -124,6 +124,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomTypes\Move.cs" />
     <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
     <Compile Include="GameLogic\CheckValidationGameLogic.cs" />
     <Compile Include="GameLogic\EnPassantValidationGameLogic.cs" />
@@ -231,7 +232,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Settings\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="GUI\Resources\Images\black_bishop.png" />

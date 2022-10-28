@@ -10,19 +10,23 @@ namespace ChessDotNET.CustomTypes
         public Coords(int x, int y)
         {
             X = x;
-            Y = y; 
-            String = Enum.GetName(typeof(Columns), x).ToString() + y.ToString();
+            Y = y;
         }
         public Coords(Columns col, int y)
         {
             X = (int)col;
             Y = y;
-            String = Enum.GetName(typeof(Columns), col).ToString() + y.ToString();
         }
 
         public int X { get; }
         public int Y { get; }
-        public string String { get; }
+        public string String
+        {
+            get
+            {
+                return Enum.GetName(typeof(Columns), X).ToString() + Y.ToString();
+            }
+        }
 
         internal static string IntsToCoordsString(int col, int row)
         {

@@ -19,18 +19,15 @@ namespace ChessDotNET.CustomTypes
                 }
             }
 
-            kingsCoords = new Dictionary<string, Coords>();
+            WhiteKingCoords = new Coords(Columns.E, 1);
+            BlackKingCoords = new Coords(Columns.E, 8);
         }
         #endregion Constructors
 
-        #region Fields
-        private Dictionary<string, Coords> kingsCoords;
-        private Coords coordsPawnMovedTwoTiles = null;
-        #endregion Fields
-
         #region Properties
-        internal Coords CoordsPawnMovedTwoTiles { get => coordsPawnMovedTwoTiles; set { coordsPawnMovedTwoTiles = value; } }
-        internal Dictionary<string, Coords> KingsCoords { get => kingsCoords; set { kingsCoords = value; } }
+        internal Coords CoordsPawnMovedTwoTiles { get; set; }
+        internal Coords WhiteKingCoords { get; set; }
+        internal Coords BlackKingCoords { get; set; }
         #endregion Properties
 
         #region Methods
@@ -47,20 +44,17 @@ namespace ChessDotNET.CustomTypes
 
                 this[newCoords.String].ChessPiece.MoveCount++;
                 this[newCoords.String].ChessPiece.HasMoved = true;
-                System.Diagnostics.Debug.WriteLine(oldCoords.String + " -> " + newCoords.String);
             }
 
             if (this[newCoords.String].ChessPiece.ChessPieceType == ChessPieceType.King)
             {
                 if (this[newCoords.String].ChessPiece.ChessPieceColor == ChessPieceColor.White)
                 {
-
-                    KingsCoords["WhiteKing"] = newCoords;
+                    WhiteKingCoords = newCoords;
                 }
                 else
                 {
-
-                    KingsCoords["BlackKing"] = newCoords;
+                    BlackKingCoords = newCoords;
                 }
             }
         }

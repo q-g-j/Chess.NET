@@ -43,7 +43,7 @@ namespace ChessDotNET.GameLogic
             if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Pawn)
             {
                 moveValidationData = ValidatePawn(
-                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor);
+                    tileDict, oldCoords, newCoords, oldCoordsColor, newCoordsColor, false);
             }
             // validate bishop's move:
             else if (tileDict[oldCoords.String].ChessPiece.ChessPieceType == ChessPieceType.Bishop)
@@ -80,10 +80,6 @@ namespace ChessDotNET.GameLogic
             {
                 moveValidationData.IsValid = ValidateKnight(oldCoords, newCoords);
             }
-            else
-            {
-                moveValidationData.IsValid = true;
-            }
 
             return moveValidationData;
         }
@@ -92,7 +88,8 @@ namespace ChessDotNET.GameLogic
             Coords oldCoords,
             Coords newCoords,
             ChessPieceColor oldCoordsColor,
-            ChessPieceColor newCoordsColor)
+            ChessPieceColor newCoordsColor,
+            bool onlyCheckMove)
         {
             // initialize return type:
             MoveValidationData moveValidationData = new MoveValidationData();
@@ -136,7 +133,7 @@ namespace ChessDotNET.GameLogic
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Y != 2 && newCoords.X == oldCoords.X && newCoords.Y - 1 > oldCoords.Y) return moveValidationData;
                 // only allow to capture an ememie's piece, if it's 1 diagonal tile away:
-                else if (newCoordsColor != ChessPieceColor.Empty)
+                else if (newCoordsColor != ChessPieceColor.Empty && !onlyCheckMove)
                 {
                     if (newCoords.Y > oldCoords.Y + 1) return moveValidationData;
                     if (oldCoords.X == newCoords.X) return moveValidationData;
@@ -169,7 +166,7 @@ namespace ChessDotNET.GameLogic
                 // don't allow to move forward more than 1 tile in any following move:
                 if (oldCoords.Y != 7 && newCoords.X == oldCoords.X && newCoords.Y + 1 < oldCoords.Y) return moveValidationData;
                 // only allow to capture an ememie's piece, if it's 1 diagonal tile away:
-                else if (newCoordsColor != ChessPieceColor.Empty)
+                else if (newCoordsColor != ChessPieceColor.Empty && !onlyCheckMove)
                 {
                     if (newCoords.Y < oldCoords.Y - 1) return moveValidationData;
                     if (oldCoords.X == newCoords.X) return moveValidationData;
@@ -330,6 +327,44 @@ namespace ChessDotNET.GameLogic
                 || newCoords.Y < oldCoords.Y - 1) return false;
 
             return true;
+        }
+        internal static bool CanReachTile(TileDictionary tileDict, ChessPieceColor ownColor, Coords coordsToCheck)
+        {
+            for (int i = 1; i < 9; i++)
+            {
+                for (int j = 1; j < 9; j++)
+                {
+                    Coords coords = new Coords(i, j);
+                    Tile tile = tileDict[coords.String];
+                    ChessPiece chessPiece = tile.ChessPiece;
+                    if (chessPiece.ChessPieceColor != ChessPieceColor.Empty
+                        && chessPiece.ChessPieceColor != ownColor)
+                    {
+                        MoveValidationData moveValidationData = MoveValidationGameLogic.ValidatePawn(tileDict, coords, coordsToCheck, chessPiece.ChessPieceColor, ownColor, true);
+                        if (chessPiece.ChessPieceType == ChessPieceType.Pawn
+                            && moveValidationData.IsValid)
+                        {
+                            return true;
+                        }
+                        if ((chessPiece.ChessPieceType == ChessPieceType.Rook || chessPiece.ChessPieceType == ChessPieceType.Queen)
+                            && MoveValidationGameLogic.ValidateRookAndQueenHorizontal(tileDict, coords, coordsToCheck))
+                        {
+                            return true;
+                        }
+                        if (chessPiece.ChessPieceType == ChessPieceType.Knight
+                            && MoveValidationGameLogic.ValidateKnight(coords, coordsToCheck))
+                        {
+                            return true;
+                        }
+                        if ((chessPiece.ChessPieceType == ChessPieceType.Bishop || chessPiece.ChessPieceType == ChessPieceType.Queen)
+                            && MoveValidationGameLogic.ValidateBishopAndQueenDiagonal(tileDict, coords, coordsToCheck))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }
