@@ -667,10 +667,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["G8"].IsOccupied = true;
             tileDict["H8"].IsOccupied = true;
 
+            OnPropertyChangedByPropertyName("TileDict");
+
             LabelMoveInfo = "";
             MoveList = new List<Move>();
-
-            OnPropertyChangedByPropertyName("TileDict");
         }
         private void StartGameTestCastling(bool doRotate)
         {
@@ -727,6 +727,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             tileDict["H8"].IsOccupied = true;
 
             OnPropertyChangedByPropertyName("TileDict");
+
+            LabelMoveInfo = "";
+            MoveList = new List<Move>();
         }
         private void StartGameTestCheckMate(bool doRotate)
         {
@@ -763,6 +766,9 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
 
             OnPropertyChangedByPropertyName("TileDict");
+
+            LabelMoveInfo = "";
+            MoveList = new List<Move>();
         }
         private bool IsInputAllowed()
         {
