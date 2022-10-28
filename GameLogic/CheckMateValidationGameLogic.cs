@@ -139,11 +139,11 @@ namespace ChessDotNET.GameLogic
                 {
                     for (int row = threateningTile.Coords.Y + 1; row <= kingCoords.Y - 1; row++)
                     {
-                        Coords coordsInBetween = new Coords(row, threateningTile.Coords.Y);
+                        Coords coordsInBetween = new Coords(threateningTile.Coords.X, row);
                         if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
                         {
-                            System.Diagnostics.Debug.WriteLine("no check mate");
-                            return false;
+                            System.Diagnostics.Debug.WriteLine(coordsInBetween.String);
+                            return true;
                         }
                     }
                 }
@@ -151,11 +151,10 @@ namespace ChessDotNET.GameLogic
                 {
                     for (int row = threateningTile.Coords.Y - 1; row >= kingCoords.Y + 1; row--)
                     {
-                        Coords coordsInBetween = new Coords(row, threateningTile.Coords.Y);
+                        Coords coordsInBetween = new Coords(threateningTile.Coords.X, row);
                         if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
                         {
-                            System.Diagnostics.Debug.WriteLine("no check mate");
-                            return false;
+                            return true;
                         }
                         //System.Diagnostics.Debug.WriteLine(coordsInBetween.ToString());
                     }
