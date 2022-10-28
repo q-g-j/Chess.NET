@@ -75,6 +75,10 @@ namespace ChessDotNET.GameLogic
                         {
                             return false;
                         }
+                        if (CanBlockQueenAndRookVertically(tileDict, threateningTile, kingCoords, ownColor))
+                        {
+                            return false;
+                        }
                     }
 
                     // check if an opponent's bishop is threatening own king:
