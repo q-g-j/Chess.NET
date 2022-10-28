@@ -6,15 +6,11 @@ using System.Windows.Documents;
 
 namespace ChessDotNET.GameLogic
 {
-    internal class CheckMateValidationData
-    {
-        bool IsCheckMate { get; set; }
-    }
-
     internal static class CheckMateValidationGameLogic
     {
-        internal static bool IsCheckMate(TileDictionary tileDict, ChessPieceColor kingColor, Coords kingCoords)
+        internal static bool IsCheckMate(TileDictionary tileDict, Coords kingCoords)
         {
+            ChessPieceColor kingColor = tileDict[kingCoords.String].ChessPiece.ChessPieceColor;
             ChessPieceColor ownColor = kingColor == ChessPieceColor.White ? ChessPieceColor.Black : ChessPieceColor.White;
             List<Coords> threateningTiles = ThreateningValidationGameLogic.IsTileThreatenedList(tileDict, kingColor, kingCoords);
             int threateningTilesNumber = threateningTiles.Count;
@@ -73,7 +69,7 @@ namespace ChessDotNET.GameLogic
                     }
 
                     // check if an opponent's rook is threatening own king:
-                    if (threateningType == ChessPieceType.Rook)
+                    else if (threateningType == ChessPieceType.Rook)
                     {
                         if (CanBlockQueenAndRookHorizontally(tileDict, threateningTile, kingCoords, ownColor))
                         {
@@ -91,7 +87,7 @@ namespace ChessDotNET.GameLogic
                     }
 
                     // check if threatening chess piece can be captured:
-                    if (ThreateningValidationGameLogic.IsTileThreatened(tileDict, ownColor, threateningTiles[0], true))
+                    else if (ThreateningValidationGameLogic.IsTileThreatened(tileDict, ownColor, threateningTiles[0], true))
                     {
                         return false;
                     }

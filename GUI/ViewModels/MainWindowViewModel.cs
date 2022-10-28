@@ -417,16 +417,16 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
 
                                 if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
                                 {
-                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, ChessPieceColor.White, tileDict.WhiteKingCoords))
+                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, tileDict.WhiteKingCoords))
                                     {
                                         labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", White is check mate!";
                                     }
                                 }
                                 else if (currentlyDraggedChessPieceColor == ChessPieceColor.White)
                                 {
-                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, ChessPieceColor.Black, tileDict.BlackKingCoords))
+                                    if (CheckMateValidationGameLogic.IsCheckMate(tileDict, tileDict.BlackKingCoords))
                                     {
-                                        labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", White is check mate!";
+                                        labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", Black is check mate!";
                                     }
                                 }
 
