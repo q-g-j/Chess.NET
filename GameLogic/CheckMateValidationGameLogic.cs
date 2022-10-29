@@ -54,15 +54,15 @@ namespace ChessDotNET.GameLogic
                     // check if an opponent's queen is threatening own king:
                     if (threateningType == ChessPieceType.Queen)
                     {
-                        if (CanBlockQueenAndRookHorizontally(tileDict, threateningTile, kingCoords, ownColor))
+                        if (CanBlockQueenAndRookHorizontally(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
-                        else if (CanBlockQueenAndRookVertically(tileDict, threateningTile, kingCoords, ownColor))
+                        else if (CanBlockQueenAndRookVertically(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
-                        else if (CanBlockQueenAndBishopDiagonally(tileDict, threateningTile, kingCoords, ownColor))
+                        else if (CanBlockQueenAndBishopDiagonally(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
@@ -71,11 +71,11 @@ namespace ChessDotNET.GameLogic
                     // check if an opponent's rook is threatening own king:
                     else if (threateningType == ChessPieceType.Rook)
                     {
-                        if (CanBlockQueenAndRookHorizontally(tileDict, threateningTile, kingCoords, ownColor))
+                        if (CanBlockQueenAndRookHorizontally(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
-                        if (CanBlockQueenAndRookVertically(tileDict, threateningTile, kingCoords, ownColor))
+                        if (CanBlockQueenAndRookVertically(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
@@ -84,7 +84,7 @@ namespace ChessDotNET.GameLogic
                     // check if an opponent's bishop is threatening own king:
                     else if (threateningTile.ChessPiece.ChessPieceType == ChessPieceType.Bishop)
                     {
-                        if (CanBlockQueenAndBishopDiagonally(tileDict, threateningTile, kingCoords, ownColor))
+                        if (CanBlockQueenAndBishopDiagonally(tileDict, threateningTile, kingCoords))
                         {
                             return false;
                         }
@@ -103,8 +103,10 @@ namespace ChessDotNET.GameLogic
             return false;
         }
         private static bool CanBlockQueenAndRookHorizontally(
-            TileDictionary tileDict, Tile threateningTile, Coords kingCoords, ChessPieceColor ownColor)
+            TileDictionary tileDict, Tile threateningTile, Coords kingCoords)
         {
+            ChessPieceColor threateningColor = threateningTile.ChessPiece.ChessPieceColor;
+
             if (threateningTile.Coords.Y == kingCoords.Y)
             {
                 if (threateningTile.Coords.X < kingCoords.X)
@@ -112,7 +114,7 @@ namespace ChessDotNET.GameLogic
                     for (int column = threateningTile.Coords.X + 1; column <= kingCoords.X - 1; column++)
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -123,7 +125,7 @@ namespace ChessDotNET.GameLogic
                     for (int column = threateningTile.Coords.X - 1; column >= kingCoords.X + 1; column--)
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -135,8 +137,10 @@ namespace ChessDotNET.GameLogic
             return false;
         }
         private static bool CanBlockQueenAndRookVertically(
-            TileDictionary tileDict, Tile threateningTile, Coords kingCoords, ChessPieceColor ownColor)
+            TileDictionary tileDict, Tile threateningTile, Coords kingCoords)
         {
+            ChessPieceColor threateningColor = threateningTile.ChessPiece.ChessPieceColor;
+
             if (threateningTile.Coords.X == kingCoords.X)
             {
                 if (threateningTile.Coords.Y < kingCoords.Y)
@@ -144,7 +148,7 @@ namespace ChessDotNET.GameLogic
                     for (int row = threateningTile.Coords.Y + 1; row <= kingCoords.Y - 1; row++)
                     {
                         Coords coordsInBetween = new Coords(threateningTile.Coords.X, row);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             System.Diagnostics.Debug.WriteLine(coordsInBetween.String);
                             return true;
@@ -156,7 +160,7 @@ namespace ChessDotNET.GameLogic
                     for (int row = threateningTile.Coords.Y - 1; row >= kingCoords.Y + 1; row--)
                     {
                         Coords coordsInBetween = new Coords(threateningTile.Coords.X, row);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -168,8 +172,10 @@ namespace ChessDotNET.GameLogic
             return false;
         }
         private static bool CanBlockQueenAndBishopDiagonally(
-            TileDictionary tileDict, Tile threateningTile, Coords kingCoords, ChessPieceColor ownColor)
+            TileDictionary tileDict, Tile threateningTile, Coords kingCoords)
         {
+            ChessPieceColor threateningColor = threateningTile.ChessPiece.ChessPieceColor;
+
             if (threateningTile.Coords.X < kingCoords.X)
             {
                 if (threateningTile.Coords.Y < kingCoords.Y)
@@ -178,7 +184,7 @@ namespace ChessDotNET.GameLogic
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y + (column - threateningTile.Coords.X));
                         System.Diagnostics.Debug.WriteLine(coordsInBetween.String);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -190,7 +196,7 @@ namespace ChessDotNET.GameLogic
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y - (column - threateningTile.Coords.X));
                         System.Diagnostics.Debug.WriteLine(coordsInBetween.String);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -206,7 +212,7 @@ namespace ChessDotNET.GameLogic
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y - (column - threateningTile.Coords.X));
                         System.Diagnostics.Debug.WriteLine(coordsInBetween.String);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }
@@ -218,7 +224,7 @@ namespace ChessDotNET.GameLogic
                     {
                         Coords coordsInBetween = new Coords(column, threateningTile.Coords.Y + (column - threateningTile.Coords.X));
                         System.Diagnostics.Debug.WriteLine("here" + coordsInBetween.String);
-                        if (MoveValidationGameLogic.CanReachTile(tileDict, ownColor, coordsInBetween))
+                        if (MoveValidationGameLogic.CanReachTile(tileDict, threateningColor, coordsInBetween))
                         {
                             return true;
                         }

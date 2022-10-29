@@ -44,21 +44,6 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ChessPieceImages.WhiteQueen
             };
 
-            sideMenuVisibility = "Hidden";
-            sideMenuMainMenuVisibility = "Visible";
-            sideMenuNewGameModeVisibility = "Hidden";
-            sideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-
-            overlayPromotePawnVisibility = "Hidden";
-
-            chessCanvasRotationAngle = "0";
-            chessCanvasRotationCenterX = "0";
-            chessCanvasRotationCenterY = "-200";
-
-            wasSideMenuOpen = false;
-
-            MoveList = new List<Move>();
-
             StartGame(false);
             //StartGameTestCastling(false);
             //StartGameTestCheckMate(false);
@@ -76,10 +61,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private Point dragOverCanvasPosition;
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
-        private bool wasSideMenuOpen;
+        private bool wasSideMenuOpen = false;
         private Coords promotePawnCoords;
-        private List<Move> MoveList;
+        private List<Move> MoveList = new List<Move>();
         private bool debugNoTurns = false;
+        private bool isCheckMate = false;
         #endregion Fields
 
         #region Property-Values
@@ -87,15 +73,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private List<ImageSource> promotePawnList;
         private List<string> horizontalNotationList;
         private List<string> verticalNotationList;
-        private string sideMenuVisibility;
-        private string sideMenuMainMenuVisibility;
-        private string sideMenuNewGameModeVisibility;
-        private string sideMenuButtonsNewGameLocalColorVisibility;
-        private string overlayPromotePawnVisibility;
-        private string chessCanvasRotationAngle;
-        private string chessCanvasRotationCenterX;
-        private string chessCanvasRotationCenterY;
-        private string labelMoveInfo;
+        private string sideMenuVisibility= "Hidden";
+        private string sideMenuMainMenuVisibility = "Visible";
+        private string sideMenuNewGameModeVisibility = "Hidden";
+        private string sideMenuButtonsNewGameLocalColorVisibility = "Hidden";
+        private string overlayPromotePawnVisibility = "Hidden";
+        private string chessCanvasRotationAngle = "0";
+        private string chessCanvasRotationCenterX = "9";
+        private string chessCanvasRotationCenterY = "-200";
+        private string labelMoveInfo = "";
         #endregion Property-Values
 
         #region Bindable Properties
@@ -259,7 +245,28 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                 currentlyDraggedChessPieceOriginalCanvasTop = -1000;
                 currentlyDraggedChessPieceImage = param as Image;
-                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source))
+                ChessPieceColor currentlyDraggedChessPieceColor = ChessPieceImages.GetImageColor(currentlyDraggedChessPieceImage.Source);
+                bool isFirstTurn = MoveList.Count == 0;
+                bool isInputAllowed = true;
+
+                if (isFirstTurn)
+                {
+                    if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
+                    {
+                        isInputAllowed = false;
+                    }
+                }
+                else
+                {
+                    ChessPieceColor lastMoveColor = MoveList[MoveList.Count - 1].ChessPieceColor;
+                    if (currentlyDraggedChessPieceColor == lastMoveColor)
+                    {
+                        isInputAllowed = false;
+                    }
+                }
+
+                if (!ChessPieceImages.IsEmpty(currentlyDraggedChessPieceImage.Source)
+                    && isInputAllowed)
                 {
                     chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
@@ -274,6 +281,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                     }
                     currentlyDraggedChessPieceImage.CaptureMouse();
                 }
+                else
+                {
+                    currentlyDraggedChessPieceImage = null;                
+                }
+
                 wasSideMenuOpen = false;
                 e.Handled = true;
             }
@@ -420,6 +432,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     if (CheckMateValidationGameLogic.IsCheckMate(tileDict, tileDict.WhiteKingCoords))
                                     {
                                         labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", White is check mate!";
+                                        isCheckMate = true;
                                     }
                                 }
                                 else if (currentlyDraggedChessPieceColor == ChessPieceColor.White)
@@ -427,13 +440,13 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     if (CheckMateValidationGameLogic.IsCheckMate(tileDict, tileDict.BlackKingCoords))
                                     {
                                         labelMoveInfoText = oldCoords.String + " -> " + newCoords.String + ", Black is check mate!";
+                                        isCheckMate = true;
                                     }
                                 }
 
                                 LabelMoveInfo = labelMoveInfoText;
 
                                 MoveList.Add(new Move(oldCoords, newCoords, currentlyDraggedChessPieceColor, currentlyDraggedChessPieceType));
-
 
                                 OnPropertyChangedByPropertyName("TileDict");
 
@@ -772,8 +785,14 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         private bool IsInputAllowed()
         {
-            if (SideMenuVisibility == "Visible") return false;
-            if (OverlayPromotePawnVisibility == "Visible") return false;
+            if (
+                isCheckMate
+                || SideMenuVisibility == "Visible"
+                || OverlayPromotePawnVisibility == "Visible")
+            {
+                return false;
+            }
+
             return true;
         }
         private void OnPropertyChangedByPropertyName(string name)
