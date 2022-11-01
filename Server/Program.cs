@@ -26,7 +26,6 @@ namespace Server
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();

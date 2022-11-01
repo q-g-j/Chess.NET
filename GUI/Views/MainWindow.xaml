@@ -9,6 +9,7 @@
         xmlns:vm="clr-namespace:ChessDotNET.GUI.ViewModels.MainWindow"
         mc:Ignorable="d"
         ResizeMode="CanResize"
+        SizeToContent="Height"
         Width="651"
         MinHeight="300"
         MinWidth="300"        
