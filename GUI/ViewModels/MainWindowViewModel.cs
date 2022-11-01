@@ -503,6 +503,7 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                 }
 
                                 string labelMoveInfoText = oldCoords.String + " -> " + newCoords.String;
+
                                 if (ThreateningValidationGameLogic.IsTileThreatened(
                                     tileDict, ChessPieceColor.White, tileDict.WhiteKingCoords, false))
                                 {
@@ -512,6 +513,15 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                                     tileDict, ChessPieceColor.Black, tileDict.BlackKingCoords, false))
                                 {
                                     labelMoveInfoText += ", Black king is in check!";
+                                }
+
+                                if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
+                                {
+                                    labelMoveInfoText += " - It's white's turn...";
+                                }
+                                else
+                                {
+                                    labelMoveInfoText += " - It's black's turn...";
                                 }
 
                                 if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)

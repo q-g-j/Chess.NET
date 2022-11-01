@@ -55,7 +55,7 @@
                         <Line Grid.Row="4" Style="{StaticResource StyleTopBarButtonMenuStripes}"/>
                     </Grid>
                 </Button>
-                <Label Content="{Binding LabelMoveInfo}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="-60, 0, 0, 0"/>
+                <Label Content="{Binding LabelMoveInfo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
             </DockPanel>
             <Grid>
                 <local:SideMenu Visibility="{Binding SideMenuVisibility}"/>
