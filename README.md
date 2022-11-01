@@ -17,6 +17,7 @@
     **Done:**
     - added a WebAPI server (ASP.NET)
     - added a lobby:
+        - needs the server running on localhost:7002 (will be changeable in the future)
         - the server uses an in-memory database to store each player that is online
         - each client that enters the lobby must enter a unique name
         - the lobby is refreshed automatically every 5 seconds
