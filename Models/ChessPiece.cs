@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media;
 
 
-namespace ChessDotNET.CustomTypes
+namespace ChessDotNET.Models
 {
     public class ChessPiece
     {

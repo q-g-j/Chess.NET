@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChessDotNET.CustomTypes;
-using static ChessDotNET.CustomTypes.Coords;
+using ChessDotNET.Models;
+using static ChessDotNET.Models.Coords;
 
 
 namespace ChessDotNET.GameLogic

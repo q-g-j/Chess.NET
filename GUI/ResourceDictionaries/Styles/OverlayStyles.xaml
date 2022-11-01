@@ -4,9 +4,9 @@
     <Style x:Key="StyleOverlayBorder" TargetType="Border">
         <Setter Property="Margin" Value="0, 0, 0, 0"/>
         <Setter Property="CornerRadius" Value="25"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
+        <!--<Setter Property="VerticalAlignment" Value="Top"/>-->
         <Setter Property="Background" Value="#ffb366"/>
-        <Setter Property="Width" Value="260"/>
+        <!--<Setter Property="Width" Value="260"/>-->
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="SaddleBrown"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -42,6 +42,9 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="#dd7f3c"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="Gray"/>
             </Trigger>
         </Style.Triggers>
     </Style>

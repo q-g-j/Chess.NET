@@ -1,4 +1,4 @@
-﻿using ChessDotNET.CustomTypes;
+﻿using ChessDotNET.Models;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

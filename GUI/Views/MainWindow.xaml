@@ -11,8 +11,7 @@
         ResizeMode="CanResize"
         Width="651"
         MinHeight="300"
-        MinWidth="300"
-        SizeToContent="Height"
+        MinWidth="300"        
         Background="#ffce9e"
         Title="Chess.NET"
         UseLayoutRounding="True">

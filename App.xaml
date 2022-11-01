@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/OverlayStyles.xaml" />
                 <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/MainWindowStyles.xaml" />
                 <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/SideMenuStyles.xaml" />
+                <ResourceDictionary Source="/GUI/ResourceDictionaries/Styles/WindowLobbyStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

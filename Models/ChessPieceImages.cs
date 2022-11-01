@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 
-namespace ChessDotNET.CustomTypes
+namespace ChessDotNET.Models
 
 {
     internal class ChessPieceImages

@@ -5,14 +5,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.IO;
-using ChessDotNET.CustomTypes;
+using ChessDotNET.WebClient;
+using ChessDotNET.Models;
 using ChessDotNET.GUI.ViewHelpers;
+using ChessDotNET.GUI.Views;
 using System.Collections.Generic;
 using System.Linq;
 using ChessDotNET.GameLogic;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
+using System.Net.Http.Headers;
+using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace ChessDotNET.GUI.ViewModels.MainWindow
 {
@@ -28,12 +33,26 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
 
             SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
-            SideMenuNewGameModeLocalCommand = new RelayCommand(SideMenuNewGameModeLocalAction);
-            SideMenuNewGameModeGoBackCommand = new RelayCommand(SideMenuNewGameModeGoBackAction);
-            SideMenuNewGameLocalAsWhiteCommand = new RelayCommand(SideMenuNewGameLocalAsWhiteAction);
-            SideMenuNewGameLocalAsBlackCommand = new RelayCommand(SideMenuNewGameLocalAsBlackAction);
-            SideMenuNewGameLocalColorGoBackCommand = new RelayCommand(SideMenuNewGameLocalColorGoBackAction);
+
+            SideMenuLocalGameCommand = new RelayCommand(SideMenuLocalGameAction);
+            SideMenuOnlineGameCommand = new RelayCommand(SideMenuOnlineGameAction);
+            SideMenuGameModeGoBackCommand = new RelayCommand(SideMenuGameModeGoBackAction);
+
+            SideMenuLocalGameAsWhiteCommand = new RelayCommand(SideMenuLocalGameAsWhiteAction);
+            SideMenuLocalGameAsBlackCommand = new RelayCommand(SideMenuLocalGameAsBlackAction);
+            SideMenuLocalGameGoBackCommand = new RelayCommand(SideMenuLocalGameGoBackAction);
+
+            SideMenuOnlineGameEnterLobbyCommand = new RelayCommand(SideMenuOnlineGameEnterLobbyActionAsync);
+            SideMenuOnlineGameGoBackCommand = new RelayCommand(SideMenuOnlineGameGoBackAction);
+
             SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
+
+            WindowLobbyOkCommand = new RelayCommand<object>(o => WindowLobbyOkAction(o));
+            WindowLobbyCancelCommand = new RelayCommand<object>(o => WindowLobbyCancelAction(o));
+
+            WindowPlayerNameOkCommand = new RelayCommand<object>(o => WindowPlayerNameOkActionAsync(o));
+            WindowPlayerNameCancelCommand = new RelayCommand<object>(o => WindowPlayerNameCancelAction(o));
+
             PromotePawnSelectChessPieceCommand = new RelayCommand<object>(PromotePawnSelectChessPieceAction);
 
             promotePawnList = new List<ImageSource>()
@@ -43,6 +62,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 ChessPieceImages.WhiteRook,
                 ChessPieceImages.WhiteQueen
             };
+
+            WebClientCommands.client.BaseAddress = new Uri(@"http://localhost:7002/");
+            WebClientCommands.client.DefaultRequestHeaders.Accept.Clear();
+            WebClientCommands.client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
 
             StartGame(false);
             //StartGameTestCastling(false);
@@ -64,8 +88,11 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private bool wasSideMenuOpen = false;
         private Coords promotePawnCoords;
         private List<Move> MoveList = new List<Move>();
-        private bool debugNoTurns = false;
+        private readonly bool debugNoTurns = false;
         private bool isCheckMate = false;
+        private Player localPlayer = null;
+
+        WindowLobby windowLobby;
         #endregion Fields
 
         #region Property-Values
@@ -73,15 +100,21 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         private List<ImageSource> promotePawnList;
         private List<string> horizontalNotationList;
         private List<string> verticalNotationList;
+        public ObservableCollection<Player> playerList;
         private string sideMenuVisibility= "Hidden";
-        private string sideMenuMainMenuVisibility = "Visible";
-        private string sideMenuNewGameModeVisibility = "Hidden";
-        private string sideMenuButtonsNewGameLocalColorVisibility = "Hidden";
+        private string sideMenuMainVisibility = "Visible";
+        private string sideMenuGameModeVisibility = "Hidden";
+        private string sideMenuLocalGameVisibility = "Hidden";
+        private string sideMenuOnlineGameVisibility = "Hidden";
         private string overlayPromotePawnVisibility = "Hidden";
         private string chessCanvasRotationAngle = "0";
         private string chessCanvasRotationCenterX = "9";
         private string chessCanvasRotationCenterY = "-200";
         private string labelMoveInfo = "";
+        private string textBoxPlayerName = "";
+        private string windowPlayerNameOkButtonEnabled = "False";
+        private string lobbyOverlayPlayerNameVisibility;
+        private string labelPlayerNameConflict = "";
         #endregion Property-Values
 
         #region Bindable Properties
@@ -115,25 +148,35 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             get => sideMenuVisibility;
             set { sideMenuVisibility = value; OnPropertyChanged(); }
         }
-        public string SideMenuMainMenuVisibility
+        public string SideMenuMainVisibility
         {
-            get => sideMenuMainMenuVisibility;
-            set { sideMenuMainMenuVisibility = value; OnPropertyChanged(); }
+            get => sideMenuMainVisibility;
+            set { sideMenuMainVisibility = value; OnPropertyChanged(); }
         }
-        public string SideMenuNewGameModeVisibility
+        public string SideMenuGameModeVisibility
         {
-            get => sideMenuNewGameModeVisibility;
-            set { sideMenuNewGameModeVisibility = value; OnPropertyChanged(); }
+            get => sideMenuGameModeVisibility;
+            set { sideMenuGameModeVisibility = value; OnPropertyChanged(); }
         }
-        public string SideMenuButtonsNewGameLocalColorVisibility
+        public string SideMenuLocalGameVisibility
         {
-            get => sideMenuButtonsNewGameLocalColorVisibility;
-            set { sideMenuButtonsNewGameLocalColorVisibility = value; OnPropertyChanged(); }
+            get => sideMenuLocalGameVisibility;
+            set { sideMenuLocalGameVisibility = value; OnPropertyChanged(); }
+        }
+        public string SideMenuOnlineGameVisibility
+        {
+            get => sideMenuOnlineGameVisibility;
+            set { sideMenuOnlineGameVisibility = value; OnPropertyChanged(); }
         }
         public string OverlayPromotePawnVisibility
         {
             get => overlayPromotePawnVisibility;
             set { overlayPromotePawnVisibility = value; OnPropertyChanged(); }
+        }
+        public string LobbyOverlayPlayerNameVisibility
+        {
+            get => lobbyOverlayPlayerNameVisibility;
+            set { lobbyOverlayPlayerNameVisibility = value; OnPropertyChanged(); }
         }
         public string ChessCanvasRotationAngle
         {
@@ -150,17 +193,60 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
             get => chessCanvasRotationCenterY;
             set { chessCanvasRotationCenterY = value; OnPropertyChanged(); }
         }
+        public string LabelPlayerNameConflict
+        {
+            get => labelPlayerNameConflict;
+            set { labelPlayerNameConflict = value; OnPropertyChanged(); }
+        }
+        public ObservableCollection<Player> PlayerList
+        {
+            get => playerList;
+            set { playerList = value; OnPropertyChanged(); }
+        }
+        public string TextBoxPlayerName
+        {
+            get
+            {
+                return textBoxPlayerName;
+            }
+            set
+            {
+                textBoxPlayerName = value;
+                LabelPlayerNameConflict = "";
+                if (textBoxPlayerName != "")
+                {
+                    WindowPlayerNameOkButtonEnabled = "True";
+                }
+                else
+                {
+                    WindowPlayerNameOkButtonEnabled = "False";
+                }
+                OnPropertyChanged();
+            }
+        }
+        public string WindowPlayerNameOkButtonEnabled
+        {
+            get => windowPlayerNameOkButtonEnabled;
+            set { windowPlayerNameOkButtonEnabled = value; OnPropertyChanged(); }
+        }
         #endregion Bindable Properties
 
         #region Commands
         public RelayCommand OpenSideMenuCommand { get; }
         public RelayCommand SideMenuNewGameCommand { get; }
-        public RelayCommand SideMenuNewGameModeLocalCommand { get; }
-        public RelayCommand SideMenuNewGameModeGoBackCommand { get; }
-        public RelayCommand SideMenuNewGameLocalAsWhiteCommand { get; }
-        public RelayCommand SideMenuNewGameLocalAsBlackCommand { get; }
-        public RelayCommand SideMenuNewGameLocalColorGoBackCommand { get; }
+        public RelayCommand SideMenuLocalGameCommand { get; }
+        public RelayCommand SideMenuOnlineGameCommand { get; }
+        public RelayCommand SideMenuGameModeGoBackCommand { get; }
+        public RelayCommand SideMenuLocalGameAsWhiteCommand { get; }
+        public RelayCommand SideMenuLocalGameAsBlackCommand { get; }
+        public RelayCommand SideMenuLocalGameGoBackCommand { get; }
+        public RelayCommand SideMenuOnlineGameEnterLobbyCommand { get; }
+        public RelayCommand SideMenuOnlineGameGoBackCommand { get; }
         public RelayCommand SideMenuQuitProgramCommand { get; }
+        public RelayCommand<object> WindowLobbyOkCommand { get; }
+        public RelayCommand<object> WindowLobbyCancelCommand { get; }
+        public RelayCommand<object> WindowPlayerNameOkCommand { get; }
+        public RelayCommand<object> WindowPlayerNameCancelCommand { get; }
         public RelayCommand<object> WindowMouseMoveCommand { get; }
         public RelayCommand<object> WindowMouseLeftDownCommand { get; }
         public RelayCommand<object> WindowMouseLeftUpCommand { get; }
@@ -176,9 +262,10 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
                 if (SideMenuVisibility != "Visible"
                     && OverlayPromotePawnVisibility == "Hidden")
                 {
-                    SideMenuNewGameModeVisibility = "Hidden";
-                    SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-                    SideMenuMainMenuVisibility = "Visible";
+                    SideMenuGameModeVisibility = "Hidden";
+                    SideMenuLocalGameVisibility = "Hidden";
+                    SideMenuOnlineGameVisibility = "Hidden";
+                    SideMenuMainVisibility = "Visible";
                     SideMenuVisibility = "Visible";
                 }
                 else SideMenuVisibility = "Hidden";
@@ -484,45 +571,155 @@ namespace ChessDotNET.GUI.ViewModels.MainWindow
         }
         private void SideMenuNewGameAction()
         {
-            SideMenuMainMenuVisibility = "Hidden";
-            SideMenuNewGameModeVisibility = "Visible";
+            SideMenuMainVisibility = "Hidden";
+            SideMenuGameModeVisibility = "Visible";
         }
-        private void SideMenuNewGameModeLocalAction()
+        private void SideMenuGameModeGoBackAction()
         {
-            SideMenuNewGameModeVisibility = "Hidden";
-            SideMenuButtonsNewGameLocalColorVisibility = "Visible";
+            SideMenuGameModeVisibility = "Hidden";
+            SideMenuMainVisibility = "Visible";
         }
-        private void SideMenuNewGameLocalColorGoBackAction()
+        private void SideMenuLocalGameAction()
         {
-            SideMenuButtonsNewGameLocalColorVisibility = "Hidden";
-            SideMenuNewGameModeVisibility = "Visible";
+            SideMenuGameModeVisibility = "Hidden";
+            SideMenuLocalGameVisibility = "Visible";
         }
-        private void SideMenuNewGameLocalAsWhiteAction()
+        private void SideMenuOnlineGameAction()
+        {
+            SideMenuGameModeVisibility = "Hidden";
+            SideMenuOnlineGameVisibility = "Visible";
+        }
+        private void SideMenuLocalGameGoBackAction()
+        {
+            SideMenuLocalGameVisibility = "Hidden";
+            SideMenuGameModeVisibility = "Visible";
+        }
+        private void SideMenuOnlineGameGoBackAction()
+        {
+            SideMenuOnlineGameVisibility = "Hidden";
+            SideMenuGameModeVisibility = "Visible";
+        }
+        private void SideMenuLocalGameAsWhiteAction()
         {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             SideMenuVisibility = "Hidden";
-            SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Hidden";
+            SideMenuMainVisibility = "Visible";
+            SideMenuGameModeVisibility = "Hidden";
 
             StartGame(false);
         }
-        private void SideMenuNewGameLocalAsBlackAction()
+        private void SideMenuLocalGameAsBlackAction()
         {
             currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
             currentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             SideMenuVisibility = "Hidden";
-            SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Hidden";
+            SideMenuMainVisibility = "Visible";
+            SideMenuGameModeVisibility = "Hidden";
 
             StartGame(true);
         }
-        private void SideMenuNewGameModeGoBackAction()
+        private async void SideMenuOnlineGameEnterLobbyActionAsync()
         {
-            SideMenuMainMenuVisibility = "Visible";
-            SideMenuNewGameModeVisibility = "Hidden";
+            SideMenuOnlineGameVisibility = "Hidden";
+            SideMenuGameModeVisibility = "Hidden";
+            SideMenuVisibility = "Hidden";
+
+            windowLobby = new WindowLobby
+            {
+                DataContext = this
+            };
+            windowLobby.Show();
+
+            PlayerList = new ObservableCollection<Player>(await WebClientCommands.GetAllPlayersAsync());
+
+            if (localPlayer == null)
+            {
+                LobbyOverlayPlayerNameVisibility = "Visible";
+            }
+
+            if (localPlayer != null)
+            {
+                var createPlayerResult = await WebClientCommands.CreatePlayerAsync(localPlayer);
+            }
+
+            var keepRefreshingLobby = new ThreadStart(() => KeepRefreshingLobby());
+            var keepRefreshingLobbyBackgroundThread = new Thread(keepRefreshingLobby)
+            {
+                IsBackground = true
+            };
+            keepRefreshingLobbyBackgroundThread.Start();
+
+
+            var keepResettingCounter = new ThreadStart(() => KeepResettingInactiveCounter());
+            var keepResettingCounterBackgroundThread = new Thread(keepResettingCounter)
+            {
+                IsBackground = true
+            };
+            keepResettingCounterBackgroundThread.Start();
+        }
+        private void KeepRefreshingLobby()
+        {
+            while (windowLobby.IsVisible)
+            {
+                Task.Run(async () =>
+                {
+                    var allPlayers = await WebClientCommands.GetAllPlayersAsync();
+                    PlayerList = new ObservableCollection<Player>(allPlayers);
+                });
+                Thread.Sleep(5000);
+            }
+        }
+        private void KeepResettingInactiveCounter()
+        {
+            while (windowLobby.IsVisible)
+            {
+                Task.Run(async () =>
+                {
+                    await WebClientCommands.ResetInactiveCounterAsync(localPlayer);
+                });
+                Thread.Sleep(1000);
+            }
+        }
+        private void WindowLobbyOkAction(object o)
+        {
+            windowLobby = (WindowLobby)o;
+            windowLobby.Close();
+        }
+        private void WindowLobbyCancelAction(object o)
+        {
+            windowLobby = (WindowLobby)o;
+            windowLobby.Close();
+        }
+        private async void WindowPlayerNameOkActionAsync(object o)
+        {
+            localPlayer = new Player()
+            {
+                Name = TextBoxPlayerName
+            };
+            var createPlayerResult = await WebClientCommands.CreatePlayerAsync(localPlayer);
+
+            if (createPlayerResult.Name == null)
+            {
+                LabelPlayerNameConflict = "This name is already taken!";
+                localPlayer = null;
+            }
+            else
+            {
+                LabelPlayerNameConflict = "";
+                LobbyOverlayPlayerNameVisibility = "Hidden";
+
+                var allPlayers = await WebClientCommands.GetAllPlayersAsync();
+                PlayerList = new ObservableCollection<Player>(allPlayers);
+            }
+        }
+        private void WindowPlayerNameCancelAction(object o)
+        {
+            TextBoxPlayerName = "";
+            LabelPlayerNameConflict = "";
+            LobbyOverlayPlayerNameVisibility = "Hidden";
         }
         private void SideMenuQuitProgramAction()
         {

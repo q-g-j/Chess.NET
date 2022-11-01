@@ -2,7 +2,7 @@
 using System.Windows.Media;
 
 
-namespace ChessDotNET.CustomTypes
+namespace ChessDotNET.Models
 {
     internal class Tile
     {

@@ -80,6 +80,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -93,6 +96,9 @@
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
@@ -100,11 +106,23 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Primitives, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.Serialization.Primitives.4.3.0\lib\net46\System.Runtime.Serialization.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Threading.Channels, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Channels.6.0.0\lib\net461\System.Threading.Channels.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.WebHost.5.2.9\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -124,7 +142,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CustomTypes\Move.cs" />
+    <Compile Include="GUI\Views\LobbyOverlayPlayerName.xaml.cs">
+      <DependentUpon>LobbyOverlayPlayerName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WebClient\Commands.cs" />
+    <Compile Include="Models\Move.cs" />
     <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
     <Compile Include="GameLogic\CheckValidationGameLogic.cs" />
     <Compile Include="GameLogic\EnPassantValidationGameLogic.cs" />
@@ -146,6 +168,10 @@
     <Page Include="GUI\ResourceDictionaries\ChessPieceImages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\ResourceDictionaries\Styles\WindowLobbyStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="GUI\ResourceDictionaries\Styles\OverlayStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -171,22 +197,42 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CustomTypes\ChessPiece.cs" />
-    <Compile Include="CustomTypes\TileDictionary.cs" />
+    <Compile Include="Models\ChessPiece.cs" />
+    <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\TileDictionary.cs" />
     <Compile Include="GameLogic\CheckMateValidationGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
+    <Compile Include="GUI\Views\SideMenuGameMode.xaml.cs">
+      <DependentUpon>SideMenuGameMode.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\SideMenuMain.xaml.cs">
+      <DependentUpon>SideMenuMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\SideMenuLocalGame.xaml.cs">
+      <DependentUpon>SideMenuLocalGame.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\SideMenuOnlineGame.xaml.cs">
+      <DependentUpon>SideMenuOnlineGame.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Views\WindowLobby.xaml.cs">
+      <DependentUpon>WindowLobby.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
     <Compile Include="GUI\ViewHelpers\AdvancedInvokeCommandAction.cs" />
-    <Compile Include="CustomTypes\ChessPieceImages.cs" />
+    <Compile Include="Models\ChessPieceImages.cs" />
     <Compile Include="GUI\ViewHelpers\CompositeCommandParameter.cs" />
-    <Compile Include="CustomTypes\Coords.cs" />
-    <Compile Include="CustomTypes\Tile.cs" />
+    <Compile Include="Models\Coords.cs" />
+    <Compile Include="Models\Tile.cs" />
     <Compile Include="GUI\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="GUI\Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="GUI\Views\LobbyOverlayPlayerName.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GUI\Views\OverlayPromotePawn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -194,6 +240,26 @@
     <Page Include="GUI\Views\SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Views\SideMenuGameMode.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GUI\Views\SideMenuMain.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Views\SideMenuLocalGame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Views\SideMenuOnlineGame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\Views\WindowLobby.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

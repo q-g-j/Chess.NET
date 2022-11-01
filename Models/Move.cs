@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessDotNET.CustomTypes
+namespace ChessDotNET.Models
 {
     internal class Move
     {

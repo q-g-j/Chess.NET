@@ -2,7 +2,7 @@
 using System.Windows;
 
 
-namespace ChessDotNET.CustomTypes
+namespace ChessDotNET.Models
 
 {
     internal class Coords
