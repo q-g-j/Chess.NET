@@ -13,5 +13,12 @@
 
 ### TODO:
 - draw validation
-- network play (a dedicated server / client REST API implementation is in progress)
+- network play (a dedicated server / client REST API implementation is in progress)<br/>
+    **Done:**
+    - added a WebAPI server (ASP.NET MVC)
+    - added a lobby:
+        - the server uses an in-memory database to store each player that is online
+        - each client that enters the lobby must enter a unique name
+        - the lobby is refreshed automatically every 5 seconds
+        - when a player leaves the lobby (= closes the lobby window) he / she will be removed from the lobby and the db after a few seconds
 - use UCI chess engines
