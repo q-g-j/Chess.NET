@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,9 +18,9 @@ namespace ChessDotNET.WebClient
         internal static readonly HttpClient client = new HttpClient();
 
         #region HttpGetCommands
-        internal static async Task<List<Player>> GetAllPlayersAsync()
+        internal static async Task<ObservableCollection<Player>> GetAllPlayersAsync()
         {
-            List<Player> playerList = new List<Player>();
+            ObservableCollection<Player> playerList = new ObservableCollection<Player>();
 
             HttpResponseMessage response = await client.GetAsync(
                 "api/players");
@@ -28,7 +29,7 @@ namespace ChessDotNET.WebClient
             {
 
                 var jsonString = await response.Content.ReadAsStringAsync();
-                playerList = JsonConvert.DeserializeObject<List<Player>>(jsonString);
+                playerList = JsonConvert.DeserializeObject<ObservableCollection<Player>>(jsonString);
             }
 
             return playerList;

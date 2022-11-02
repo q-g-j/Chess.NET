@@ -19,6 +19,7 @@ using System.Net.Http.Headers;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Threading;
+using System.Data;
 
 namespace ChessDotNET.ViewModels.MainWindow
 {
@@ -712,15 +713,23 @@ namespace ChessDotNET.ViewModels.MainWindow
         {
             while (windowLobby.IsVisible)
             {
-                Task.Run(async () =>
+                Task.Run(() =>
                 {
                     try
                     {
-                        var allPlayers = await HttpClientCommands.GetAllPlayersAsync();
-                        DispatchService.Invoke(() =>
+                        DispatchService.Invoke(async () =>
                         {
-                            PlayerList = new ObservableCollection<Player>(allPlayers);
-                            System.Diagnostics.Debug.WriteLine(DataGridLobby.SelectedIndex);
+                            var index = DataGridLobby.SelectedIndex;
+
+                            PlayerList = await HttpClientCommands.GetAllPlayersAsync();
+
+                            if (index != -1)
+                            {
+                                DataGridLobby.SelectedIndex = index;
+                                DataGridLobby.ScrollIntoView(DataGridLobby.Items[index]);
+                            }
+
+                            DataGridLobby.Focus();
                         });
                     }
                     catch
@@ -766,7 +775,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         }
         private void WindowLobbyInviteAction(object o)
         {
-            var dataGrid = (DataGrid)o;            
+            var dataGrid = (DataGrid)o;
         }
         private void WindowLobbyKeyboardAction(object o)
         {

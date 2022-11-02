@@ -23,10 +23,11 @@
         <DataGrid
             x:Name="DataGridLobby"
             Grid.Row="0"
-            ItemsSource="{Binding PlayerList, Mode=OneWay}"
+            ItemsSource="{Binding PlayerList}"
             AutoGenerateColumns="False"
             Style="{StaticResource StyleWindowLobbyDataGrid}"
-            CanUserAddRows="False">
+            CanUserAddRows="False"
+            SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
             </DataGrid.Columns>
