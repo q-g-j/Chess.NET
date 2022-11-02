@@ -29,7 +29,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             OnWindowMouseMoveCommand = new RelayCommand<object>(o => OnWindowMouseMoveAction(o));
             OnWindowMouseLeftDownCommand = new RelayCommand<object>(o => OnWindowMouseLeftDownAction(o));
             OnWindowMouseLeftUpCommand = new RelayCommand<object>(o => OnWindowMouseLeftUpAction(o, tileDict));
-            OnOnChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => OnChessPieceMouseleftDownAction(o));
+            OnChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => OnChessPieceMouseleftDownAction(o));
             OnLobbyOverlayPlayerNameTextBoxFocusCommand = new RelayCommand<object>(o => OnLobbyOverlayPlayerNameTextBoxFocusAction(o));
 
             OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
@@ -69,8 +69,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             WebClientCommands.client.BaseAddress = new Uri(@"http://qgj.ddns.net:7002/");
             WebClientCommands.client.DefaultRequestHeaders.Accept.Clear();
-            WebClientCommands.client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            WebClientCommands.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             StartGame(false);
             //StartGameTestCastling(false);
@@ -257,7 +256,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         public RelayCommand<object> OnWindowMouseMoveCommand { get; }
         public RelayCommand<object> OnWindowMouseLeftDownCommand { get; }
         public RelayCommand<object> OnWindowMouseLeftUpCommand { get; }
-        public RelayCommand<object> OnOnChessPieceMouseLeftDownCommand { get; }
+        public RelayCommand<object> OnChessPieceMouseLeftDownCommand { get; }
         public RelayCommand<object> OnLobbyOverlayPlayerNameTextBoxFocusCommand { get; }
         public RelayCommand<object> PromotePawnSelectChessPieceCommand { get; }
         #endregion Commands
