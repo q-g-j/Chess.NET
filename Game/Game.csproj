@@ -102,7 +102,7 @@
     <Compile Include="Views\LobbyOverlayPlayerName.xaml.cs">
       <DependentUpon>LobbyOverlayPlayerName.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WebClient\Commands.cs" />
+    <Compile Include="HttpClient\HttpClientCommands.cs" />
     <Compile Include="Models\Move.cs" />
     <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
     <Compile Include="GameLogic\CheckValidationGameLogic.cs" />

@@ -31,10 +31,9 @@ namespace Server.Controllers
         {
             if (! _dbContext.Player.Any(a => a.Name == player.Name))
             {
+                player.Invitations = new List<Player>();
                 _dbContext.Player.Add(player);
                 await _dbContext.SaveChangesAsync();
-
-                Globals.InvitationsDict[player.Id] = new List<int>();
 
                 var playerInDb = _dbContext.Player.Where(a => a.Name == player.Name).FirstOrDefault();
 
@@ -60,6 +59,29 @@ namespace Server.Controllers
                     playerInDb.InactiveCounter = 0;
                     await _dbContext.SaveChangesAsync();
                     return Ok();
+                }
+            }
+            return Conflict("error_resetcounterfailed");
+        }
+
+        [HttpPut("invite/{id}")]
+        public async Task<ActionResult> Put(int id, int invitingId)
+        {
+            if (_dbContext.Player.Any(a => a.Id == id))
+            {
+                var playerInDb = _dbContext.Player.Where(a => a.Id == id).FirstOrDefault();
+                if (playerInDb != null)
+                {
+                    if (_dbContext.Player.Any(a => a.Id == invitingId))
+                    {
+                        var invitingPlayerInDB = _dbContext.Player.Where(a => a.Id == invitingId).FirstOrDefault();
+                        if (invitingPlayerInDB != null)
+                        {
+                            playerInDb?.Invitations?.Add(invitingPlayerInDB);
+                            await _dbContext.SaveChangesAsync();
+                            return Ok();
+                        }
+                    }
                 }
             }
             return Conflict("error_resetcounterfailed");

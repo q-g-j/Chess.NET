@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace ChessDotNET.WebClient
 {
-    internal static class Commands
+    internal static class HttpClientCommands
     {
         internal static readonly HttpClient client = new HttpClient();
 
@@ -63,6 +63,12 @@ namespace ChessDotNET.WebClient
         {
             await client.PutAsJsonAsync(
                 $"api/players/{player.Id}", player.Id);
+        }
+
+        internal static async Task InvitePlayerAsync(int id, Player player)
+        {
+            await client.PutAsJsonAsync(
+                $"api/players/invite/{id}", player);
         }
         #endregion HttpPutCommands
     }

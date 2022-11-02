@@ -60,7 +60,6 @@
                             <behaviors:EventTrigger EventName="LostFocus">
                                 <behaviors:InvokeCommandAction Command="{Binding OnLobbyOverlayPlayerNameTextBoxFocusCommand}" CommandParameter="False"/>
                             </behaviors:EventTrigger>
-
                         </behaviors:Interaction.Triggers>
                     </TextBox>
                 </DockPanel>
@@ -83,7 +82,6 @@
                     Margin="0, 0, 10, 0"
                     IsEnabled="{Binding OnWindowPlayerNameOkButtonEnabled}"
                     Style="{StaticResource StyleOverlayButton}"
-                    FontSize="16"
                     Command="{Binding WindowPlayerNameOkCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                 </Button>
@@ -93,7 +91,6 @@
                     Content="Cancel"
                     Margin="10, 0, 0, 0"
                     Style="{StaticResource StyleOverlayButton}"
-                    FontSize="16"
                     Command="{Binding WindowPlayerNameCancelCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                 </Button>
