@@ -1,0 +1,71 @@
+﻿<Window x:Class="ChessDotNET.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChessDotNET.Views"
+        xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:helpers="clr-namespace:ChessDotNET.ViewHelpers"
+        xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
+        mc:Ignorable="d"
+        ResizeMode="CanResize"
+        SizeToContent="Height"
+        Width="651"
+        MinHeight="300"
+        MinWidth="300"        
+        Background="#ffce9e"
+        Title="Chess.NET"
+        UseLayoutRounding="True">
+
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="PreviewMouseMove">
+            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseMoveCommand}" PassEventArgsToCommand="True"/>
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
+            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseLeftDownCommand}" PassEventArgsToCommand="True"/>
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
+            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseLeftUpCommand}" PassEventArgsToCommand="True"/>
+        </behaviors:EventTrigger>
+        <behaviors:EventTrigger EventName="Closing">
+            <behaviors:InvokeCommandAction Command="{Binding OnMainWindowClosingCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+    
+    <Viewbox
+        x:Name="ChessScrollView"
+        SnapsToDevicePixels="True">
+        <StackPanel
+            Background="Transparent"
+            Orientation="Vertical">
+            <DockPanel
+                Margin="40, 20, 0, 0">
+                <Button Command="{Binding OpenSideMenuCommand}" Style="{StaticResource StyleTopBarButton}" Panel.ZIndex="20">
+                    <Grid x:Name="grid" Width="30" RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="4"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Line Grid.Row="0" Style="{StaticResource StyleTopBarButtonMenuStripes}"/>
+                        <Line Grid.Row="2" Style="{StaticResource StyleTopBarButtonMenuStripes}"/>
+                        <Line Grid.Row="4" Style="{StaticResource StyleTopBarButtonMenuStripes}"/>
+                    </Grid>
+                </Button>
+                <Label Content="{Binding LabelMoveInfo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+            </DockPanel>
+            <Grid>
+                <local:SideMenu Visibility="{Binding SideMenuVisibility}"/>
+                <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility}"/>
+                <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->
+                <local:ChessGrid/>
+            </Grid>
+        </StackPanel>
+    </Viewbox>
+</Window>

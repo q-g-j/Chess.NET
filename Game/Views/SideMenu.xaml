@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ChessDotNET.Views.SideMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChessDotNET.Views"
+             xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
+             mc:Ignorable="d"
+             Grid.Column="0" Grid.Row="0" Panel.ZIndex="40"
+             HorizontalAlignment="Left" Margin="25, 30, 0, 0"
+             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
+
+    <Grid>
+        <Border Style="{StaticResource StyleSideMenuBorder}">
+            <Border.Effect>
+                <DropShadowEffect />
+            </Border.Effect>
+        </Border>
+        <Border Style="{StaticResource StyleSideMenuBorder}">
+            <Grid Style="{StaticResource StyleSideMenuGrid}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <local:SideMenuMain Grid.Row="0" Visibility="{Binding SideMenuMainVisibility}"/>
+                <local:SideMenuGameMode Grid.Row="0" Visibility="{Binding SideMenuGameModeVisibility, FallbackValue=Hidden}"/>
+                <local:SideMenuLocalGame Grid.Row="0" Visibility="{Binding SideMenuLocalGameVisibility, FallbackValue=Hidden}"/>
+                <local:SideMenuOnlineGame Grid.Row="0" Visibility="{Binding SideMenuOnlineGameVisibility, FallbackValue=Hidden}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

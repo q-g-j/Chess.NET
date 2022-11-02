@@ -7,7 +7,6 @@ namespace Server
 {
     public class Program
     {
-
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +21,7 @@ namespace Server
 
             var app = builder.Build();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
