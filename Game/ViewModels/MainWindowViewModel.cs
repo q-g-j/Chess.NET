@@ -67,9 +67,9 @@ namespace ChessDotNET.ViewModels.MainWindow
                 ChessPieceImages.WhiteQueen
             };
 
-            WebClientCommands.client.BaseAddress = new Uri(@"http://qgj.ddns.net:7002/");
-            WebClientCommands.client.DefaultRequestHeaders.Accept.Clear();
-            WebClientCommands.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Commands.client.BaseAddress = new Uri(@"http://localhost:7002/");
+            Commands.client.DefaultRequestHeaders.Accept.Clear();
+            Commands.client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             StartGame(false);
             //StartGameTestCastling(false);
@@ -117,7 +117,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private string labelMoveInfo = "";
         private string textBoxPlayerName = "";
         private string onWindowPlayerNameOkButtonEnabled = "False";
-        private string lobbyOverlayPlayerNameVisibility;
+        private string lobbyOverlayPlayerNameVisibility = "Visible";
         private string labelPlayerNameConflict = "";
         #endregion Property-Values
 
@@ -655,7 +655,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             };
             windowLobby.Show();
 
-            PlayerList = new ObservableCollection<Player>(await WebClientCommands.GetAllPlayersAsync());
+            bool isException = false;
 
             if (localPlayer == null)
             {
@@ -664,23 +664,34 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             if (localPlayer != null)
             {
-                var createPlayerResult = await WebClientCommands.CreatePlayerAsync(localPlayer);
+                try
+                {
+                    var createPlayerResult = await Commands.CreatePlayerAsync(localPlayer);
+                }
+                catch
+                {
+                    isException = true;
+                    MessageBox.Show(windowLobby, "Please try again later...", "Error!");
+                    windowLobby.Close();
+                }
             }
-
-            var keepRefreshingLobby = new ThreadStart(() => KeepRefreshingLobby());
-            var keepRefreshingLobbyBackgroundThread = new Thread(keepRefreshingLobby)
+            if (! isException)
             {
-                IsBackground = true
-            };
-            keepRefreshingLobbyBackgroundThread.Start();
+                var keepRefreshingLobbyThreadStart = new ThreadStart(() => KeepRefreshingLobby());
+                var keepRefreshingLobbyBackgroundThread = new Thread(keepRefreshingLobbyThreadStart)
+                {
+                    IsBackground = true
+                };
+                keepRefreshingLobbyBackgroundThread.Start();
 
 
-            var keepResettingCounter = new ThreadStart(() => KeepResettingInactiveCounter());
-            var keepResettingCounterBackgroundThread = new Thread(keepResettingCounter)
-            {
-                IsBackground = true
-            };
-            keepResettingCounterBackgroundThread.Start();
+                var keepResettingCounterThreadStart = new ThreadStart(() => KeepResettingInactiveCounter());
+                var keepResettingCounterBackgroundThread = new Thread(keepResettingCounterThreadStart)
+                {
+                    IsBackground = true
+                };
+                keepResettingCounterBackgroundThread.Start();
+            }
         }
         private void KeepRefreshingLobby()
         {
@@ -688,8 +699,16 @@ namespace ChessDotNET.ViewModels.MainWindow
             {
                 Task.Run(async () =>
                 {
-                    var allPlayers = await WebClientCommands.GetAllPlayersAsync();
-                    PlayerList = new ObservableCollection<Player>(allPlayers);
+                    try
+                    {
+                        var allPlayers = await Commands.GetAllPlayersAsync();
+                        PlayerList = new ObservableCollection<Player>(allPlayers);
+                    }
+                    catch
+                    {
+                        MessageBox.Show(windowLobby, "Cannot contact server...", "Error!");
+                        windowLobby.Close();
+                    }
                 });
                 Thread.Sleep(5000);
             }
@@ -700,7 +719,18 @@ namespace ChessDotNET.ViewModels.MainWindow
             {
                 Task.Run(async () =>
                 {
-                    await WebClientCommands.ResetInactiveCounterAsync(localPlayer);
+                    if (localPlayer != null)
+                    {
+                        try
+                        {
+                            await Commands.ResetInactiveCounterAsync(localPlayer);
+                        }
+                        catch
+                        {
+                            MessageBox.Show(windowLobby, "Cannot contact server...", "Error!");
+                            windowLobby.Close();
+                        }
+                    }
                 });
                 Thread.Sleep(1000);
             }
@@ -731,7 +761,18 @@ namespace ChessDotNET.ViewModels.MainWindow
             {
                 Name = TextBoxPlayerName
             };
-            var createPlayerResult = await WebClientCommands.CreatePlayerAsync(localPlayer);
+
+            Player createPlayerResult = new Player();
+
+            try
+            {
+                createPlayerResult = await Commands.CreatePlayerAsync(localPlayer);
+            }
+            catch
+            {
+                MessageBox.Show(windowLobby, "Please try again later...", "Error!");
+                windowLobby.Close();
+            }
 
             if (createPlayerResult.Name == null)
             {
@@ -743,7 +784,9 @@ namespace ChessDotNET.ViewModels.MainWindow
                 LabelPlayerNameConflict = "";
                 LobbyOverlayPlayerNameVisibility = "Hidden";
 
-                var allPlayers = await WebClientCommands.GetAllPlayersAsync();
+                localPlayer.Id = createPlayerResult.Id;
+
+                var allPlayers = await Commands.GetAllPlayersAsync();
                 PlayerList = new ObservableCollection<Player>(allPlayers);
             }
         }

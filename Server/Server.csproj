@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>9df68ee3-fbb3-4c4d-ba7c-efac18cbbffd</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <AssemblyName>ChessDotNETServer</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

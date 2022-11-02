@@ -6,18 +6,18 @@ using System.Numerics;
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class Lobby : ControllerBase
+    [Route("api/[controller]")]
+    public class Players : ControllerBase
     {
         private readonly PlayerDBContext _dbContext;
 
-        public Lobby(PlayerDBContext playerDBContext)
+        public Players(PlayerDBContext playerDBContext)
         {
             _dbContext = playerDBContext;
         }
 
         #region HttpGet
-        [HttpGet(Name = "lobby")]
+        [HttpGet]
         public async Task<List<Player>> Get()
         {
             await _dbContext.SaveChangesAsync();
@@ -26,14 +26,11 @@ namespace Server.Controllers
         #endregion HttpGet
 
         #region HttpPost
-        [HttpPost(Name = "lobby")]
+        [HttpPost]
         public async Task<ActionResult> Post(Player player)
         {
-            var playerInDbQueryResult = _dbContext.Player.Where(a => a.Name == player.Name);
-
-            if (!playerInDbQueryResult.Any())
+            if (! _dbContext.Player.Any(a => a.Name == player.Name))
             {
-                player.InactiveCounter = 0;
                 _dbContext.Player.Add(player);
                 await _dbContext.SaveChangesAsync();
 
@@ -51,20 +48,18 @@ namespace Server.Controllers
         #endregion HttpPost
 
         #region HttpPut
-        [HttpPut(Name = "lobby")]
-        public async Task<ActionResult> Put(Player player)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(int id)
         {
-            var playerInDbQueryResult = _dbContext.Player.Where(a => a.Name == player.Name);
-
-            if (playerInDbQueryResult.Any())
+            if (_dbContext.Player.Any(a => a.Id == id))
             {
-                var playerInDb = _dbContext.Player.Where(a => a.Name == player.Name).FirstOrDefault();
+                var playerInDb = _dbContext.Player.Where(a => a.Id == id).FirstOrDefault();
 
                 if (playerInDb != null)
                 {
                     playerInDb.InactiveCounter = 0;
                     await _dbContext.SaveChangesAsync();
-                    return Ok(player);
+                    return Ok();
                 }
             }
             return Conflict("error_resetcounterfailed");

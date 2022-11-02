@@ -24,6 +24,6 @@
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <local:LobbyOverlayPlayerName Visibility="{Binding LobbyOverlayPlayerNameVisibility, FallbackValue=Visible}"/>
+        <local:LobbyOverlayPlayerName Visibility="{Binding LobbyOverlayPlayerNameVisibility}"/>
     </Grid>
 </Window>

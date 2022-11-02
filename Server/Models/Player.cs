@@ -9,7 +9,7 @@ namespace Server.Models
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Color { get; set; }
-        public int InvitingId { get; set; }
-        public int InactiveCounter { get; set; }
+        public int InactiveCounter { get; set; } = 0;
+        public List<Player>? Invitations { get; set; }
     }
 }

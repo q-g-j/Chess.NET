@@ -35,7 +35,7 @@ namespace Server.Services
                         foreach (var player in context.Player)
                         {
                             player.InactiveCounter += 1;
-                            if (player.InactiveCounter == 10)
+                            if (player.InactiveCounter == 5)
                             {
                                 Globals.InvitationsDict.Remove(player.Id);
                                 context.Player.Remove(player);

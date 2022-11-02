@@ -8,22 +8,28 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ChessDotNET.WebClient
 {
-    internal static class WebClientCommands
+    internal static class Commands
     {
         internal static readonly HttpClient client = new HttpClient();
 
         #region HttpGetCommands
         internal static async Task<List<Player>> GetAllPlayersAsync()
         {
-            HttpResponseMessage response = await client.GetAsync(
-                "lobby");
-            response.EnsureSuccessStatusCode();
+            List<Player> playerList = new List<Player>();
 
-            var jsonString = await response.Content.ReadAsStringAsync();
-            List<Player> playerList = JsonConvert.DeserializeObject<List<Player>>(jsonString);
+            HttpResponseMessage response = await client.GetAsync(
+                "api/players");
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                var jsonString = await response.Content.ReadAsStringAsync();
+                playerList = JsonConvert.DeserializeObject<List<Player>>(jsonString);
+            }
 
             return playerList;
         }
@@ -32,10 +38,11 @@ namespace ChessDotNET.WebClient
         #region HttpPostCommands
         internal static async Task<Player> CreatePlayerAsync(Player player)
         {
-            var response = await client.PostAsJsonAsync(
-                "lobby", player);
-
             Player playerJson;
+
+            var response = await client.PostAsJsonAsync(
+                "api/players", player);
+
 
             if (response.IsSuccessStatusCode)
             {
@@ -55,7 +62,7 @@ namespace ChessDotNET.WebClient
         internal static async Task ResetInactiveCounterAsync(Player player)
         {
             await client.PutAsJsonAsync(
-                "lobby", player);
+                $"api/players/{player.Id}", player.Id);
         }
         #endregion HttpPutCommands
     }
