@@ -9,6 +9,7 @@ namespace Server.Models
             : base(options) { }
 
         public DbSet<Player> Player => Set<Player>();
+        public DbSet<Invitation> Invitations => Set<Invitation>();
 
         // suppress info messages:
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

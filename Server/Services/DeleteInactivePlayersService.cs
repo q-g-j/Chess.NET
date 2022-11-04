@@ -22,26 +22,29 @@ namespace Server.Services
             return Task.CompletedTask;
         }
 
-        private void DoWork(object? state)
+        private async void DoWork(object? state)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<PlayerDBContext>();
+                var playerContext = scope.ServiceProvider.GetRequiredService<PlayerDBContext>();
 
-                if (context != null)
+                if (playerContext != null)
                 {
                     try
                     {
-                        foreach (var player in context.Player)
+                        foreach (var player in playerContext.Player)
                         {
                             player.InactiveCounter += 1;
                             if (player.InactiveCounter == 5)
                             {
-                                Globals.InvitationsDict.Remove(player.Id);
-                                context.Player.Remove(player);
+                                playerContext.Player.Remove(player);
+
+                                playerContext.Invitations.RemoveRange(playerContext.Invitations.Where(a => a.PlayerId == player.Id));
+
+                                //Globals.Invitations.Remove(player.Id);
                             }
-                            context.SaveChangesAsync();
                         }
+                        await playerContext.SaveChangesAsync();
                     }
                     catch
                     {

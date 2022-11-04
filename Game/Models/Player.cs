@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Documents;
 using System.Xml.Linq;
 
 namespace ChessDotNET.Models
@@ -8,7 +11,5 @@ namespace ChessDotNET.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
-
-        public string Color { get; set; }
     }
 }

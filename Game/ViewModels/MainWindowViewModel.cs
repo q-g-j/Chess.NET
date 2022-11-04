@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using System.Windows.Threading;
 using System.Data;
+using Microsoft.Xaml.Behaviors.Media;
 
 namespace ChessDotNET.ViewModels.MainWindow
 {
@@ -55,8 +56,11 @@ namespace ChessDotNET.ViewModels.MainWindow
             WindowLobbyOkCommand = new RelayCommand<object>(o => WindowLobbyOkAction(o));
             WindowLobbyCancelCommand = new RelayCommand<object>(o => WindowLobbyCancelAction(o));
             WindowLobbyInviteCommand = new RelayCommand<object>(o => WindowLobbyInviteAction(o));
+            WindowLobbyAcceptInvitationCommand = new RelayCommand<object>(o => WindowLobbyAcceptInvitationAction(o));
             WindowLobbyKeyboardCommand = new RelayCommand<object>(o => WindowLobbyKeyboardAction(o));
-            OnWindowLobbyDataGridInitializedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridInitializedAction(o));
+            OnWindowLobbyDataGridAllPlayersLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
+            OnWindowLobbyDataGridInvitationsLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
+            OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand = new RelayCommand(OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction);
 
             WindowPlayerNameOkCommand = new RelayCommand(WindowPlayerNameOkActionAsync);
             WindowPlayerNameCancelCommand = new RelayCommand(WindowPlayerNameCancelAction);
@@ -98,9 +102,9 @@ namespace ChessDotNET.ViewModels.MainWindow
         private readonly bool debugNoTurns = false;
         private bool isCheckMate = false;
         private Player localPlayer = null;
-        private static DataGrid dataGridLobby = null;
+        private static DataGrid dataGridLobbyAllPlayers = null;
+        private static DataGrid dataGridLobbyInvitations = null;
         private bool hasWindowLobbyPlayerNameTextBoxFocus;
-
         WindowLobby windowLobby;
         #endregion Fields
 
@@ -110,6 +114,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private List<string> horizontalNotationList;
         private List<string> verticalNotationList;
         public ObservableCollection<Player> playerList;
+        public ObservableCollection<Player> invitationList;
         private string sideMenuVisibility= "Hidden";
         private string sideMenuMainVisibility = "Visible";
         private string sideMenuGameModeVisibility = "Hidden";
@@ -121,7 +126,9 @@ namespace ChessDotNET.ViewModels.MainWindow
         private string chessCanvasRotationCenterY = "-200";
         private string labelMoveInfo = "";
         private string textBoxPlayerName = "";
-        private string onWindowPlayerNameOkButtonEnabled = "False";
+        private string isWindowPlayerNameOkButtonEnabled = "False";
+        private string isWindowLobbyInviteButtonEnabled = "False";
+        private string isWindowLobbyAcceptInvitationButtonEnabled = "False";
         private string lobbyOverlayPlayerNameVisibility = "Hidden";
         private string labelPlayerNameConflict = "";
         #endregion Property-Values
@@ -129,8 +136,8 @@ namespace ChessDotNET.ViewModels.MainWindow
         #region Bindable Properties
         public DataGrid DataGridLobby
         {
-            get => dataGridLobby;
-            set { dataGridLobby = value; OnPropertyChanged(); }
+            get => dataGridLobbyAllPlayers;
+            set { dataGridLobbyAllPlayers = value; OnPropertyChanged(); }
         }
         public string LabelMoveInfo
         {
@@ -221,6 +228,15 @@ namespace ChessDotNET.ViewModels.MainWindow
                 OnPropertyChanged();
             }
         }
+        public ObservableCollection<Player> InvitationList
+        {
+            get => invitationList;
+            set
+            {
+                invitationList = value;
+                OnPropertyChanged();
+            }
+        }
         public string TextBoxPlayerName
         {
             get
@@ -233,19 +249,29 @@ namespace ChessDotNET.ViewModels.MainWindow
                 LabelPlayerNameConflict = "";
                 if (textBoxPlayerName != "")
                 {
-                    OnWindowPlayerNameOkButtonEnabled = "True";
+                    IsWindowPlayerNameOkButtonEnabled = "True";
                 }
                 else
                 {
-                    OnWindowPlayerNameOkButtonEnabled = "False";
+                    IsWindowPlayerNameOkButtonEnabled = "False";
                 }
                 OnPropertyChanged();
             }
         }
-        public string OnWindowPlayerNameOkButtonEnabled
+        public string IsWindowPlayerNameOkButtonEnabled
         {
-            get => onWindowPlayerNameOkButtonEnabled;
-            set { onWindowPlayerNameOkButtonEnabled = value; OnPropertyChanged(); }
+            get => isWindowPlayerNameOkButtonEnabled;
+            set { isWindowPlayerNameOkButtonEnabled = value; OnPropertyChanged(); }
+        }
+        public string IsWindowLobbyInviteButtonEnabled
+        {
+            get => isWindowLobbyInviteButtonEnabled;
+            set { isWindowLobbyInviteButtonEnabled = value; OnPropertyChanged(); }
+        }
+        public string IsWindowLobbyAcceptInvitationButtonEnabled
+        {
+            get => isWindowLobbyAcceptInvitationButtonEnabled;
+            set { isWindowLobbyAcceptInvitationButtonEnabled = value; OnPropertyChanged(); }
         }
         #endregion Bindable Properties
 
@@ -265,8 +291,11 @@ namespace ChessDotNET.ViewModels.MainWindow
         public RelayCommand<object> WindowLobbyOkCommand { get; }
         public RelayCommand<object> WindowLobbyCancelCommand { get; }
         public RelayCommand<object> WindowLobbyInviteCommand { get; }
+        public RelayCommand<object> WindowLobbyAcceptInvitationCommand { get; }
         public RelayCommand<object> WindowLobbyKeyboardCommand { get; }
-        public RelayCommand<object> OnWindowLobbyDataGridInitializedCommand { get; }
+        public RelayCommand<object> OnWindowLobbyDataGridAllPlayersLoadedCommand { get; }
+        public RelayCommand<object> OnWindowLobbyDataGridInvitationsLoadedCommand { get; }
+        public RelayCommand OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand { get; }
         public RelayCommand WindowPlayerNameOkCommand { get; }
         public RelayCommand WindowPlayerNameCancelCommand { get; }
         public RelayCommand<object> OnWindowMouseMoveCommand { get; }
@@ -671,6 +700,11 @@ namespace ChessDotNET.ViewModels.MainWindow
             };
             windowLobby.Show();
 
+            if (PlayerList == null)
+            {
+                PlayerList = new ObservableCollection<Player>();
+            }
+
             bool isException = false;
 
             if (localPlayer == null)
@@ -691,9 +725,10 @@ namespace ChessDotNET.ViewModels.MainWindow
                     windowLobby.Close();
                 }
             }
+
             if (! isException)
             {
-                var keepRefreshingLobbyThreadStart = new ThreadStart(() => KeepRefreshingLobby());
+                var keepRefreshingLobbyThreadStart = new ThreadStart(() => KeepRefreshingPlayerList());
                 var keepRefreshingLobbyBackgroundThread = new Thread(keepRefreshingLobbyThreadStart)
                 {
                     IsBackground = true
@@ -709,7 +744,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                 keepResettingCounterBackgroundThread.Start();
             }
         }
-        private void KeepRefreshingLobby()
+        private void KeepRefreshingPlayerList()
         {
             while (windowLobby.IsVisible)
             {
@@ -720,16 +755,32 @@ namespace ChessDotNET.ViewModels.MainWindow
                         DispatchService.Invoke(async () =>
                         {
                             var index = DataGridLobby.SelectedIndex;
+                            var players = await HttpClientCommands.GetAllPlayersAsync();
 
-                            PlayerList = await HttpClientCommands.GetAllPlayersAsync();
+                            if (localPlayer != null)
+                            {
+                                PlayerList = new ObservableCollection<Player>(players.Where(a => a.Name != localPlayer.Name).ToList());
+
+                                InvitationList = await HttpClientCommands.GetPlayerInvitationsAsync(localPlayer.Id);
+
+                                if (dataGridLobbyAllPlayers.SelectedCells.Count > 0)
+                                {
+                                    var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
+                                    string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
+                                }
+                            }
 
                             if (index != -1)
                             {
-                                DataGridLobby.SelectedIndex = index;
-                                DataGridLobby.ScrollIntoView(DataGridLobby.Items[index]);
+                                if (DataGridLobby.Items.Count != 0)
+                                {
+                                    DataGridLobby.SelectedIndex = index;
+                                    DataGridLobby.ScrollIntoView(DataGridLobby.Items[index]);
+                                }
                             }
 
                             DataGridLobby.Focus();
+                            OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction();
                         });
                     }
                     catch
@@ -773,7 +824,15 @@ namespace ChessDotNET.ViewModels.MainWindow
             windowLobby = (WindowLobby)o;
             windowLobby.Close();
         }
-        private void WindowLobbyInviteAction(object o)
+        private async void WindowLobbyInviteAction(object o)
+        {
+            var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
+            string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
+            var player = playerList.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
+
+            await HttpClientCommands.InvitePlayerAsync(player.Id, localPlayer);
+        }
+        private void WindowLobbyAcceptInvitationAction(object o)
         {
             var dataGrid = (DataGrid)o;
         }
@@ -787,9 +846,43 @@ namespace ChessDotNET.ViewModels.MainWindow
                 }
             }
         }
-        private void OnWindowLobbyDataGridInitializedAction(object o)
+        private void OnWindowLobbyDataGridAllPlayersLoadedAction(object o)
         {
-            dataGridLobby = (DataGrid)o;
+            dataGridLobbyAllPlayers = (DataGrid)o;
+        }
+        private void OnWindowLobbyDataGridAllInvitationsLoadedAction(object o)
+        {
+            dataGridLobbyInvitations = (DataGrid)o;
+        }
+        private void OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction()
+        {
+            if (dataGridLobbyAllPlayers.SelectedCells.Count == 1)
+            {
+                var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
+                var selectedCell = (TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item);
+                if (selectedCell != null)
+                {
+                    string selectedPlayerName = selectedCell.Text;
+                    var player = playerList.Where(a => selectedPlayerName.Contains(a.Name)).FirstOrDefault();
+
+                    if (player.Name != localPlayer.Name)
+                    {
+                        IsWindowLobbyInviteButtonEnabled = "True";
+                    }
+                    else
+                    {
+                        IsWindowLobbyInviteButtonEnabled = "False";
+                    }
+                }
+                else
+                {
+                    IsWindowLobbyInviteButtonEnabled = "False";
+                }
+            }
+            else
+            {
+                IsWindowLobbyInviteButtonEnabled = "False";
+            }
         }
         private async void WindowPlayerNameOkActionAsync()
         {
@@ -822,8 +915,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
                 localPlayer.Id = createPlayerResult.Id;
 
-                var allPlayers = await HttpClientCommands.GetAllPlayersAsync();
-                PlayerList = new ObservableCollection<Player>(allPlayers);
+                //PlayerList = await HttpClientCommands.GetAllPlayersAsync();
             }
         }
         private void WindowPlayerNameCancelAction()

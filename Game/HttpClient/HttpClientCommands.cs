@@ -27,12 +27,26 @@ namespace ChessDotNET.WebClient
 
             if (response.IsSuccessStatusCode)
             {
-
                 var jsonString = await response.Content.ReadAsStringAsync();
                 playerList = JsonConvert.DeserializeObject<ObservableCollection<Player>>(jsonString);
             }
 
             return playerList;
+        }
+        internal static async Task<ObservableCollection<Player>> GetPlayerInvitationsAsync(int id)
+        {
+            ObservableCollection<Player> invitations = new ObservableCollection<Player>();
+
+            HttpResponseMessage response = await client.GetAsync(
+                $"api/players/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                invitations = JsonConvert.DeserializeObject<ObservableCollection<Player>>(jsonString);
+            }
+
+            return invitations;
         }
         #endregion HttpGetCommands
 
@@ -66,10 +80,10 @@ namespace ChessDotNET.WebClient
                 $"api/players/{player.Id}", player.Id);
         }
 
-        internal static async Task InvitePlayerAsync(int id, Player player)
+        internal static async Task InvitePlayerAsync(int invitedId, Player invitingPlayer)
         {
-            await client.PutAsJsonAsync(
-                $"api/players/invite/{id}", player);
+            await client.PostAsJsonAsync(
+                $"api/players/invite/{invitedId}", invitingPlayer);
         }
         #endregion HttpPutCommands
     }

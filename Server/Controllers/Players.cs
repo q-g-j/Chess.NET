@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Server.Models;
+using System.Linq;
 using System.Numerics;
 
 namespace Server.Controllers
@@ -9,33 +11,46 @@ namespace Server.Controllers
     [Route("api/[controller]")]
     public class Players : ControllerBase
     {
-        private readonly PlayerDBContext _dbContext;
+        private readonly PlayerDBContext _playerDBContext;
 
         public Players(PlayerDBContext playerDBContext)
         {
-            _dbContext = playerDBContext;
+            _playerDBContext = playerDBContext;
         }
 
         #region HttpGet
         [HttpGet]
-        public async Task<List<Player>> Get()
+        public async Task<List<Player>> GetAllPlayers()
         {
-            await _dbContext.SaveChangesAsync();
-            return await _dbContext.Player.ToListAsync();
+            return await _playerDBContext.Player.ToListAsync(); ;
+        }
+
+        [HttpGet("{id}")]
+        public List<Player> GetInvitations(int id)
+        {
+            var invitations = _playerDBContext.Invitations.Where(a => a.PlayerId == id).ToList();
+
+            List<Player> returnList = new List<Player>();
+
+            foreach (var inv in invitations)
+            {
+                var p = _playerDBContext.Player.Where(a => a.Id == inv.InvitingPlayerId).FirstOrDefault();
+                returnList.Add(new Player(inv.InvitingPlayerId, p!.Name!));
+            }
+            return returnList;
         }
         #endregion HttpGet
 
         #region HttpPost
         [HttpPost]
-        public async Task<ActionResult> Post(Player player)
+        public async Task<ActionResult> PostNewPlayer(Player player)
         {
-            if (! _dbContext.Player.Any(a => a.Name == player.Name))
+            if (! _playerDBContext.Player.Any(a => a.Name == player.Name))
             {
-                player.Invitations = new List<Player>();
-                _dbContext.Player.Add(player);
-                await _dbContext.SaveChangesAsync();
+                _playerDBContext.Player.Add(player);
+                await _playerDBContext.SaveChangesAsync();
 
-                var playerInDb = _dbContext.Player.Where(a => a.Name == player.Name).FirstOrDefault();
+                var playerInDb = _playerDBContext.Player.Where(a => a.Name == player.Name).FirstOrDefault();
 
                 if (playerInDb != null)
                 {
@@ -44,46 +59,51 @@ namespace Server.Controllers
             }
             return Conflict("error_nameconflict");
         }
+
+        [HttpPost("invite/{id}")]
+        public async Task<ActionResult> PostInvitePlayer(int id, Player invitingPlayer)
+        {
+            Player? playerInDb = _playerDBContext.Player.Where(a => a.Id == id).FirstOrDefault();
+            if (playerInDb != null)
+            {
+                Player? invitingPlayerInDB = _playerDBContext.Player.Where(a => a.Id == invitingPlayer.Id).FirstOrDefault();
+                if (invitingPlayerInDB != null)
+                {
+                    Invitation? invitation = _playerDBContext.Invitations.Where(a => a.PlayerId == id).Where(a => a.InvitingPlayerId == invitingPlayer.Id).FirstOrDefault();
+                    
+                    if (invitation == null)
+                    {
+                        Invitation newInvitingPlayer = new()
+                        {
+                            PlayerId = id,
+                            InvitingPlayerId = invitingPlayer.Id,
+                        };
+
+                        _playerDBContext.Invitations.Add(newInvitingPlayer);
+                        await _playerDBContext.SaveChangesAsync();
+                        return Ok("success_invite");
+                    }
+                }
+            }
+
+            await _playerDBContext.SaveChangesAsync();
+            return Conflict("error_invite");
+        }
         #endregion HttpPost
 
         #region HttpPut
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(int id)
+        public async Task<ActionResult> PutResetInactiveCounter(int id)
         {
-            if (_dbContext.Player.Any(a => a.Id == id))
-            {
-                var playerInDb = _dbContext.Player.Where(a => a.Id == id).FirstOrDefault();
+            var playerInDb = _playerDBContext.Player.Where(a => a.Id == id).FirstOrDefault();
 
-                if (playerInDb != null)
-                {
-                    playerInDb.InactiveCounter = 0;
-                    await _dbContext.SaveChangesAsync();
-                    return Ok();
-                }
-            }
-            return Conflict("error_resetcounterfailed");
-        }
-
-        [HttpPut("invite/{id}")]
-        public async Task<ActionResult> Put(int id, int invitingId)
-        {
-            if (_dbContext.Player.Any(a => a.Id == id))
+            if (playerInDb != null)
             {
-                var playerInDb = _dbContext.Player.Where(a => a.Id == id).FirstOrDefault();
-                if (playerInDb != null)
-                {
-                    if (_dbContext.Player.Any(a => a.Id == invitingId))
-                    {
-                        var invitingPlayerInDB = _dbContext.Player.Where(a => a.Id == invitingId).FirstOrDefault();
-                        if (invitingPlayerInDB != null)
-                        {
-                            playerInDb?.Invitations?.Add(invitingPlayerInDB);
-                            await _dbContext.SaveChangesAsync();
-                            return Ok();
-                        }
-                    }
-                }
+                playerInDb.InactiveCounter = 0;
+                await _playerDBContext.SaveChangesAsync();
+                return Ok();
             }
+
             return Conflict("error_resetcounterfailed");
         }
         #endregion HttpPut

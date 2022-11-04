@@ -7,8 +7,9 @@
         xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Lobby" Height="500" Width="500" MinHeight="500" MinWidth="500"
+        Title="Lobby" Height="500" Width="700" MinHeight="500" MinWidth="700"
         UseLayoutRounding="True"
+        Background="#ffb366"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
     
     <Window.InputBindings>
@@ -16,6 +17,10 @@
     </Window.InputBindings>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="450"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
@@ -25,25 +30,59 @@
             Grid.Row="0"
             ItemsSource="{Binding PlayerList}"
             AutoGenerateColumns="False"
-            Style="{StaticResource StyleWindowLobbyDataGrid}"
+            Style="{StaticResource StyleWindowLobbyDataGridAllPlayers}"
             CanUserAddRows="False"
-            SelectionMode="Single">
+            SelectionMode="Single"
+            BorderThickness="1, 1, 1, 1"
+            BorderBrush="Black">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" Width="*"/>
             </DataGrid.Columns>
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Loaded">
-                    <behaviors:InvokeCommandAction Command="{Binding OnWindowLobbyDataGridInitializedCommand}" CommandParameter="{Binding ElementName=DataGridLobby}"/>
+                    <behaviors:InvokeCommandAction Command="{Binding OnWindowLobbyDataGridAllPlayersLoadedCommand}" CommandParameter="{Binding ElementName=DataGridLobby}"/>
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="SelectedCellsChanged">
+                    <behaviors:InvokeCommandAction Command="{Binding OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand}" CommandParameter="{Binding ElementName=DataGridLobby}"/>
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </DataGrid>
+        <DataGrid
+            Grid.Column="1"
+            Grid.Row="0"
+            ItemsSource="{Binding InvitationList}"
+            AutoGenerateColumns="False"
+            Style="{StaticResource StyleWindowLobbyDataGridInvitations}"
+            CanUserAddRows="False"
+            SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Invitations" Binding="{Binding Name, Mode=OneWay}" Width="*"/>
+            </DataGrid.Columns>
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Loaded">
+                    <behaviors:InvokeCommandAction Command="{Binding OnWindowLobbyDataGridInvitationsLoadedCommand}" CommandParameter="{Binding ElementName=DataGridLobby}"/>
                 </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </DataGrid>
         <Button
+            Grid.Column="0"
             Grid.Row="1"
             Style="{StaticResource StyleOverlayButton}"
             Width="150"
             Margin="0, 10, 0, 10"
             Content="Invite"
-            Command="{Binding WindowLobbyInviteCommand}">
+            Command="{Binding WindowLobbyInviteCommand}"
+            IsEnabled="{Binding IsWindowLobbyInviteButtonEnabled, FallbackValue=False}">
+        </Button>
+        <Button
+            Grid.Column="1"
+            Grid.Row="1"
+            Style="{StaticResource StyleOverlayButton}"
+            Width="150"
+            Margin="0, 10, 0, 10"
+            Content="Accept"
+            Command="{Binding WindowLobbyAcceptInvitationCommand}"
+            IsEnabled="{Binding IsWindowLobbyAcceptInvitationButtonEnabled, FallbackValue=False}">
         </Button>
         <local:LobbyOverlayPlayerName Visibility="{Binding LobbyOverlayPlayerNameVisibility, FallbackValue=Hidden}"/>
     </Grid>
