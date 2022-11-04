@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ChessDotNET.Views
 {
     /// <summary>
-    /// Interaction logic for ChessGrid.xaml
+    /// Interaction logic for OverlayPlayerName.xaml
     /// </summary>
-    public partial class ChessGrid : UserControl
+    public partial class OverlayPlayerName : UserControl
     {
-        public ChessGrid()
+        public OverlayPlayerName()
         {
             InitializeComponent();
         }

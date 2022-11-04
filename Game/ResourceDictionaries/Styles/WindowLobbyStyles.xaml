@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style x:Key="StyleWindowLobbyDataGridAllPlayers" TargetType="DataGrid">
+    <Style x:Key="StyleLobbyDataGridAllPlayers" TargetType="DataGrid">
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="Background" Value="#ffb366"/>
         <Setter Property="BorderBrush" Value="Black"/>
@@ -38,7 +38,7 @@
             </Style>
         </Style.Resources>
     </Style>
-    <Style x:Key="StyleWindowLobbyDataGridInvitations" TargetType="DataGrid">
+    <Style x:Key="StyleLobbyDataGridInvitations" TargetType="DataGrid">
         <Setter Property="HeadersVisibility" Value="Column"/>
         <Setter Property="Background" Value="#ffb366"/>
         <Setter Property="BorderBrush" Value="Black"/>

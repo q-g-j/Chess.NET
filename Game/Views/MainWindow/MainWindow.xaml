@@ -23,13 +23,13 @@
 
     <behaviors:Interaction.Triggers>
         <behaviors:EventTrigger EventName="PreviewMouseMove">
-            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseMoveCommand}" PassEventArgsToCommand="True"/>
+            <behaviors:InvokeCommandAction Command="{Binding OnMainWindowMouseMoveCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
-            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseLeftDownCommand}" PassEventArgsToCommand="True"/>
+            <behaviors:InvokeCommandAction Command="{Binding OnMainWindowMouseLeftDownCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonUp">
-            <behaviors:InvokeCommandAction Command="{Binding OnWindowMouseLeftUpCommand}" PassEventArgsToCommand="True"/>
+            <behaviors:InvokeCommandAction Command="{Binding OnMainWindowMouseLeftUpCommand}" PassEventArgsToCommand="True"/>
         </behaviors:EventTrigger>
         <behaviors:EventTrigger EventName="Closing">
             <behaviors:InvokeCommandAction Command="{Binding OnMainWindowClosingCommand}"/>
@@ -64,7 +64,7 @@
                 <local:SideMenu Visibility="{Binding SideMenuVisibility}"/>
                 <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility}"/>
                 <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->
-                <local:ChessGrid/>
+                <local:ChessBoard/>
             </Grid>
         </StackPanel>
     </Viewbox>

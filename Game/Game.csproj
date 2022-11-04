@@ -99,8 +99,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\LobbyOverlayPlayerName.xaml.cs">
-      <DependentUpon>LobbyOverlayPlayerName.xaml</DependentUpon>
+    <Compile Include="Views\Lobby\Overlays\OverlayPlayerName.xaml.cs">
+      <DependentUpon>OverlayPlayerName.xaml</DependentUpon>
     </Compile>
     <Compile Include="HttpClient\HttpClientCommands.cs" />
     <Compile Include="Models\Move.cs" />
@@ -109,13 +109,13 @@
     <Compile Include="GameLogic\EnPassantValidationGameLogic.cs" />
     <Compile Include="GameLogic\PromotePawnGameLogic.cs" />
     <Compile Include="GameLogic\ThreateningValidationGameLogic.cs" />
-    <Compile Include="Views\ChessGrid.xaml.cs">
-      <DependentUpon>ChessGrid.xaml</DependentUpon>
+    <Compile Include="Views\MainWindow\Embedded\ChessBoard.xaml.cs">
+      <DependentUpon>ChessBoard.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\OverlayPromotePawn.xaml.cs">
+    <Compile Include="Views\MainWindow\Overlays\OverlayPromotePawn.xaml.cs">
       <DependentUpon>OverlayPromotePawn.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SideMenu.xaml.cs">
+    <Compile Include="Views\Sidemenu\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
     </Compile>
     <Page Include="ResourceDictionaries\Fonts.xaml">
@@ -142,11 +142,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ChessGrid.xaml">
+    <Page Include="Views\MainWindow\Embedded\ChessBoard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindow.xaml">
+    <Page Include="Views\MainWindow\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -159,20 +159,20 @@
     <Compile Include="Models\TileDictionary.cs" />
     <Compile Include="GameLogic\CheckMateValidationGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
-    <Compile Include="Views\SideMenuGameMode.xaml.cs">
+    <Compile Include="Views\Sidemenu\Embedded\SideMenuGameMode.xaml.cs">
       <DependentUpon>SideMenuGameMode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SideMenuMain.xaml.cs">
+    <Compile Include="Views\Sidemenu\Embedded\SideMenuMain.xaml.cs">
       <DependentUpon>SideMenuMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SideMenuLocalGame.xaml.cs">
+    <Compile Include="Views\Sidemenu\Embedded\SideMenuLocalGame.xaml.cs">
       <DependentUpon>SideMenuLocalGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SideMenuOnlineGame.xaml.cs">
+    <Compile Include="Views\Sidemenu\Embedded\SideMenuOnlineGame.xaml.cs">
       <DependentUpon>SideMenuOnlineGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WindowLobby.xaml.cs">
-      <DependentUpon>WindowLobby.xaml</DependentUpon>
+    <Compile Include="Views\Lobby\Lobby.xaml.cs">
+      <DependentUpon>Lobby.xaml</DependentUpon>
     </Compile>
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
@@ -182,39 +182,39 @@
     <Compile Include="Models\Coords.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\LobbyOverlayPlayerName.xaml">
+    <Page Include="Views\Lobby\Overlays\OverlayPlayerName.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\OverlayPromotePawn.xaml">
+    <Page Include="Views\MainWindow\Overlays\OverlayPromotePawn.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SideMenu.xaml">
+    <Page Include="Views\Sidemenu\SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SideMenuGameMode.xaml">
+    <Page Include="Views\Sidemenu\Embedded\SideMenuGameMode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\SideMenuMain.xaml">
+    <Page Include="Views\Sidemenu\Embedded\SideMenuMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SideMenuLocalGame.xaml">
+    <Page Include="Views\Sidemenu\Embedded\SideMenuLocalGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SideMenuOnlineGame.xaml">
+    <Page Include="Views\Sidemenu\Embedded\SideMenuOnlineGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WindowLobby.xaml">
+    <Page Include="Views\Lobby\Lobby.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

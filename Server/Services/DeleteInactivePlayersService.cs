@@ -40,8 +40,6 @@ namespace Server.Services
                                 playerContext.Player.Remove(player);
 
                                 playerContext.Invitations.RemoveRange(playerContext.Invitations.Where(a => a.PlayerId == player.Id));
-
-                                //Globals.Invitations.Remove(player.Id);
                             }
                         }
                         await playerContext.SaveChangesAsync();

@@ -29,11 +29,14 @@ namespace ChessDotNET.ViewModels.MainWindow
         #region Constructors
         public MainWindowViewModel()
         {
-            OnWindowMouseMoveCommand = new RelayCommand<object>(o => OnWindowMouseMoveAction(o));
-            OnWindowMouseLeftDownCommand = new RelayCommand<object>(o => OnWindowMouseLeftDownAction(o));
-            OnWindowMouseLeftUpCommand = new RelayCommand<object>(o => OnWindowMouseLeftUpAction(o, tileDict));
+            OnMainWindowMouseMoveCommand = new RelayCommand<object>(o => OnMainWindowMouseMoveAction(o));
+            OnMainWindowMouseLeftDownCommand = new RelayCommand<object>(o => OnMainWindowMouseLeftDownAction(o));
+            OnMainWindowMouseLeftUpCommand = new RelayCommand<object>(o => OnMainWindowMouseLeftUpAction(o, tileDict));
+            OnMainWindowClosingCommand = new RelayCommand(OnMainWindowClosingAction);
+
+            PromotePawnSelectChessPieceCommand = new RelayCommand<object>(PromotePawnSelectChessPieceAction);
+
             OnChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => OnChessPieceMouseleftDownAction(o));
-            OnLobbyOverlayPlayerNameTextBoxFocusCommand = new RelayCommand<object>(o => OnLobbyOverlayPlayerNameTextBoxFocusAction(o));
 
             OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
 
@@ -51,22 +54,22 @@ namespace ChessDotNET.ViewModels.MainWindow
             SideMenuOnlineGameGoBackCommand = new RelayCommand(SideMenuOnlineGameGoBackAction);
 
             SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
-            OnMainWindowClosingCommand = new RelayCommand(OnMainWindowClosingAction);
 
-            WindowLobbyOkCommand = new RelayCommand<object>(o => WindowLobbyOkAction(o));
-            WindowLobbyCancelCommand = new RelayCommand<object>(o => WindowLobbyCancelAction(o));
-            WindowLobbyInviteCommand = new RelayCommand(WindowLobbyInviteAction);
-            WindowLobbyAcceptInvitationCommand = new RelayCommand<object>(o => WindowLobbyAcceptInvitationAction(o));
-            WindowLobbyKeyboardCommand = new RelayCommand<object>(o => WindowLobbyKeyboardAction(o));
-            OnWindowLobbyDataGridAllPlayersLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
-            OnWindowLobbyDataGridInvitationsLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
-            OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand = new RelayCommand(OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction);
-            OnWindowLobbyClosingCommand = new RelayCommand(OnWindowLobbyClosingAction);
+            LobbyRefreshCommand = new RelayCommand(LobbyRefreshAction);
+            LobbyCloseCommand = new RelayCommand(LobbyCloseAction);
+            LobbyInviteCommand = new RelayCommand(LobbyInviteAction);
+            LobbyAcceptInvitationCommand = new RelayCommand<object>(o => LobbyAcceptInvitationAction(o));
+            LobbyKeyboardCommand = new RelayCommand<object>(o => LobbyKeyboardAction(o));
 
-            WindowLobbyOverlayPlayerNameOkCommand = new RelayCommand(WindowLobbyOverlayPlayerNameOkAction);
-            WindowLobbyOverlayPlayerNameCancelCommand = new RelayCommand(WindowLobbyOverlayPlayerNameCancelAction);
+            OnLobbyDataGridAllPlayersLoadedCommand = new RelayCommand<object>(o => OnLobbyDataGridAllPlayersLoadedAction(o));
+            //OnLobbyDataGridInvitationsLoadedCommand = new RelayCommand<object>(o => OnLobbyDataGridAllPlayersLoadedAction(o));
+            OnLobbyDataGridAllPlayersSelectedCellsChangedCommand = new RelayCommand(OnLobbyDataGridAllPlayersSelectedCellsChangedAction);
+            OnLobbyClosingCommand = new RelayCommand(OnLobbyClosingAction);
 
-            PromotePawnSelectChessPieceCommand = new RelayCommand<object>(PromotePawnSelectChessPieceAction);
+            OnLobbyOverlayPlayerNameTextBoxFocusCommand = new RelayCommand<object>(o => OnLobbyOverlayPlayerNameTextBoxFocusAction(o));
+
+            LobbyOverlayPlayerNameOkCommand = new RelayCommand(LobbyOverlayPlayerNameOkAction);
+            LobbyOverlayPlayerNameCancelCommand = new RelayCommand(LobbyOverlayPlayerNameCancelAction);
 
             promotePawnList = new List<ImageSource>()
             {
@@ -105,8 +108,8 @@ namespace ChessDotNET.ViewModels.MainWindow
         private Player localPlayer = null;
         private static DataGrid dataGridLobbyAllPlayers = null;
         private static DataGrid dataGridLobbyInvitations = null;
-        private bool hasWindowLobbyPlayerNameTextBoxFocus;
-        WindowLobby windowLobby;
+        private bool hasLobbyOverlayPlayerNameTextBoxFocus;
+        Lobby lobby;
         #endregion Fields
 
         #region Property-Values
@@ -126,17 +129,17 @@ namespace ChessDotNET.ViewModels.MainWindow
         private string chessCanvasRotationCenterX = "9";
         private string chessCanvasRotationCenterY = "-200";
         private string labelMoveInfo = "";
-        private string textBoxPlayerName = "";
-        private string isWindowPlayerNameOkButtonEnabled = "False";
-        private string isWindowLobbyInviteButtonEnabled = "False";
-        private string isWindowLobbyAcceptInvitationButtonEnabled = "False";
+        private string textBoxLobbyOverLayPlayerName = "";
+        private string isLobbyOverlayPlayerNameOkButtonEnabled = "False";
+        private string isLobbyInviteButtonEnabled = "False";
+        private string isLobbyAcceptInvitationButtonEnabled = "False";
         private string lobbyOverlayPlayerNameVisibility = "Hidden";
         private string labelPlayerNameConflict = "";
-        private string windowLobbyTitle = "Lobby";
+        private string labelLobbyPlayerName = "";
         #endregion Property-Values
 
         #region Bindable Properties
-        public DataGrid DataGridLobby
+        public DataGrid DataGridLobbyAllPlayers
         {
             get => dataGridLobbyAllPlayers;
             set { dataGridLobbyAllPlayers = value; OnPropertyChanged(); }
@@ -196,10 +199,10 @@ namespace ChessDotNET.ViewModels.MainWindow
             get => overlayPromotePawnVisibility;
             set { overlayPromotePawnVisibility = value; OnPropertyChanged(); }
         }
-        public string WindowLobbyTitle
+        public string LabelLobbyPlayerName
         {
-            get => windowLobbyTitle;
-            set { windowLobbyTitle = value; OnPropertyChanged(); }
+            get => labelLobbyPlayerName;
+            set { labelLobbyPlayerName = value; OnPropertyChanged(); }
         }
         public string LobbyOverlayPlayerNameVisibility
         {
@@ -248,37 +251,37 @@ namespace ChessDotNET.ViewModels.MainWindow
         {
             get
             {
-                return textBoxPlayerName;
+                return textBoxLobbyOverLayPlayerName;
             }
             set
             {
-                textBoxPlayerName = value;
+                textBoxLobbyOverLayPlayerName = value;
                 LabelPlayerNameConflict = "";
-                if (textBoxPlayerName != "")
+                if (textBoxLobbyOverLayPlayerName != "")
                 {
-                    IsWindowPlayerNameOkButtonEnabled = "True";
+                    IsLobbyOverlayPlayerNameOkButtonEnabled = "True";
                 }
                 else
                 {
-                    IsWindowPlayerNameOkButtonEnabled = "False";
+                    IsLobbyOverlayPlayerNameOkButtonEnabled = "False";
                 }
                 OnPropertyChanged();
             }
         }
-        public string IsWindowPlayerNameOkButtonEnabled
+        public string IsLobbyOverlayPlayerNameOkButtonEnabled
         {
-            get => isWindowPlayerNameOkButtonEnabled;
-            set { isWindowPlayerNameOkButtonEnabled = value; OnPropertyChanged(); }
+            get => isLobbyOverlayPlayerNameOkButtonEnabled;
+            set { isLobbyOverlayPlayerNameOkButtonEnabled = value; OnPropertyChanged(); }
         }
-        public string IsWindowLobbyInviteButtonEnabled
+        public string IsLobbyInviteButtonEnabled
         {
-            get => isWindowLobbyInviteButtonEnabled;
-            set { isWindowLobbyInviteButtonEnabled = value; OnPropertyChanged(); }
+            get => isLobbyInviteButtonEnabled;
+            set { isLobbyInviteButtonEnabled = value; OnPropertyChanged(); }
         }
-        public string IsWindowLobbyAcceptInvitationButtonEnabled
+        public string IsLobbyAcceptInvitationButtonEnabled
         {
-            get => isWindowLobbyAcceptInvitationButtonEnabled;
-            set { isWindowLobbyAcceptInvitationButtonEnabled = value; OnPropertyChanged(); }
+            get => isLobbyAcceptInvitationButtonEnabled;
+            set { isLobbyAcceptInvitationButtonEnabled = value; OnPropertyChanged(); }
         }
         #endregion Bindable Properties
 
@@ -295,20 +298,20 @@ namespace ChessDotNET.ViewModels.MainWindow
         public RelayCommand SideMenuOnlineGameGoBackCommand { get; }
         public RelayCommand SideMenuQuitProgramCommand { get; }
         public RelayCommand OnMainWindowClosingCommand { get; }
-        public RelayCommand<object> WindowLobbyOkCommand { get; }
-        public RelayCommand<object> WindowLobbyCancelCommand { get; }
-        public RelayCommand WindowLobbyInviteCommand { get; }
-        public RelayCommand<object> WindowLobbyAcceptInvitationCommand { get; }
-        public RelayCommand<object> WindowLobbyKeyboardCommand { get; }
-        public RelayCommand<object> OnWindowLobbyDataGridAllPlayersLoadedCommand { get; }
-        public RelayCommand<object> OnWindowLobbyDataGridInvitationsLoadedCommand { get; }
-        public RelayCommand OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand { get; }
-        public RelayCommand OnWindowLobbyClosingCommand { get; }
-        public RelayCommand WindowLobbyOverlayPlayerNameOkCommand { get; }
-        public RelayCommand WindowLobbyOverlayPlayerNameCancelCommand { get; }
-        public RelayCommand<object> OnWindowMouseMoveCommand { get; }
-        public RelayCommand<object> OnWindowMouseLeftDownCommand { get; }
-        public RelayCommand<object> OnWindowMouseLeftUpCommand { get; }
+        public RelayCommand LobbyInviteCommand { get; }
+        public RelayCommand<object> LobbyAcceptInvitationCommand { get; }
+        public RelayCommand LobbyRefreshCommand { get; }
+        public RelayCommand LobbyCloseCommand { get; }
+        public RelayCommand<object> LobbyKeyboardCommand { get; }
+        public RelayCommand<object> OnLobbyDataGridAllPlayersLoadedCommand { get; }
+        public RelayCommand<object> OnLobbyDataGridInvitationsLoadedCommand { get; }
+        public RelayCommand OnLobbyDataGridAllPlayersSelectedCellsChangedCommand { get; }
+        public RelayCommand OnLobbyClosingCommand { get; }
+        public RelayCommand LobbyOverlayPlayerNameOkCommand { get; }
+        public RelayCommand LobbyOverlayPlayerNameCancelCommand { get; }
+        public RelayCommand<object> OnMainWindowMouseMoveCommand { get; }
+        public RelayCommand<object> OnMainWindowMouseLeftDownCommand { get; }
+        public RelayCommand<object> OnMainWindowMouseLeftUpCommand { get; }
         public RelayCommand<object> OnChessPieceMouseLeftDownCommand { get; }
         public RelayCommand<object> OnLobbyOverlayPlayerNameTextBoxFocusCommand { get; }
         public RelayCommand<object> PromotePawnSelectChessPieceCommand { get; }
@@ -335,7 +338,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                 wasSideMenuOpen = false;
             }
         }
-        private void OnWindowMouseMoveAction(object o)
+        private void OnMainWindowMouseMoveAction(object o)
         {
             MouseEventArgs e = o as MouseEventArgs;
 
@@ -362,7 +365,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             }
             e.Handled = true;
         }
-        private void OnWindowMouseLeftDownAction(object o)
+        private void OnMainWindowMouseLeftDownAction(object o)
         {
             var e = o as MouseEventArgs;
 
@@ -437,7 +440,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                 e.Handled = true;
             }
         }
-        private void OnWindowMouseLeftUpAction(object o, TileDictionary tileDict)
+        private void OnMainWindowMouseLeftUpAction(object o, TileDictionary tileDict)
         {
             if (IsInputAllowed())
             {
@@ -642,7 +645,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private void OnLobbyOverlayPlayerNameTextBoxFocusAction(object o)
         {
             string hasFocusString = (string)o;
-            hasWindowLobbyPlayerNameTextBoxFocus = hasFocusString == "True";
+            hasLobbyOverlayPlayerNameTextBoxFocus = hasFocusString == "True";
         }
         private void SideMenuNewGameAction()
         {
@@ -702,11 +705,11 @@ namespace ChessDotNET.ViewModels.MainWindow
             SideMenuGameModeVisibility = "Hidden";
             SideMenuVisibility = "Hidden";
 
-            windowLobby = new WindowLobby
+            lobby = new Lobby
             {
                 DataContext = this
             };
-            windowLobby.Show();
+            lobby.Show();
 
             if (PlayerList == null)
             {
@@ -721,23 +724,15 @@ namespace ChessDotNET.ViewModels.MainWindow
             if (localPlayer != null)
             {
                 TextBoxPlayerName = localPlayer.Name;
-                WindowLobbyTitle = "Lobby (" + localPlayer.Name + ")";
+                LabelLobbyPlayerName = localPlayer.Name;
             }
             else
             {
-                WindowLobbyTitle = "Lobby";
+                LabelLobbyPlayerName = "";
             }
 
             if (! isException)
             {
-                var keepRefreshingLobbyThreadStart = new ThreadStart(() => KeepRefreshingPlayerList());
-                var keepRefreshingLobbyBackgroundThread = new Thread(keepRefreshingLobbyThreadStart)
-                {
-                    IsBackground = true
-                };
-                keepRefreshingLobbyBackgroundThread.Start();
-
-
                 var keepResettingCounterThreadStart = new ThreadStart(() => KeepResettingInactiveCounter());
                 var keepResettingCounterBackgroundThread = new Thread(keepResettingCounterThreadStart)
                 {
@@ -746,57 +741,9 @@ namespace ChessDotNET.ViewModels.MainWindow
                 keepResettingCounterBackgroundThread.Start();
             }
         }
-        private void KeepRefreshingPlayerList()
-        {
-            while (windowLobby.IsVisible)
-            {
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        DispatchService.Invoke(async () =>
-                        {
-                            var index = DataGridLobby.SelectedIndex;
-                            var players = await HttpClientCommands.GetAllPlayersAsync();
-
-                            if (localPlayer != null)
-                            {
-                                PlayerList = new ObservableCollection<Player>(players.Where(a => a.Name != localPlayer.Name).ToList());
-
-                                InvitationList = await HttpClientCommands.GetPlayerInvitationsAsync(localPlayer.Id);
-
-                                if (dataGridLobbyAllPlayers.SelectedCells.Count > 0)
-                                {
-                                    var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
-                                    string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
-                                }
-                            }
-
-                            if (index != -1)
-                            {
-                                if (DataGridLobby.Items.Count != 0)
-                                {
-                                    DataGridLobby.SelectedIndex = index;
-                                    DataGridLobby.ScrollIntoView(DataGridLobby.Items[index]);
-                                }
-                            }
-
-                            DataGridLobby.Focus();
-                            OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction();
-                        });
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Cannot contact server...", "Error!");
-                        windowLobby.Close();
-                    }
-                });
-                Thread.Sleep(5000);
-            }
-        }
         private void KeepResettingInactiveCounter()
         {
-            while (windowLobby.IsVisible)
+            while (lobby.IsVisible)
             {
                 Task.Run(async () =>
                 {
@@ -808,25 +755,30 @@ namespace ChessDotNET.ViewModels.MainWindow
                         }
                         catch
                         {
-                            MessageBox.Show(windowLobby, "Cannot contact server...", "Error!");
-                            windowLobby.Close();
+                            MessageBox.Show(lobby, "Cannot contact server...", "Error!");
+                            lobby.Close();
                         }
                     }
                 });
                 Thread.Sleep(1000);
             }
         }
-        private void WindowLobbyOkAction(object o)
+        private async void LobbyRefreshAction()
         {
-            windowLobby = (WindowLobby)o;
-            windowLobby.Close();
+            var players = await HttpClientCommands.GetAllPlayersAsync();
+
+            if (localPlayer != null)
+            {
+                PlayerList = new ObservableCollection<Player>(players.Where(a => a.Name != localPlayer.Name).ToList());
+
+                InvitationList = await HttpClientCommands.GetPlayerInvitationsAsync(localPlayer.Id);
+            }
         }
-        private void WindowLobbyCancelAction(object o)
+        private void LobbyCloseAction()
         {
-            windowLobby = (WindowLobby)o;
-            windowLobby.Close();
+            lobby.Close();
         }
-        private async void WindowLobbyInviteAction()
+        private async void LobbyInviteAction()
         {
             var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
             string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
@@ -834,21 +786,21 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             await HttpClientCommands.InvitePlayerAsync(player.Id, localPlayer);
         }
-        private void WindowLobbyAcceptInvitationAction(object o)
+        private void LobbyAcceptInvitationAction(object o)
         {
             //var dataGrid = (DataGrid)o;
         }
-        private void WindowLobbyKeyboardAction(object o)
+        private void LobbyKeyboardAction(object o)
         {
             if ((string)o == "Enter")
             {
-                if (hasWindowLobbyPlayerNameTextBoxFocus && TextBoxPlayerName != "")
+                if (hasLobbyOverlayPlayerNameTextBoxFocus && TextBoxPlayerName != "")
                 {
-                    WindowLobbyOverlayPlayerNameOkAction();
+                    LobbyOverlayPlayerNameOkAction();
                 }
             }
         }
-        private void OnWindowLobbyDataGridAllPlayersLoadedAction(object o)
+        private void OnLobbyDataGridAllPlayersLoadedAction(object o)
         {
             dataGridLobbyAllPlayers = (DataGrid)o;
         }
@@ -856,7 +808,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         {
             dataGridLobbyInvitations = (DataGrid)o;
         }
-        private void OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction()
+        private void OnLobbyDataGridAllPlayersSelectedCellsChangedAction()
         {
             if (dataGridLobbyAllPlayers.SelectedCells.Count == 1)
             {
@@ -869,31 +821,31 @@ namespace ChessDotNET.ViewModels.MainWindow
 
                     if (player.Name != localPlayer.Name)
                     {
-                        IsWindowLobbyInviteButtonEnabled = "True";
+                        IsLobbyInviteButtonEnabled = "True";
                     }
                     else
                     {
-                        IsWindowLobbyInviteButtonEnabled = "False";
+                        IsLobbyInviteButtonEnabled = "False";
                     }
                 }
                 else
                 {
-                    IsWindowLobbyInviteButtonEnabled = "False";
+                    IsLobbyInviteButtonEnabled = "False";
                 }
             }
             else
             {
-                IsWindowLobbyInviteButtonEnabled = "False";
+                IsLobbyInviteButtonEnabled = "False";
             }
         }
-        private async void OnWindowLobbyClosingAction()
+        private async void OnLobbyClosingAction()
         {
             if (localPlayer != null)
             {
                 await HttpClientCommands.DeletePlayerAsync(localPlayer.Id);
             }
         }
-        private async void WindowLobbyOverlayPlayerNameOkAction()
+        private async void LobbyOverlayPlayerNameOkAction()
         {
             if (localPlayer == null)
             {
@@ -901,8 +853,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             }
 
             localPlayer.Name = TextBoxPlayerName;
-
-            WindowLobbyTitle = "Lobby (" + localPlayer.Name + ")";
+            LabelLobbyPlayerName = localPlayer.Name;
 
             Player createPlayerResult = new Player();
 
@@ -912,8 +863,8 @@ namespace ChessDotNET.ViewModels.MainWindow
             }
             catch
             {
-                MessageBox.Show(windowLobby, "Please try again later...", "Error!");
-                windowLobby.Close();
+                MessageBox.Show(lobby, "Please try again later...", "Error!");
+                lobby.Close();
             }
 
             if (createPlayerResult.Name == null)
@@ -929,7 +880,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                 localPlayer = createPlayerResult;
             }
         }
-        private void WindowLobbyOverlayPlayerNameCancelAction()
+        private void LobbyOverlayPlayerNameCancelAction()
         {
             TextBoxPlayerName = "";
             LabelPlayerNameConflict = "";
@@ -941,9 +892,9 @@ namespace ChessDotNET.ViewModels.MainWindow
         }
         private void OnMainWindowClosingAction()
         {
-            if (windowLobby != null)
+            if (lobby != null)
             {
-                windowLobby.Close();
+                lobby.Close();
             }
         }
         private void PromotePawnSelectChessPieceAction(object o)

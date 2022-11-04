@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace ChessDotNET.Views
 {
     /// <summary>
-    /// Interaction logic for LobbyOverlayPlayerName.xaml
+    /// Interaction logic for ChessBoard.xaml
     /// </summary>
-    public partial class LobbyOverlayPlayerName : UserControl
+    public partial class ChessBoard : UserControl
     {
-        public LobbyOverlayPlayerName()
+        public ChessBoard()
         {
             InitializeComponent();
         }
