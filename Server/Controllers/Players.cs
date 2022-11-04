@@ -109,6 +109,21 @@ namespace Server.Controllers
         #endregion HttpPut
 
         #region HttpDelete
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePlayer(int id)
+        {
+            var playerInDb = _playerDBContext.Player.Where(a => a.Id == id).FirstOrDefault();
+
+            if (playerInDb != null)
+            {
+                _playerDBContext.Invitations.RemoveRange(_playerDBContext.Invitations.Where(a => a.PlayerId == playerInDb.Id));
+                _playerDBContext.Player.Remove(playerInDb);
+                await _playerDBContext.SaveChangesAsync();
+                return Ok();
+            }
+
+            return Conflict("error_resetcounterfailed");
+        }
         #endregion HttpDelete
     }
 }

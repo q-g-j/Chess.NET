@@ -82,7 +82,7 @@
                     Margin="0, 0, 10, 0"
                     IsEnabled="{Binding IsWindowPlayerNameOkButtonEnabled}"
                     Style="{StaticResource StyleOverlayButton}"
-                    Command="{Binding WindowPlayerNameOkCommand}"
+                    Command="{Binding WindowLobbyOverlayPlayerNameOkCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                 </Button>
                 <Button
@@ -91,7 +91,7 @@
                     Content="Cancel"
                     Margin="10, 0, 0, 0"
                     Style="{StaticResource StyleOverlayButton}"
-                    Command="{Binding WindowPlayerNameCancelCommand}"
+                    Command="{Binding WindowLobbyOverlayPlayerNameCancelCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">
                 </Button>
             </Grid>

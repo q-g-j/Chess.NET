@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Lobby" Height="500" Width="700" MinHeight="500" MinWidth="700"
+        Title="{Binding WindowLobbyTitle}" Height="500" Width="700" MinHeight="500" MinWidth="700"
         UseLayoutRounding="True"
         Background="#ffb366"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
@@ -16,6 +16,12 @@
         <KeyBinding Gesture="Return" Command="{Binding WindowLobbyKeyboardCommand}" CommandParameter="Enter"/>
     </Window.InputBindings>
 
+    <behaviors:Interaction.Triggers>
+        <behaviors:EventTrigger EventName="Closing">
+            <behaviors:InvokeCommandAction Command="{Binding OnWindowLobbyClosingCommand}"/>
+        </behaviors:EventTrigger>
+    </behaviors:Interaction.Triggers>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="450"/>

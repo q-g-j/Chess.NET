@@ -86,5 +86,13 @@ namespace ChessDotNET.WebClient
                 $"api/players/invite/{invitedId}", invitingPlayer);
         }
         #endregion HttpPutCommands
+
+        #region HttpDeleteCommands
+        internal static async Task DeletePlayerAsync(int id)
+        {
+            await client.DeleteAsync(
+                $"api/players/{id}");
+        }
+        #endregion HttpDeleteCommands
     }
 }

@@ -47,7 +47,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             SideMenuLocalGameAsBlackCommand = new RelayCommand(SideMenuLocalGameAsBlackAction);
             SideMenuLocalGameGoBackCommand = new RelayCommand(SideMenuLocalGameGoBackAction);
 
-            SideMenuOnlineGameEnterLobbyCommand = new RelayCommand(SideMenuOnlineGameEnterLobbyActionAsync);
+            SideMenuOnlineGameEnterLobbyCommand = new RelayCommand(SideMenuOnlineGameEnterLobbyAction);
             SideMenuOnlineGameGoBackCommand = new RelayCommand(SideMenuOnlineGameGoBackAction);
 
             SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
@@ -55,15 +55,16 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             WindowLobbyOkCommand = new RelayCommand<object>(o => WindowLobbyOkAction(o));
             WindowLobbyCancelCommand = new RelayCommand<object>(o => WindowLobbyCancelAction(o));
-            WindowLobbyInviteCommand = new RelayCommand<object>(o => WindowLobbyInviteAction(o));
+            WindowLobbyInviteCommand = new RelayCommand(WindowLobbyInviteAction);
             WindowLobbyAcceptInvitationCommand = new RelayCommand<object>(o => WindowLobbyAcceptInvitationAction(o));
             WindowLobbyKeyboardCommand = new RelayCommand<object>(o => WindowLobbyKeyboardAction(o));
             OnWindowLobbyDataGridAllPlayersLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
             OnWindowLobbyDataGridInvitationsLoadedCommand = new RelayCommand<object>(o => OnWindowLobbyDataGridAllPlayersLoadedAction(o));
             OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand = new RelayCommand(OnWindowLobbyDataGridAllPlayersSelectedCellsChangedAction);
+            OnWindowLobbyClosingCommand = new RelayCommand(OnWindowLobbyClosingAction);
 
-            WindowPlayerNameOkCommand = new RelayCommand(WindowPlayerNameOkActionAsync);
-            WindowPlayerNameCancelCommand = new RelayCommand(WindowPlayerNameCancelAction);
+            WindowLobbyOverlayPlayerNameOkCommand = new RelayCommand(WindowLobbyOverlayPlayerNameOkAction);
+            WindowLobbyOverlayPlayerNameCancelCommand = new RelayCommand(WindowLobbyOverlayPlayerNameCancelAction);
 
             PromotePawnSelectChessPieceCommand = new RelayCommand<object>(PromotePawnSelectChessPieceAction);
 
@@ -131,6 +132,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private string isWindowLobbyAcceptInvitationButtonEnabled = "False";
         private string lobbyOverlayPlayerNameVisibility = "Hidden";
         private string labelPlayerNameConflict = "";
+        private string windowLobbyTitle = "Lobby";
         #endregion Property-Values
 
         #region Bindable Properties
@@ -193,6 +195,11 @@ namespace ChessDotNET.ViewModels.MainWindow
         {
             get => overlayPromotePawnVisibility;
             set { overlayPromotePawnVisibility = value; OnPropertyChanged(); }
+        }
+        public string WindowLobbyTitle
+        {
+            get => windowLobbyTitle;
+            set { windowLobbyTitle = value; OnPropertyChanged(); }
         }
         public string LobbyOverlayPlayerNameVisibility
         {
@@ -290,14 +297,15 @@ namespace ChessDotNET.ViewModels.MainWindow
         public RelayCommand OnMainWindowClosingCommand { get; }
         public RelayCommand<object> WindowLobbyOkCommand { get; }
         public RelayCommand<object> WindowLobbyCancelCommand { get; }
-        public RelayCommand<object> WindowLobbyInviteCommand { get; }
+        public RelayCommand WindowLobbyInviteCommand { get; }
         public RelayCommand<object> WindowLobbyAcceptInvitationCommand { get; }
         public RelayCommand<object> WindowLobbyKeyboardCommand { get; }
         public RelayCommand<object> OnWindowLobbyDataGridAllPlayersLoadedCommand { get; }
         public RelayCommand<object> OnWindowLobbyDataGridInvitationsLoadedCommand { get; }
         public RelayCommand OnWindowLobbyDataGridAllPlayersSelectedCellsChangedCommand { get; }
-        public RelayCommand WindowPlayerNameOkCommand { get; }
-        public RelayCommand WindowPlayerNameCancelCommand { get; }
+        public RelayCommand OnWindowLobbyClosingCommand { get; }
+        public RelayCommand WindowLobbyOverlayPlayerNameOkCommand { get; }
+        public RelayCommand WindowLobbyOverlayPlayerNameCancelCommand { get; }
         public RelayCommand<object> OnWindowMouseMoveCommand { get; }
         public RelayCommand<object> OnWindowMouseLeftDownCommand { get; }
         public RelayCommand<object> OnWindowMouseLeftUpCommand { get; }
@@ -688,7 +696,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             StartGame(true);
         }
-        private async void SideMenuOnlineGameEnterLobbyActionAsync()
+        private void SideMenuOnlineGameEnterLobbyAction()
         {
             SideMenuOnlineGameVisibility = "Hidden";
             SideMenuGameModeVisibility = "Hidden";
@@ -707,23 +715,17 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             bool isException = false;
 
-            if (localPlayer == null)
-            {
-                LobbyOverlayPlayerNameVisibility = "Visible";
-            }
+            LobbyOverlayPlayerNameVisibility = "Visible";
+
 
             if (localPlayer != null)
             {
-                try
-                {
-                    var createPlayerResult = await HttpClientCommands.CreatePlayerAsync(localPlayer);
-                }
-                catch
-                {
-                    isException = true;
-                    MessageBox.Show(windowLobby, "Please try again later...", "Error!");
-                    windowLobby.Close();
-                }
+                TextBoxPlayerName = localPlayer.Name;
+                WindowLobbyTitle = "Lobby (" + localPlayer.Name + ")";
+            }
+            else
+            {
+                WindowLobbyTitle = "Lobby";
             }
 
             if (! isException)
@@ -824,7 +826,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             windowLobby = (WindowLobby)o;
             windowLobby.Close();
         }
-        private async void WindowLobbyInviteAction(object o)
+        private async void WindowLobbyInviteAction()
         {
             var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
             string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
@@ -834,7 +836,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         }
         private void WindowLobbyAcceptInvitationAction(object o)
         {
-            var dataGrid = (DataGrid)o;
+            //var dataGrid = (DataGrid)o;
         }
         private void WindowLobbyKeyboardAction(object o)
         {
@@ -842,7 +844,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             {
                 if (hasWindowLobbyPlayerNameTextBoxFocus && TextBoxPlayerName != "")
                 {
-                    WindowPlayerNameOkActionAsync();
+                    WindowLobbyOverlayPlayerNameOkAction();
                 }
             }
         }
@@ -884,12 +886,23 @@ namespace ChessDotNET.ViewModels.MainWindow
                 IsWindowLobbyInviteButtonEnabled = "False";
             }
         }
-        private async void WindowPlayerNameOkActionAsync()
+        private async void OnWindowLobbyClosingAction()
         {
-            localPlayer = new Player()
+            if (localPlayer != null)
             {
-                Name = TextBoxPlayerName
-            };
+                await HttpClientCommands.DeletePlayerAsync(localPlayer.Id);
+            }
+        }
+        private async void WindowLobbyOverlayPlayerNameOkAction()
+        {
+            if (localPlayer == null)
+            {
+                localPlayer = new Player();
+            }
+
+            localPlayer.Name = TextBoxPlayerName;
+
+            WindowLobbyTitle = "Lobby (" + localPlayer.Name + ")";
 
             Player createPlayerResult = new Player();
 
@@ -913,12 +926,10 @@ namespace ChessDotNET.ViewModels.MainWindow
                 LabelPlayerNameConflict = "";
                 LobbyOverlayPlayerNameVisibility = "Hidden";
 
-                localPlayer.Id = createPlayerResult.Id;
-
-                //PlayerList = await HttpClientCommands.GetAllPlayersAsync();
+                localPlayer = createPlayerResult;
             }
         }
-        private void WindowPlayerNameCancelAction()
+        private void WindowLobbyOverlayPlayerNameCancelAction()
         {
             TextBoxPlayerName = "";
             LabelPlayerNameConflict = "";
