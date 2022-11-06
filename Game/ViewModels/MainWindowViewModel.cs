@@ -638,6 +638,12 @@ namespace ChessDotNET.ViewModels.MainWindow
                                     {
                                         currentOnlineGame.LastMoveStartWhite = oldCoords.String;
                                         currentOnlineGame.LastMoveEndWhite = newCoords.String;
+
+                                        if (moveValidationData.CanCastle)
+                                        {
+                                            currentOnlineGame.LastMoveStartWhite += moveValidationData.Coords[0].String;
+                                            currentOnlineGame.LastMoveEndWhite += moveValidationData.Coords[1].String;
+                                        }
                                         currentOnlineGame.LastMoveStartBlack = null;
                                         currentOnlineGame.LastMoveEndBlack = null;
                                         currentOnlineGame.MoveInfo = LabelMoveInfo;
@@ -646,6 +652,13 @@ namespace ChessDotNET.ViewModels.MainWindow
                                     {
                                         currentOnlineGame.LastMoveStartBlack = oldCoords.String;
                                         currentOnlineGame.LastMoveEndBlack = newCoords.String;
+
+                                        if (moveValidationData.CanCastle)
+                                        {
+                                            currentOnlineGame.LastMoveStartBlack += moveValidationData.Coords[0].String;
+                                            currentOnlineGame.LastMoveEndBlack += moveValidationData.Coords[1].String;
+                                        }
+
                                         currentOnlineGame.LastMoveStartWhite = null;
                                         currentOnlineGame.LastMoveEndWhite = null;
                                         currentOnlineGame.MoveInfo = LabelMoveInfo;
@@ -794,12 +807,19 @@ namespace ChessDotNET.ViewModels.MainWindow
                             {
                                 if (currentOnlineGame.LastMoveStartBlack != null && currentOnlineGame.LastMoveEndBlack != null)
                                 {
-                                    ChessPiece chessPiece = tileDict[currentOnlineGame.LastMoveStartBlack].ChessPiece;
-                                    Coords oldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack);
-                                    Coords newCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndBlack);
+                                    ChessPiece chessPiece = tileDict[currentOnlineGame.LastMoveStartBlack.Substring(0, 2)].ChessPiece;
+                                    Coords oldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(0, 2));
+                                    Coords newCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndBlack.Substring(0, 2));
 
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     MoveList.Add(new Move(oldCoords, newCoords, chessPiece.ChessPieceColor, chessPiece.ChessPieceType));
+
+                                    if (currentOnlineGame.LastMoveStartBlack.Length == 4)
+                                    {
+                                        Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(2, 2));
+                                        Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndBlack.Substring(2, 2));
+                                        tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                    }
 
                                     OnPropertyChangedByPropertyName("TileDict");
                                     isSuccess = true;
@@ -811,12 +831,19 @@ namespace ChessDotNET.ViewModels.MainWindow
                             {
                                 if (currentOnlineGame.LastMoveStartWhite != null && currentOnlineGame.LastMoveEndWhite != null)
                                 {
-                                    ChessPiece chessPiece = tileDict[currentOnlineGame.LastMoveStartWhite].ChessPiece;
-                                    Coords oldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite);
-                                    Coords newCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndWhite);
+                                    ChessPiece chessPiece = tileDict[currentOnlineGame.LastMoveStartWhite.Substring(0, 2)].ChessPiece;
+                                    Coords oldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(0, 2));
+                                    Coords newCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndWhite.Substring(0, 2));
 
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     MoveList.Add(new Move(oldCoords, newCoords, chessPiece.ChessPieceColor, chessPiece.ChessPieceType));
+
+                                    if (currentOnlineGame.LastMoveStartWhite.Length == 4)
+                                    {
+                                        Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(2, 2));
+                                        Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndWhite.Substring(2, 2));
+                                        tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                    }
 
                                     OnPropertyChangedByPropertyName("TileDict");
                                     isSuccess = true;
