@@ -3,13 +3,14 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Server.Models
 {
-    public class PlayerDBContext : DbContext
+    public class ChessDBContext : DbContext
     {
-        public PlayerDBContext(DbContextOptions<PlayerDBContext> options)
+        public ChessDBContext(DbContextOptions<ChessDBContext> options)
             : base(options) { }
 
-        public DbSet<Player> Player => Set<Player>();
+        public DbSet<Player> Players => Set<Player>();
         public DbSet<Invitation> Invitations => Set<Invitation>();
+        public DbSet<Game> Games => Set<Game>();
 
         // suppress info messages:
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -38,28 +38,28 @@
                 <Image Grid.Column="0" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding OverlayPromotePawnList[0]}" Panel.ZIndex="10">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <behaviors:InvokeCommandAction Command="{Binding PromotePawnSelectChessPieceCommand}" CommandParameter="Bishop"/>
+                            <behaviors:InvokeCommandAction Command="{Binding OverlayPromotePawnSelectChessPieceCommand}" CommandParameter="Bishop"/>
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
                 </Image>
                 <Image Grid.Column="1" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding OverlayPromotePawnList[1]}" Panel.ZIndex="10">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <behaviors:InvokeCommandAction Command="{Binding PromotePawnSelectChessPieceCommand}" CommandParameter="Knight"/>
+                            <behaviors:InvokeCommandAction Command="{Binding OverlayPromotePawnSelectChessPieceCommand}" CommandParameter="Knight"/>
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
                 </Image>
                 <Image Grid.Column="2" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding OverlayPromotePawnList[2]}" Panel.ZIndex="10">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <behaviors:InvokeCommandAction Command="{Binding PromotePawnSelectChessPieceCommand}" CommandParameter="Rook"/>
+                            <behaviors:InvokeCommandAction Command="{Binding OverlayPromotePawnSelectChessPieceCommand}" CommandParameter="Rook"/>
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
                 </Image>
                 <Image Grid.Column="3" Grid.Row="0" Style="{StaticResource StyleImageChessPiece}" Source="{Binding OverlayPromotePawnList[3]}" Panel.ZIndex="10">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <behaviors:InvokeCommandAction Command="{Binding PromotePawnSelectChessPieceCommand}" CommandParameter="Queen"/>
+                            <behaviors:InvokeCommandAction Command="{Binding OverlayPromotePawnSelectChessPieceCommand}" CommandParameter="Queen"/>
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
                 </Image>

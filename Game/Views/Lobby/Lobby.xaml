@@ -40,10 +40,10 @@
             Style="{StaticResource StyleLobbyDataGridAllPlayers}"
             CanUserAddRows="False"
             SelectionMode="Single"
-            BorderThickness="1, 1, 1, 1"
+            BorderThickness="0, 0, 1, 1"
             BorderBrush="Black">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay}" Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}" Width="*"/>
             </DataGrid.Columns>
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Loaded">
@@ -55,19 +55,25 @@
             </behaviors:Interaction.Triggers>
         </DataGrid>
         <DataGrid
+            x:Name="DataGridInvitations"
             Grid.Column="1"
             Grid.Row="0"
             ItemsSource="{Binding InvitationList}"
             AutoGenerateColumns="False"
             Style="{StaticResource StyleLobbyDataGridInvitations}"
             CanUserAddRows="False"
-            SelectionMode="Single">
+            SelectionMode="Single"
+            BorderThickness="0, 0, 1, 1"
+            BorderBrush="Black">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Invitations" Binding="{Binding Name, Mode=OneWay}" Width="*"/>
             </DataGrid.Columns>
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Loaded">
-                    <behaviors:InvokeCommandAction Command="{Binding OnLobbyDataGridInvitationsLoadedCommand}" CommandParameter="{Binding ElementName=DataGridAllPlayers}"/>
+                    <behaviors:InvokeCommandAction Command="{Binding OnLobbyDataGridInvitationsLoadedCommand}" CommandParameter="{Binding ElementName=DataGridInvitations}"/>
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="SelectedCellsChanged">
+                    <behaviors:InvokeCommandAction Command="{Binding OnLobbyDataGridInvitationsSelectedCellsChangedCommand}"/>
                 </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </DataGrid>
@@ -121,7 +127,8 @@
                 Grid.Column="1"
                 Grid.Row="0"
                 Grid.ColumnSpan="1"
-                Content="{Binding LabelLobbyPlayerName}"
+                Content="{Binding LocalPlayer.Name}"
+                Foreground="SaddleBrown"
                 HorizontalContentAlignment="Left"
                 VerticalContentAlignment="Center"
                 FontSize="16"
@@ -149,6 +156,8 @@
                 Command="{Binding LobbyCloseCommand}">
             </Button>
         </Grid>
-        <local:OverlayPlayerName Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayPlayerNameVisibility, FallbackValue=Hidden}"/>        
+        <local:OverlayPlayerName Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayPlayerNameVisibility, FallbackValue=Hidden}"/>
+        <local:OverlayOpponentAcceptedInvitation Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayOpponentAcceptedInvitationVisibility, FallbackValue=Hidden}"/>
+        <local:OverlayWaitingForInvitationAcception Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayWaitingForInvitationAcceptedVisibility, FallbackValue=Hidden}"/>
     </Grid>
 </Window>

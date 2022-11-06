@@ -20,7 +20,8 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Button Grid.Row="0" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuLocalGameCommand}" Content="Local game"/>
-        <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuOnlineGameCommand}" Content="Play online"/>
+        <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuOnlineGameCommand}" Content="Play online" Visibility="{Binding SideMenuOnlineGameButtonVisibility, FallbackValue=Visible}"/>
+        <Button Grid.Row="2" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuEndOnlineGameCommand}" Content="End online game" Visibility="{Binding SideMenuEndOnlineGameButtonVisibility, FallbackValue=Hidden}"/>
         <Button Grid.Row="8" Margin="0, 0, 0, 0" Style="{StaticResource StyleSideMenuButton}" Command="{Binding SideMenuGameModeGoBackCommand}" Content="Go back"/>
     </Grid>
 </UserControl>

@@ -58,11 +58,12 @@
                         <Line Grid.Row="4" Style="{StaticResource StyleTopBarButtonMenuStripes}"/>
                     </Grid>
                 </Button>
-                <Label Content="{Binding LabelMoveInfo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
+                <Label Content="{Binding LabelMoveInfo, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
             </DockPanel>
             <Grid>
-                <local:SideMenu Visibility="{Binding SideMenuVisibility}"/>
-                <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility}"/>
+                <local:SideMenu Visibility="{Binding SideMenuVisibility, FallbackValue=Hidden}"/>
+                <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility, FallbackValue=Hidden}"/>
+                <local:OverlayOnlineGamePlayerQuit Visibility="{Binding OverlayOnlineGamePlayerQuitVisibility, FallbackValue=Hidden}"/>
                 <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->
                 <local:ChessBoard/>
             </Grid>

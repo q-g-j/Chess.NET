@@ -12,7 +12,7 @@ namespace Server
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<PlayerDBContext>(opt => opt.UseInMemoryDatabase("Players"));
+            builder.Services.AddDbContext<ChessDBContext>(opt => opt.UseInMemoryDatabase("Chess"));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddHostedService<DeleteInactivePlayersService>();
 

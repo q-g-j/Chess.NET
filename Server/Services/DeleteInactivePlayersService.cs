@@ -26,23 +26,43 @@ namespace Server.Services
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var playerContext = scope.ServiceProvider.GetRequiredService<PlayerDBContext>();
+                var playerContext = scope.ServiceProvider.GetRequiredService<ChessDBContext>();
 
                 if (playerContext != null)
                 {
                     try
                     {
-                        foreach (var player in playerContext.Player)
+                        foreach (var player in playerContext.Players)
                         {
                             player.InactiveCounter += 1;
                             if (player.InactiveCounter == 5)
                             {
-                                playerContext.Player.Remove(player);
-
+                                playerContext.Players.Remove(player);
                                 playerContext.Invitations.RemoveRange(playerContext.Invitations.Where(a => a.PlayerId == player.Id));
                             }
+                            await playerContext.SaveChangesAsync();
                         }
-                        await playerContext.SaveChangesAsync();
+                    }
+                    catch
+                    {
+                        ;
+                    }
+                    try
+                    {
+                        foreach (var game in playerContext.Games)
+                        {
+                            game.WhiteInactivityCounter += 1;
+                            game.BlackInactivityCounter += 1;
+                            if (game.WhiteInactivityCounter == 5 || game.BlackInactivityCounter == 5)
+                            {
+                                game.HasPlayerQuit = true;
+                            }
+                            if (game.WhiteInactivityCounter >= 5 && game.BlackInactivityCounter >= 5)
+                            {
+                                playerContext.Games.Remove(game);
+                            }
+                            await playerContext.SaveChangesAsync();
+                        }
                     }
                     catch
                     {

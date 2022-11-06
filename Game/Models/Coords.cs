@@ -32,6 +32,14 @@ namespace ChessDotNET.Models
         {
             return Enum.GetName(typeof(Columns), col).ToString() + row.ToString();
         }
+        internal static Coords StringToCoords(string coordsString)
+        {
+            int colChar = coordsString[0];
+            Columns column = (Columns)(colChar - 64);
+            int row = int.Parse(coordsString[1].ToString());
+
+            return new Coords(column, row);
+        }
         internal static Coords CanvasPositionToCoords(Point point)
         {
             int col = (int)((point.X - point.X % 50) / 50) + 1;

@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="ChessDotNET.Views.OverlayOnlineGamePlayerQuit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ChessDotNET.Views"
+             xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:helpers="clr-namespace:ChessDotNET.ViewHelpers"
+             mc:Ignorable="d" 
+             Grid.Column="0" Grid.Row="0" Panel.ZIndex="40"
+             HorizontalAlignment="Center" VerticalAlignment="Center"
+             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
+    <Grid>
+        <Border
+            Height="150"
+            Width="260"
+            x:Name="OverlayOnlineGamePlayerQuitMainBorder"
+            Style="{StaticResource StyleOverlayBorder}">
+            <Border.Effect>
+                <DropShadowEffect />
+            </Border.Effect>
+        </Border>
+        <Border
+            Style="{StaticResource StyleOverlayBorder}"
+            Height="{Binding ElementName=OverlayOnlineGamePlayerQuitMainBorder, Path=Height}"
+            Width="{Binding ElementName=OverlayOnlineGamePlayerQuitMainBorder, Path=Width}">
+            <Grid Style="{StaticResource StyleOverlayGrid}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                        Text="{Binding Opponent.Name, StringFormat='\{0\} has quit the online game.'}"
+                        TextWrapping="Wrap"
+                        FontSize="15"
+                        FontFamily="{StaticResource Main}">
+                </TextBlock>
+                <Button
+                    Grid.Column="0"
+                    Grid.Row="4"
+                    Content="OK"
+                    Margin="0, 0, 10, 0"
+                    Style="{StaticResource StyleOverlayButton}"
+                    Width="120"
+                    Command="{Binding OverlayOnlineGamePlayerQuitOkCommand}">
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

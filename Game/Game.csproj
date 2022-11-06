@@ -99,10 +99,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Views\MainWindow\Overlays\OverlayOnlineGamePlayerQuit.xaml.cs">
+      <DependentUpon>OverlayOnlineGamePlayerQuit.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WebApiClient\WebApiClientGamesCommands.cs" />
+    <Compile Include="WebApiClient\WebApiClientInvitationsCommands.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Tests\Test2.cs" />
+    <Compile Include="Tests\Test1.cs" />
+    <Compile Include="ViewModels\SidebarViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\Lobby\Overlays\OverlayWaitingForInvitationAcception.xaml.cs">
+      <DependentUpon>OverlayWaitingForInvitationAcception.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Lobby\Overlays\OverlayOpponentAcceptedInvitation.xaml.cs">
+      <DependentUpon>OverlayOpponentAcceptedInvitation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Lobby\Overlays\OverlayPlayerName.xaml.cs">
       <DependentUpon>OverlayPlayerName.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HttpClient\HttpClientCommands.cs" />
+    <Compile Include="WebApiClient\WebApiClientPlayersCommands.cs" />
     <Compile Include="Models\Move.cs" />
     <Compile Include="GameLogic\CastlingValidationGameLogic.cs" />
     <Compile Include="GameLogic\CheckValidationGameLogic.cs" />
@@ -139,6 +155,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResourceDictionaries\Styles\SideMenuStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Lobby\Overlays\OverlayWaitingForInvitationAcception.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Lobby\Overlays\OverlayOpponentAcceptedInvitation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -187,6 +211,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\Lobby\Overlays\OverlayPlayerName.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MainWindow\Overlays\OverlayOnlineGamePlayerQuit.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
