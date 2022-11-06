@@ -36,7 +36,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             HttpClient httpClient = new HttpClient
             {
-                BaseAddress = new Uri(@"http://qgj.ddns.net:7002/")
+                BaseAddress = new Uri(@"http://localhost:7002/")
             };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
