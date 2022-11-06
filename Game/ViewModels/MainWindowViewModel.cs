@@ -597,16 +597,13 @@ namespace ChessDotNET.ViewModels.MainWindow
                                     labelMoveInfoText += ", Black king is in check!";
                                 }
 
-                                if (!isOnlineGame)
+                                if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
                                 {
-                                    if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
-                                    {
-                                        labelMoveInfoText += " - It's white's turn...";
-                                    }
-                                    else
-                                    {
-                                        labelMoveInfoText += " - It's black's turn...";
-                                    }
+                                    labelMoveInfoText += " - It's white's turn...";
+                                }
+                                else
+                                {
+                                    labelMoveInfoText += " - It's black's turn...";
                                 }
 
                                 if (currentlyDraggedChessPieceColor == ChessPieceColor.Black)
@@ -733,6 +730,8 @@ namespace ChessDotNET.ViewModels.MainWindow
         private void OverlayOnlineGamePlayerQuitOkAction()
         {
             OverlayOnlineGamePlayerQuitVisibility = "Hidden";
+            SideMenuEndOnlineGameButtonVisibility = "Hidden";
+            SideMenuOnlineGameButtonVisibility = "Visible";
 
             Opponent = null;
             StartGame(false);
@@ -786,7 +785,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private void OnlineGameKeepCheckingForNextMove()
         {
             bool isSuccess = false;
-            while (! isSuccess)
+            while (! isSuccess && isOnlineGame)
             {
                 DispatchService.Invoke(async () =>
                 {
@@ -1018,8 +1017,8 @@ namespace ChessDotNET.ViewModels.MainWindow
                     Opponent = null;
                 }
             }
-            SideMenuEndOnlineGameButtonVisibility = "Hidden";
-            SideMenuOnlineGameButtonVisibility = "Visible";
+            //SideMenuEndOnlineGameButtonVisibility = "Hidden";
+            //SideMenuOnlineGameButtonVisibility = "Visible";
             lobby = null;
         }
         private async void LobbyInviteAction()
