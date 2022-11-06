@@ -69,7 +69,6 @@ namespace ChessDotNET.Models
         internal ChessPieceType ChessPieceType { get; set; }
         internal bool IsRotated { get; set; }
         internal bool HasMoved { get; set; }
-        internal bool CanBeCapturedEnPassant { get; set; }
         internal int MoveCount { get; set; }
     }
     internal enum ChessPieceColor

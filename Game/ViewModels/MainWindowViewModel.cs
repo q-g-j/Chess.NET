@@ -17,8 +17,6 @@ using ChessDotNET.WebApiClient;
 using ChessDotNET.Models;
 using ChessDotNET.ViewHelpers;
 using ChessDotNET.Views;
-using CommunityToolkit.Mvvm.Messaging;
-using ChessDotNET.Tests;
 using System.Net.Http;
 
 namespace ChessDotNET.ViewModels.MainWindow
@@ -38,7 +36,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             HttpClient httpClient = new HttpClient
             {
-                BaseAddress = new Uri(@"http://localhost:7002/")
+                BaseAddress = new Uri(@"http://qgj.ddns.net:7002/")
             };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -528,7 +526,6 @@ namespace ChessDotNET.ViewModels.MainWindow
                                 {
                                     tileDict[tileDict.CoordsPawnMovedTwoTiles.String].ChessPiece = new ChessPiece();
                                     tileDict[tileDict.CoordsPawnMovedTwoTiles.String].IsOccupied = false;
-                                    tileDict.CoordsPawnMovedTwoTiles = null;
                                 }
 
                                 // has a pawn moved two tiles at once? Store its coords for the next turn...
@@ -536,13 +533,14 @@ namespace ChessDotNET.ViewModels.MainWindow
                                 {
                                     tileDict.CoordsPawnMovedTwoTiles = moveValidationData.Coords[0];
                                 }
-                                else
+                                else if (! isOnlineGame)
                                 {
                                     tileDict.CoordsPawnMovedTwoTiles = null;
                                 }
 
                                 // promote your pawn if it is on the opposite of the field:
-                                if (PromotePawnGameLogic.CanPromote(tileDict, oldCoords, newCoords))
+                                bool canPromote = PromotePawnGameLogic.CanPromote(tileDict, oldCoords, newCoords);
+                                if (canPromote)
                                 {
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     promotePawnCoords = newCoords;
@@ -638,8 +636,21 @@ namespace ChessDotNET.ViewModels.MainWindow
 
                                         if (moveValidationData.CanCastle)
                                         {
-                                            currentOnlineGame.LastMoveStartWhite += moveValidationData.Coords[0].String;
-                                            currentOnlineGame.LastMoveEndWhite += moveValidationData.Coords[1].String;
+                                            currentOnlineGame.LastMoveStartWhite += "C" + moveValidationData.Coords[0].String;
+                                            currentOnlineGame.LastMoveEndWhite   += "C" + moveValidationData.Coords[1].String;
+                                        }
+                                        else if (moveValidationData.MovedTwoTiles)
+                                        {
+                                            currentOnlineGame.LastMoveStartWhite += "T" + tileDict.CoordsPawnMovedTwoTiles.String;
+                                        }
+                                        else if (moveValidationData.CanCaptureEnPassant)
+                                        {
+                                            currentOnlineGame.LastMoveStartWhite += "E" + tileDict.CoordsPawnMovedTwoTiles.String;
+                                            tileDict.CoordsPawnMovedTwoTiles = null;
+                                        }
+                                        else if (canPromote)
+                                        {
+                                            currentOnlineGame.LastMoveStartWhite += "P";
                                         }
                                         currentOnlineGame.LastMoveStartBlack = null;
                                         currentOnlineGame.LastMoveEndBlack = null;
@@ -652,8 +663,21 @@ namespace ChessDotNET.ViewModels.MainWindow
 
                                         if (moveValidationData.CanCastle)
                                         {
-                                            currentOnlineGame.LastMoveStartBlack += moveValidationData.Coords[0].String;
-                                            currentOnlineGame.LastMoveEndBlack += moveValidationData.Coords[1].String;
+                                            currentOnlineGame.LastMoveStartBlack += "C" + moveValidationData.Coords[0].String;
+                                            currentOnlineGame.LastMoveEndBlack   += "C" + moveValidationData.Coords[1].String;
+                                        }
+                                        else if (moveValidationData.MovedTwoTiles)
+                                        {
+                                            currentOnlineGame.LastMoveStartBlack += "T" + tileDict.CoordsPawnMovedTwoTiles.String;
+                                        }
+                                        else if (moveValidationData.CanCaptureEnPassant)
+                                        {
+                                            currentOnlineGame.LastMoveStartBlack += "E" + tileDict.CoordsPawnMovedTwoTiles.String;
+                                            tileDict.CoordsPawnMovedTwoTiles = null;
+                                        }
+                                        else if (canPromote)
+                                        {
+                                            currentOnlineGame.LastMoveStartBlack += "P";
                                         }
 
                                         currentOnlineGame.LastMoveStartWhite = null;
@@ -661,16 +685,19 @@ namespace ChessDotNET.ViewModels.MainWindow
                                         currentOnlineGame.MoveInfo = LabelMoveInfo;
                                     }
 
-                                    await webApiClientGamesCommands.PutCurrentGame(currentOnlineGame.Id, currentOnlineGame);
-
-                                    isWaitingForMove = true;
-
-                                    var keepCheckingForNextMoveStart = new ThreadStart(() => OnlineGameKeepCheckingForNextMove());
-                                    var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+                                    if (!canPromote)
                                     {
-                                        IsBackground = true
-                                    };
-                                    keepCheckingForNextMoveBackgroundThread.Start();
+                                        await webApiClientGamesCommands.PutCurrentGame(currentOnlineGame.Id, currentOnlineGame);
+
+                                        isWaitingForMove = true;
+
+                                        var keepCheckingForNextMoveStart = new ThreadStart(() => OnlineGameKeepCheckingForNextMove());
+                                        var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+                                        {
+                                            IsBackground = true
+                                        };
+                                        keepCheckingForNextMoveBackgroundThread.Start();
+                                    }
                                 }
 
                                 //// Debug: Print occupation state of all tiles:
@@ -705,7 +732,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                 e.Handled = true;
             }
         }
-        private void OverlayPromotePawnSelectChessPieceAction(object o)
+        private async void OverlayPromotePawnSelectChessPieceAction(object o)
         {
             string chessPieceString = (string)o;
             ChessPieceColor ownColor = tileDict[promotePawnCoords.String].ChessPiece.ChessPieceColor;
@@ -726,6 +753,37 @@ namespace ChessDotNET.ViewModels.MainWindow
             OverlayPromotePawnVisibility = "Hidden";
 
             OnPropertyChangedByPropertyName("TileDict");
+
+            bool doPut = false;
+            if (currentOnlineGame.LastMoveStartWhite != null)
+            {
+                if (currentOnlineGame.LastMoveStartWhite.Length > 2 && currentOnlineGame.LastMoveStartWhite[2] == 'P')
+                {
+                    doPut = true;
+                    currentOnlineGame.LastMoveStartWhite += chessPieceString;
+                }
+            }
+            else if (currentOnlineGame.LastMoveStartBlack != null)
+            {
+                if (currentOnlineGame.LastMoveStartBlack.Length > 2 && currentOnlineGame.LastMoveStartBlack[2] == 'P')
+                {
+                    doPut = true;
+                    currentOnlineGame.LastMoveStartBlack += chessPieceString;
+                }
+            }
+            if (doPut)
+            {
+                await webApiClientGamesCommands.PutCurrentGame(currentOnlineGame.Id, currentOnlineGame);
+
+                isWaitingForMove = true;
+
+                var keepCheckingForNextMoveStart = new ThreadStart(() => OnlineGameKeepCheckingForNextMove());
+                var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+                {
+                    IsBackground = true
+                };
+                keepCheckingForNextMoveBackgroundThread.Start();
+            }
         }
         private void OverlayOnlineGamePlayerQuitOkAction()
         {
@@ -813,11 +871,40 @@ namespace ChessDotNET.ViewModels.MainWindow
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     MoveList.Add(new Move(oldCoords, newCoords, chessPiece.ChessPieceColor, chessPiece.ChessPieceType));
 
-                                    if (currentOnlineGame.LastMoveStartBlack.Length == 4)
+                                    if (currentOnlineGame.LastMoveStartBlack.Length > 2)
                                     {
-                                        Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(2, 2));
-                                        Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndBlack.Substring(2, 2));
-                                        tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                        if (currentOnlineGame.LastMoveStartBlack[2] == 'C')
+                                        {
+                                            Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(3, 2));
+                                            Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndBlack.Substring(3, 2));
+                                            tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartBlack[2] == 'T')
+                                        {
+                                            tileDict.CoordsPawnMovedTwoTiles = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(3, 2));
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartBlack[2] == 'E')
+                                        {
+                                            Coords capturedCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartBlack.Substring(3, 2));
+                                            tileDict[capturedCoords.String].ChessPiece = new ChessPiece();
+                                            tileDict[capturedCoords.String].IsOccupied = false;
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartBlack[2] == 'P')
+                                        {
+                                            string type = currentOnlineGame.LastMoveStartBlack.Remove(0, 3);
+                                            ChessPieceColor color = ChessPieceColor.Black;
+                                            if (type == "Bishop")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Bishop, isRotated);
+                                            else if (type == "Knight")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Knight, isRotated);
+                                            else if (type == "Rook")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Rook, isRotated);
+                                            else if (type == "Queen")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Queen, isRotated);
+
+
+                                            tileDict[currentOnlineGame.LastMoveEndBlack.Substring(0, 2)].ChessPiece = chessPiece;
+                                        }
                                     }
 
                                     OnPropertyChangedByPropertyName("TileDict");
@@ -837,11 +924,40 @@ namespace ChessDotNET.ViewModels.MainWindow
                                     tileDict.MoveChessPiece(oldCoords, newCoords, true);
                                     MoveList.Add(new Move(oldCoords, newCoords, chessPiece.ChessPieceColor, chessPiece.ChessPieceType));
 
-                                    if (currentOnlineGame.LastMoveStartWhite.Length == 4)
+                                    if (currentOnlineGame.LastMoveStartWhite.Length > 2)
                                     {
-                                        Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(2, 2));
-                                        Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndWhite.Substring(2, 2));
-                                        tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                        if (currentOnlineGame.LastMoveStartWhite[2] == 'C')
+                                        {
+                                            Coords rookOldCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(3, 2));
+                                            Coords rookNewCoords = Coords.StringToCoords(currentOnlineGame.LastMoveEndWhite.Substring(3, 2));
+                                            tileDict.MoveChessPiece(rookOldCoords, rookNewCoords, true);
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartWhite[2] == 'T')
+                                        {
+                                            tileDict.CoordsPawnMovedTwoTiles = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(3, 2));
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartWhite[2] == 'E')
+                                        {
+                                            Coords capturedCoords = Coords.StringToCoords(currentOnlineGame.LastMoveStartWhite.Substring(3, 2));
+                                            tileDict[capturedCoords.String].ChessPiece = new ChessPiece();
+                                            tileDict[capturedCoords.String].IsOccupied = false;
+                                        }
+                                        else if (currentOnlineGame.LastMoveStartWhite[2] == 'P')
+                                        {
+                                            string type = currentOnlineGame.LastMoveStartWhite.Remove(0, 3);
+                                            ChessPieceColor color = ChessPieceColor.White;
+                                            if (type == "Bishop")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Bishop, isRotated);
+                                            else if (type == "Knight")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Knight, isRotated);
+                                            else if (type == "Rook")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Rook, isRotated);
+                                            else if (type == "Queen")
+                                                chessPiece = new ChessPiece(color, ChessPieceType.Queen, isRotated);
+
+
+                                            tileDict[currentOnlineGame.LastMoveEndWhite.Substring(0, 2)].ChessPiece = chessPiece;
+                                        }
                                     }
 
                                     OnPropertyChangedByPropertyName("TileDict");
