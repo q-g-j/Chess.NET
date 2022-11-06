@@ -20,9 +20,7 @@
         - the lobby needs to be refreshed manually now
         - when a player leaves the lobby (= closes the lobby window) he / she will be removed from the lobby and the server
         - the server uses inactivity counters to check for players to be online - players will be notified if the opponent leaves a running game
-     - NOT WORKING:
-        - submit correct chess piece after promoting a pawn
-
+ 
 ### TODO:
 - draw validation
 - use UCI chess engines
