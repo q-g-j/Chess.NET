@@ -755,34 +755,37 @@ namespace ChessDotNET.ViewModels.MainWindow
             OnPropertyChangedByPropertyName("TileDict");
 
             bool doPut = false;
-            if (currentOnlineGame.LastMoveStartWhite != null)
+            if (isOnlineGame)
             {
-                if (currentOnlineGame.LastMoveStartWhite.Length > 2 && currentOnlineGame.LastMoveStartWhite[2] == 'P')
+                if (currentOnlineGame.LastMoveStartWhite != null)
                 {
-                    doPut = true;
-                    currentOnlineGame.LastMoveStartWhite += chessPieceString;
+                    if (currentOnlineGame.LastMoveStartWhite.Length > 2 && currentOnlineGame.LastMoveStartWhite[2] == 'P')
+                    {
+                        doPut = true;
+                        currentOnlineGame.LastMoveStartWhite += chessPieceString;
+                    }
                 }
-            }
-            else if (currentOnlineGame.LastMoveStartBlack != null)
-            {
-                if (currentOnlineGame.LastMoveStartBlack.Length > 2 && currentOnlineGame.LastMoveStartBlack[2] == 'P')
+                else if (currentOnlineGame.LastMoveStartBlack != null)
                 {
-                    doPut = true;
-                    currentOnlineGame.LastMoveStartBlack += chessPieceString;
+                    if (currentOnlineGame.LastMoveStartBlack.Length > 2 && currentOnlineGame.LastMoveStartBlack[2] == 'P')
+                    {
+                        doPut = true;
+                        currentOnlineGame.LastMoveStartBlack += chessPieceString;
+                    }
                 }
-            }
-            if (doPut)
-            {
-                await webApiClientGamesCommands.PutCurrentGame(currentOnlineGame.Id, currentOnlineGame);
-
-                isWaitingForMove = true;
-
-                var keepCheckingForNextMoveStart = new ThreadStart(() => OnlineGameKeepCheckingForNextMove());
-                var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+                if (doPut)
                 {
-                    IsBackground = true
-                };
-                keepCheckingForNextMoveBackgroundThread.Start();
+                    await webApiClientGamesCommands.PutCurrentGame(currentOnlineGame.Id, currentOnlineGame);
+
+                    isWaitingForMove = true;
+
+                    var keepCheckingForNextMoveStart = new ThreadStart(() => OnlineGameKeepCheckingForNextMove());
+                    var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+                    {
+                        IsBackground = true
+                    };
+                    keepCheckingForNextMoveBackgroundThread.Start();
+                }
             }
         }
         private void OverlayOnlineGamePlayerQuitOkAction()
@@ -1163,6 +1166,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         }
         private void LobbyKeepCheckingForOpponentAcception()
         {
+            int counter = 0;
             while (LobbyOverlayWaitingForInvitationAcceptedVisibility == "Visible" && currentOnlineGame.BlackId != localPlayer.Id)
             {
                 Task.Run(() =>
@@ -1185,6 +1189,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                     }
                 });
                 Thread.Sleep(1000);
+                counter++;
             }
 
 
@@ -1228,6 +1233,10 @@ namespace ChessDotNET.ViewModels.MainWindow
             var selectedInfo = dataGridLobbyInvitations.SelectedCells[0];
             string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
             var selectedPlayer = playerList.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
+
+            Opponent = selectedPlayer;
+
+            OnPropertyChangedByPropertyName("Opponent");
 
             currentOnlineGame = new Game
             {
@@ -1552,104 +1561,6 @@ namespace ChessDotNET.ViewModels.MainWindow
             OnPropertyChangedByPropertyName("TileDict");
 
             LabelMoveInfo = "It's white's turn...";
-            MoveList = new List<Move>();
-        }
-        private void StartGameTestCastling(bool doRotate)
-        {
-            isRotated = doRotate;
-            tileDict = new TileDictionary();
-
-            CreateNotation();
-
-            tileDict["B6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
-            tileDict["C6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["D6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
-            tileDict["E6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Bishop, doRotate);
-            tileDict["F6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Queen, doRotate);
-            tileDict["G6"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
-
-            tileDict["A1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
-            tileDict["E1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.King, doRotate);
-            tileDict["H1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
-
-            tileDict["A8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
-            tileDict["E8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
-            tileDict["H8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Rook, doRotate);
-
-
-            tileDict["A3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["B3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["C3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["D3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["E3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["F3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["G3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["H3"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Pawn, doRotate);
-            tileDict["A3"].IsOccupied = true;
-            tileDict["B3"].IsOccupied = true;
-            tileDict["C3"].IsOccupied = true;
-            tileDict["D3"].IsOccupied = true;
-            tileDict["E3"].IsOccupied = true;
-            tileDict["F3"].IsOccupied = true;
-            tileDict["G3"].IsOccupied = true;
-            tileDict["H3"].IsOccupied = true;
-            tileDict["B6"].IsOccupied = true;
-            tileDict["C6"].IsOccupied = true;
-            tileDict["D6"].IsOccupied = true;
-            tileDict["E6"].IsOccupied = true;
-            tileDict["F6"].IsOccupied = true;
-            tileDict["G6"].IsOccupied = true;
-
-            tileDict["A1"].IsOccupied = true;
-            tileDict["E1"].IsOccupied = true;
-            tileDict["H1"].IsOccupied = true;
-
-            tileDict["A8"].IsOccupied = true;
-            tileDict["E8"].IsOccupied = true;
-            tileDict["H8"].IsOccupied = true;
-
-            OnPropertyChangedByPropertyName("TileDict");
-
-            LabelMoveInfo = "";
-            MoveList = new List<Move>();
-        }
-        private void StartGameTestCheckMate(bool doRotate)
-        {
-            isRotated = doRotate;
-            tileDict = new TileDictionary();
-
-            CreateNotation();
-
-            tileDict["H7"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.King, doRotate);
-            tileDict["H7"].IsOccupied = true;
-            tileDict.BlackKingCoords = new Coords(Columns.H, 7);
-
-            tileDict["E1"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.King, doRotate);
-            tileDict["E1"].IsOccupied = true;
-            tileDict.WhiteKingCoords = new Coords(Columns.E, 1);
-
-            tileDict["D2"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Queen, doRotate);
-            tileDict["D2"].IsOccupied = true;
-
-            tileDict["C3"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Bishop, doRotate);
-            tileDict["C3"].IsOccupied = true;
-
-            tileDict["A6"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
-            tileDict["A6"].IsOccupied = true;
-
-            tileDict["A8"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Rook, doRotate);
-            tileDict["A8"].IsOccupied = true;
-
-            tileDict["H8"].ChessPiece = new ChessPiece(ChessPieceColor.Black, ChessPieceType.Knight, doRotate);
-            tileDict["H8"].IsOccupied = true;
-
-            tileDict["G4"].ChessPiece = new ChessPiece(ChessPieceColor.White, ChessPieceType.Pawn, doRotate);
-            tileDict["G4"].IsOccupied = true;
-
-
-            OnPropertyChangedByPropertyName("TileDict");
-
-            LabelMoveInfo = "";
             MoveList = new List<Move>();
         }
         private bool IsInputAllowed()
