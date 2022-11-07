@@ -12,7 +12,7 @@
 - castling
 - network play (a dedicated server / client REST API implementation. Needs testing)
     - added a WebAPI server (ASP.NET)
-    - the server address "http://localhost:7002" is hardcoded in the client at the moment (will be changeable in the future. Can be changed in MainWindowViewModel.cs)
+    - clients will connect to my public server instance for testing purposes. Server address will be changeable in the future
     - the server supports multiple simultaneous games using a lobby system:
         - the server uses an in-memory database for the lobby and online matches
         - each client that enters the lobby must enter a unique name
