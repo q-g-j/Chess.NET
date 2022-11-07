@@ -1245,7 +1245,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             OnPropertyChangedByPropertyName("Opponent");
 
             var invitations = await webApiClientInvitationsCommands.GetPlayerInvitationsAsync(localPlayer.Id);
-            var opp = invitations.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
+            var opp = invitations.Where(a => a.Id == Opponent.Id).FirstOrDefault();
 
             if (opp != null)
             {
