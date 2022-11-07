@@ -158,6 +158,7 @@
         </Grid>
         <local:OverlayPlayerName Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayPlayerNameVisibility, FallbackValue=Hidden}"/>
         <local:OverlayOpponentAcceptedInvitation Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayOpponentAcceptedInvitationVisibility, FallbackValue=Hidden}"/>
+        <local:OverlayOpponentCanceledInvitation Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayOpponentCanceledInvitationVisibility, FallbackValue=Hidden}"/>
         <local:OverlayWaitingForInvitationAcception Grid.ColumnSpan="2" Visibility="{Binding LobbyOverlayWaitingForInvitationAcceptedVisibility, FallbackValue=Hidden}"/>
     </Grid>
 </Window>

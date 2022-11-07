@@ -99,6 +99,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Views\Lobby\Overlays\OverlayOpponentCanceledInvitation.xaml.cs">
+      <DependentUpon>OverlayOpponentCanceledInvitation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainWindow\Overlays\OverlayOnlineGamePlayerQuit.xaml.cs">
       <DependentUpon>OverlayOnlineGamePlayerQuit.xaml</DependentUpon>
     </Compile>
@@ -153,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResourceDictionaries\Styles\SideMenuStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Lobby\Overlays\OverlayOpponentCanceledInvitation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

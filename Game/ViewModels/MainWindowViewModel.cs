@@ -107,6 +107,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         private string isLobbyAcceptInvitationButtonEnabled = "False";
         private string lobbyOverlayPlayerNameVisibility = "Hidden";
         private string lobbyOverlayOpponentAcceptedInvitationVisibility = "Hidden";
+        private string lobbyOverlayOpponentCanceledInvitationVisibility = "Hidden";
         private string lobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
         private string labelPlayerNameConflict = "";
         private Player localPlayer = null;
@@ -214,6 +215,11 @@ namespace ChessDotNET.ViewModels.MainWindow
             get => lobbyOverlayOpponentAcceptedInvitationVisibility;
             set { lobbyOverlayOpponentAcceptedInvitationVisibility = value; OnPropertyChanged(); }
         }
+        public string LobbyOverlayOpponentCanceledInvitationVisibility
+        {
+            get => lobbyOverlayOpponentCanceledInvitationVisibility;
+            set { lobbyOverlayOpponentCanceledInvitationVisibility = value; OnPropertyChanged(); }
+        }
         public string ChessCanvasRotationAngle
         {
             get => chessCanvasRotationAngle;
@@ -317,6 +323,7 @@ namespace ChessDotNET.ViewModels.MainWindow
         public RelayCommand LobbyOverlayPlayerNameOkCommand { get; set; }
         public RelayCommand LobbyOverlayPlayerNameCancelCommand { get; set; }
         public RelayCommand LobbyOverlayOpponentAcceptedInvitationStartGameCommand { get; set; }
+        public RelayCommand LobbyOverlayOpponentCanceledInvitationCloseCommand { get; set; }
         public RelayCommand LobbyOverlayWaitingForInvitationAcceptionCancelCommand { get; set; }
         public RelayCommand<object> OnMainWindowMouseMoveCommand { get; set; }
         public RelayCommand<object> OnMainWindowMouseLeftDownCommand { get; set; }
@@ -1235,31 +1242,40 @@ namespace ChessDotNET.ViewModels.MainWindow
             var selectedPlayer = playerList.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
 
             Opponent = selectedPlayer;
-
             OnPropertyChangedByPropertyName("Opponent");
 
-            currentOnlineGame = new Game
+            var invitations = await webApiClientInvitationsCommands.GetPlayerInvitationsAsync(localPlayer.Id);
+            var opp = invitations.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
+
+            if (opp != null)
             {
-                BlackId = selectedPlayer.Id,
-                WhiteId = localPlayer.Id
-            };
+                currentOnlineGame = new Game
+                {
+                    BlackId = selectedPlayer.Id,
+                    WhiteId = localPlayer.Id
+                };
 
-            currentOnlineGame = await webApiClientGamesCommands.StartNewGameAsync(currentOnlineGame);
+                currentOnlineGame = await webApiClientGamesCommands.StartNewGameAsync(currentOnlineGame);
 
-            lobby.Close();
-            lobby = null;
+                lobby.Close();
+                lobby = null;
 
-            localPlayer.Color = "White";
-            isOnlineGame = true;
-            LabelMoveInfo = "It's white's turn...";
-            StartGame(false);
+                localPlayer.Color = "White";
+                isOnlineGame = true;
+                LabelMoveInfo = "It's white's turn...";
+                StartGame(false);
 
-            var start = new ThreadStart(() => OnlineGameKeepResettingBlackInactiveCounter());
-            var backgroundThread = new Thread(start)
+                var start = new ThreadStart(() => OnlineGameKeepResettingBlackInactiveCounter());
+                var backgroundThread = new Thread(start)
+                {
+                    IsBackground = true
+                };
+                backgroundThread.Start();
+            }
+            else
             {
-                IsBackground = true
-            };
-            backgroundThread.Start();
+                LobbyOverlayOpponentCanceledInvitationVisibility = "Visible";
+            }
         }
         private void LobbyKeyboardAction(object o)
         {
@@ -1370,6 +1386,11 @@ namespace ChessDotNET.ViewModels.MainWindow
         {
             LobbyOverlayOpponentAcceptedInvitationVisibility = "Hidden";
         }
+        private void LobbyOverlayOpponentCanceledInvitationCloseAction()
+        {
+            LobbyOverlayOpponentCanceledInvitationVisibility = "Hidden";
+            Opponent = null;
+        }
         private async void LobbyOverlayWaitingForInvitationAcceptionCancelAction()
         {
             LobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
@@ -1429,6 +1450,7 @@ namespace ChessDotNET.ViewModels.MainWindow
             LobbyOverlayPlayerNameCancelCommand = new RelayCommand(LobbyOverlayPlayerNameCancelAction);
 
             LobbyOverlayOpponentAcceptedInvitationStartGameCommand = new RelayCommand(LobbyOverlayOpponentAcceptedInvitationStartGameAction);
+            LobbyOverlayOpponentCanceledInvitationCloseCommand = new RelayCommand(LobbyOverlayOpponentCanceledInvitationCloseAction);
             LobbyOverlayWaitingForInvitationAcceptionCancelCommand = new RelayCommand(LobbyOverlayWaitingForInvitationAcceptionCancelAction);
         }
         private void CreateNotation()
