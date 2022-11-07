@@ -105,8 +105,6 @@
     <Compile Include="WebApiClient\WebApiClientGamesCommands.cs" />
     <Compile Include="WebApiClient\WebApiClientInvitationsCommands.cs" />
     <Compile Include="Models\Game.cs" />
-    <Compile Include="Tests\Test2.cs" />
-    <Compile Include="Tests\Test1.cs" />
     <Compile Include="ViewModels\SidebarViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\Lobby\Overlays\OverlayWaitingForInvitationAcception.xaml.cs">
