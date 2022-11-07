@@ -36,7 +36,7 @@ namespace ChessDotNET.ViewModels.MainWindow
 
             HttpClient httpClient = new HttpClient
             {
-                BaseAddress = new Uri(@"http://localhost:7002/")
+                BaseAddress = new Uri(@"http://locahost:7002/")
             };
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -1132,20 +1132,25 @@ namespace ChessDotNET.ViewModels.MainWindow
         }
         private async void OnLobbyClosingAction()
         {
+            lobby = null;
             if (localPlayer != null)
             {
                 await webApiClientPlayersCommands.DeletePlayerAsync(localPlayer.Id);
 
                 if (LobbyOverlayWaitingForInvitationAcceptedVisibility == "Visible")
                 {
+                    SideMenuEndOnlineGameButtonVisibility = "Hidden";
+                    SideMenuOnlineGameButtonVisibility = "Visible";
                     LobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
                     await webApiClientInvitationsCommands.CancelInvitationAsync(Opponent.Id, LocalPlayer);
                     Opponent = null;
                 }
             }
-            //SideMenuEndOnlineGameButtonVisibility = "Hidden";
-            //SideMenuOnlineGameButtonVisibility = "Visible";
-            lobby = null;
+            if (!isOnlineGame)
+            {
+                SideMenuEndOnlineGameButtonVisibility = "Hidden";
+                SideMenuOnlineGameButtonVisibility = "Visible";
+            }
         }
         private async void LobbyInviteAction()
         {
@@ -1199,8 +1204,9 @@ namespace ChessDotNET.ViewModels.MainWindow
                 counter++;
             }
 
-
             DispatchService.Invoke(() =>
+            {
+            if (lobby != null)
             {
                 SideMenuOnlineGameButtonVisibility = "Hidden";
                 SideMenuEndOnlineGameButtonVisibility = "Visible";
@@ -1229,6 +1235,7 @@ namespace ChessDotNET.ViewModels.MainWindow
                         IsBackground = true
                     };
                     onlineGameKeepResettingInactiveCounterBackgroundThread.Start();
+                    }
                 }
             });
         }
