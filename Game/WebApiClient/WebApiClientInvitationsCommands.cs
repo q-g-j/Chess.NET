@@ -1,4 +1,5 @@
 ﻿using ChessDotNET.Models;
+using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,20 +11,14 @@ using System.Threading.Tasks;
 
 namespace ChessDotNET.WebApiClient
 {
-    internal class WebApiClientInvitationsCommands
+    internal static class WebApiClientInvitationsCommands
     {
-        internal HttpClient client;
-
-        public WebApiClientInvitationsCommands(HttpClient client)
+        internal static async Task<ObservableCollection<Player>> GetPlayerInvitationsAsync(int localPlayerId)
         {
-            this.client = client;
-        }
-
-        internal async Task<ObservableCollection<Player>> GetPlayerInvitationsAsync(int localPlayerId)
-        {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             ObservableCollection<Player> invitations = new ObservableCollection<Player>();
 
-            HttpResponseMessage response = await client.GetAsync(
+            HttpResponseMessage response = await globals.httpClient.GetAsync(
                 $"api/invitations/{localPlayerId}");
 
             if (response.IsSuccessStatusCode)
@@ -35,11 +30,12 @@ namespace ChessDotNET.WebApiClient
             return invitations;
         }
 
-        internal async Task<Player> InvitePlayerAsync(int invitedId, Player localPlayer)
+        internal static async Task<Player> InvitePlayerAsync(int invitedId, Player localPlayer)
         {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Player playerJson;
 
-            var response = await client.PostAsJsonAsync(
+            var response = await globals.httpClient.PostAsJsonAsync(
                 $"api/invitations/{invitedId}", localPlayer);
 
             if (response.IsSuccessStatusCode)
@@ -55,9 +51,10 @@ namespace ChessDotNET.WebApiClient
             return playerJson;
         }
 
-        internal async Task CancelInvitationAsync(int invitedId, Player localPlayer)
+        internal static async Task CancelInvitationAsync(int invitedId, Player localPlayer)
         {
-            await client.PutAsJsonAsync(
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+            await globals.httpClient.PutAsJsonAsync(
                 $"api/invitations/cancel/{invitedId}", localPlayer);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using ChessDotNET.Models;
+using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -13,20 +14,14 @@ using System.Windows;
 
 namespace ChessDotNET.WebApiClient
 {
-    internal class WebApiClientPlayersCommands
+    internal static class WebApiClientPlayersCommands
     {
-        internal HttpClient client;
-
-        public WebApiClientPlayersCommands(HttpClient client)
+        internal static async Task<ObservableCollection<Player>> GetAllPlayersAsync()
         {
-            this.client = client;
-        }
-
-        internal async Task<ObservableCollection<Player>> GetAllPlayersAsync()
-        {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             ObservableCollection<Player> playerList = new ObservableCollection<Player>();
 
-            HttpResponseMessage response = await client.GetAsync(
+            HttpResponseMessage response = await globals.httpClient.GetAsync(
                 "api/players");
 
             if (response.IsSuccessStatusCode)
@@ -38,11 +33,12 @@ namespace ChessDotNET.WebApiClient
             return playerList;
         }
 
-        internal async Task<Player> CreatePlayerAsync(Player player)
+        internal static async Task<Player> CreatePlayerAsync(Player player)
         {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Player playerJson;
 
-            var response = await client.PostAsJsonAsync(
+            var response = await globals.httpClient.PostAsJsonAsync(
                 "api/players", player);
 
 
@@ -59,15 +55,17 @@ namespace ChessDotNET.WebApiClient
             return playerJson;
         }
 
-        internal async Task ResetInactiveCounterAsync(int localPlayerId)
+        internal static async Task ResetInactiveCounterAsync(int localPlayerId)
         {
-            await client.PutAsJsonAsync(
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+            await globals.httpClient.PutAsJsonAsync(
                 $"api/players/{localPlayerId}", localPlayerId);
         }
 
-        internal async Task DeletePlayerAsync(int localPlayerId)
+        internal static async Task DeletePlayerAsync(int localPlayerId)
         {
-            await client.DeleteAsync(
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+            await globals.httpClient.DeleteAsync(
                 $"api/players/{localPlayerId}");
         }
     }

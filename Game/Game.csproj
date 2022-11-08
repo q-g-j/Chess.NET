@@ -99,6 +99,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Globals.cs" />
+    <Compile Include="Services\BackgroundThreads.cs" />
     <Compile Include="Views\Lobby\Overlays\OverlayOpponentCanceledInvitation.xaml.cs">
       <DependentUpon>OverlayOpponentCanceledInvitation.xaml</DependentUpon>
     </Compile>
@@ -108,7 +110,7 @@
     <Compile Include="WebApiClient\WebApiClientGamesCommands.cs" />
     <Compile Include="WebApiClient\WebApiClientInvitationsCommands.cs" />
     <Compile Include="Models\Game.cs" />
-    <Compile Include="ViewModels\SidebarViewModel.cs" />
+    <Compile Include="ViewModels\SideMenuViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\Lobby\Overlays\OverlayWaitingForInvitationAcception.xaml.cs">
       <DependentUpon>OverlayWaitingForInvitationAcception.xaml</DependentUpon>
@@ -132,7 +134,7 @@
     <Compile Include="Views\MainWindow\Overlays\OverlayPromotePawn.xaml.cs">
       <DependentUpon>OverlayPromotePawn.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sidemenu\SideMenu.xaml.cs">
+    <Compile Include="Views\SideMenu\SideMenu.xaml.cs">
       <DependentUpon>SideMenu.xaml</DependentUpon>
     </Compile>
     <Page Include="ResourceDictionaries\Fonts.xaml">
@@ -188,16 +190,16 @@
     <Compile Include="Models\TileDictionary.cs" />
     <Compile Include="GameLogic\CheckMateValidationGameLogic.cs" />
     <Compile Include="GameLogic\MoveValidationGameLogic.cs" />
-    <Compile Include="Views\Sidemenu\Embedded\SideMenuGameMode.xaml.cs">
+    <Compile Include="Views\SideMenu\Embedded\SideMenuGameMode.xaml.cs">
       <DependentUpon>SideMenuGameMode.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sidemenu\Embedded\SideMenuMain.xaml.cs">
+    <Compile Include="Views\SideMenu\Embedded\SideMenuMain.xaml.cs">
       <DependentUpon>SideMenuMain.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sidemenu\Embedded\SideMenuLocalGame.xaml.cs">
+    <Compile Include="Views\SideMenu\Embedded\SideMenuLocalGame.xaml.cs">
       <DependentUpon>SideMenuLocalGame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Sidemenu\Embedded\SideMenuOnlineGame.xaml.cs">
+    <Compile Include="Views\SideMenu\Embedded\SideMenuOnlineGame.xaml.cs">
       <DependentUpon>SideMenuOnlineGame.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Lobby\Lobby.xaml.cs">
@@ -227,23 +229,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sidemenu\SideMenu.xaml">
+    <Page Include="Views\SideMenu\SideMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sidemenu\Embedded\SideMenuGameMode.xaml">
+    <Page Include="Views\SideMenu\Embedded\SideMenuGameMode.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Sidemenu\Embedded\SideMenuMain.xaml">
+    <Page Include="Views\SideMenu\Embedded\SideMenuMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sidemenu\Embedded\SideMenuLocalGame.xaml">
+    <Page Include="Views\SideMenu\Embedded\SideMenuLocalGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Sidemenu\Embedded\SideMenuOnlineGame.xaml">
+    <Page Include="Views\SideMenu\Embedded\SideMenuOnlineGame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

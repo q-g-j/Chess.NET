@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ChessDotNET.Views"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:helpers="clr-namespace:ChessDotNET.ViewHelpers"
-        xmlns:vm="clr-namespace:ChessDotNET.ViewModels.MainWindow"
+        xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
         mc:Ignorable="d"
         ResizeMode="CanResize"
         SizeToContent="Height"
