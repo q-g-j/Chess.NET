@@ -15,7 +15,8 @@
         MinWidth="300"        
         Background="#ffce9e"
         Title="Chess.NET"
-        UseLayoutRounding="True">
+        UseLayoutRounding="True"
+        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
 
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -61,7 +62,7 @@
                 <Label Content="{Binding LabelMoveInfo, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
             </DockPanel>
             <Grid>
-                <local:SideMenu Visibility="{Binding SideMenuVisibility, FallbackValue=Hidden}"/>
+                <Grid x:Name="GridSideMenu" Panel.ZIndex="40" Visibility="{Binding SideMenuVisibility, FallbackValue=Hidden}"/>
                 <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility, FallbackValue=Hidden}"/>
                 <local:OverlayOnlineGamePlayerQuit Visibility="{Binding OverlayOnlineGamePlayerQuitVisibility, FallbackValue=Hidden}"/>
                 <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->

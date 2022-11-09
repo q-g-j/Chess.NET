@@ -8,7 +8,11 @@
              mc:Ignorable="d"
              Grid.Column="0" Grid.Row="0" Panel.ZIndex="40"
              HorizontalAlignment="Left" Margin="25, 30, 0, 0"
-             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
+             d:DataContext="{d:DesignInstance Type=vm:SideMenuViewModel}">
+
+    <UserControl.DataContext>
+        <vm:SideMenuViewModel/>
+    </UserControl.DataContext>    
 
     <Grid>
         <Border Style="{StaticResource StyleSideMenuBorder}">

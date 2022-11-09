@@ -1,14 +1,10 @@
-﻿using ChessDotNET.Models;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http.Controllers;
+
+using ChessDotNET.Models;
+
 
 namespace ChessDotNET.WebApiClient
 {
@@ -19,7 +15,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Game newGame = new Game();
 
-            var response = await globals.httpClient.GetAsync(
+            var response = await globals.Client.GetAsync(
                 $"api/games/{invitingId}");
             
             if (response.IsSuccessStatusCode)
@@ -36,7 +32,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Game currentMove = new Game();
 
-            var response = await globals.httpClient.GetAsync(
+            var response = await globals.Client.GetAsync(
                 $"api/games/current/{gameId}");
 
             if (response.IsSuccessStatusCode)
@@ -53,7 +49,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Game responseNewGame = new Game();
 
-            var response = await globals.httpClient.PostAsJsonAsync(
+            var response = await globals.Client.PostAsJsonAsync(
                 $"api/games", newGame);
 
             if (response.IsSuccessStatusCode)
@@ -70,7 +66,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Game currentMove = new Game();
 
-            var response = await globals.httpClient.PutAsJsonAsync(
+            var response = await globals.Client.PutAsJsonAsync(
                 $"api/games/current/{gameId}", currentGame);
 
             if (response.IsSuccessStatusCode)
@@ -85,14 +81,14 @@ namespace ChessDotNET.WebApiClient
         internal static async Task ResetWhiteInactiveCounterAsync(int gameId)
         {
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
-            await globals.httpClient.PutAsJsonAsync(
+            await globals.Client.PutAsJsonAsync(
                 $"api/games/current/counter/white/{gameId}", gameId);
         }
 
         internal static async Task ResetBlackInactiveCounterAsync(int gameId)
         {
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
-            await globals.httpClient.PutAsJsonAsync(
+            await globals.Client.PutAsJsonAsync(
                 $"api/games/current/counter/black/{gameId}", gameId);
         }
     }

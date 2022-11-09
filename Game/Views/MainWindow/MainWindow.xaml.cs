@@ -10,6 +10,7 @@ namespace ChessDotNET.Views
         public MainWindow()
         {
             InitializeComponent();
+            GridSideMenu.Children.Add(new SideMenu());
         }
     }
 }

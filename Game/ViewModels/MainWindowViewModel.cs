@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Collections.Generic;
@@ -7,18 +6,15 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.Input;
-using System.Net.Http.Headers;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Data;
+using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using System.Reflection;
 
 using ChessDotNET.GameLogic;
 using ChessDotNET.WebApiClient;
 using ChessDotNET.Models;
 using ChessDotNET.ViewHelpers;
-using ChessDotNET.Views;
-using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
+
 
 namespace ChessDotNET.ViewModels
 {
@@ -37,31 +33,11 @@ namespace ChessDotNET.ViewModels
 
             globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
 
-            globals.httpClient.DefaultRequestHeaders.Accept.Clear();
-            globals.httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             InitializeCommands();
+            InitializeMessageHandlers();
 
             StartGame(false);
             //debugNoTurns = true;
-
-            WeakReferenceMessenger.Default.Register<MainWindowViewModel, PropertyLocalPlayerValueRequestMessage>(this, (r, m) =>
-            {
-                m.Reply(r.LocalPlayer);
-            });
-
-            WeakReferenceMessenger.Default.Register<PropertyStringValueChangedMessage>(this, (r, m) =>
-            {
-                if (m.Value.Item1 == "OverlayOnlineGamePlayerQuitVisibility")
-                {
-                    OverlayOnlineGamePlayerQuitVisibility = m.Value.Item2;
-                }
-            });
-
-            WeakReferenceMessenger.Default.Register<OnPropertyChangedMessage>(this, (r, m) =>
-            {
-                OnPropertyChangedByPropertyName(m.Value);
-            });
         }
         #endregion Constuctors
 
@@ -69,21 +45,15 @@ namespace ChessDotNET.ViewModels
         private Globals globals;
         private Canvas chessCanvas;
         private Image currentlyDraggedChessPieceImage;
-        private int currentlyDraggedChessPieceOriginalCanvasLeft;
-        private int currentlyDraggedChessPieceOriginalCanvasTop;
         private Point dragOverCanvasPosition;
         private Point dragOverChessPiecePosition;
         private bool isMouseMoving;
         private bool wasSideMenuOpen = false;
         private Coords promotePawnCoords;
         private readonly bool debugNoTurns = false;
-        private static DataGrid dataGridLobbyAllPlayers = null;
-        private static DataGrid dataGridLobbyInvitations = null;
-        private bool hasLobbyOverlayPlayerNameTextBoxFocus;
         #endregion Fields
 
         #region Bindable Properties
-
         private Player localPlayer = null;
         public Player LocalPlayer {
             get => localPlayer;
@@ -113,16 +83,6 @@ namespace ChessDotNET.ViewModels
         public List<string> VerticalNotationList { 
             get => verticalNotationList; 
             set { verticalNotationList = value; OnPropertyChanged(); } }
-
-        public ObservableCollection<Player> playerList;
-        public ObservableCollection<Player> PlayerList {
-            get => playerList;
-            set { playerList = value; OnPropertyChanged(); } }
-
-        public ObservableCollection<Player> invitationList;
-        public ObservableCollection<Player> InvitationList {
-            get => invitationList;
-            set { invitationList = value; OnPropertyChanged(); } }
 
         private string labelMoveInfo = "";
         public string LabelMoveInfo {
@@ -159,136 +119,15 @@ namespace ChessDotNET.ViewModels
         public string SideMenuVisibility { 
             get => sideMenuVisibility; 
             set { sideMenuVisibility = value; OnPropertyChanged(); } }
-
-        // TODO: move to SideMenuViewModel
-        private string sideMenuMainVisibility = "Visible";
-        public string SideMenuMainVisibility { 
-            get => sideMenuMainVisibility; 
-            set { sideMenuMainVisibility = value; OnPropertyChanged(); } }
-
-        private string sideMenuGameModeVisibility = "Hidden";
-        public string SideMenuGameModeVisibility { 
-            get => sideMenuGameModeVisibility; 
-            set { sideMenuGameModeVisibility = value; OnPropertyChanged(); } }
-        
-        private string sideMenuLocalGameVisibility = "Hidden";
-        public string SideMenuLocalGameVisibility { 
-            get => sideMenuLocalGameVisibility; 
-            set { sideMenuLocalGameVisibility = value; OnPropertyChanged(); } }
-
-        private string sideMenuOnlineGameVisibility = "Hidden";
-        public string SideMenuOnlineGameVisibility { 
-            get => sideMenuOnlineGameVisibility; 
-            set { sideMenuOnlineGameVisibility = value; OnPropertyChanged(); } }
-
-        private string sideMenuOnlineGameButtonVisibility = "Visible";
-        public string SideMenuOnlineGameButtonVisibility { 
-            get => sideMenuOnlineGameButtonVisibility; 
-            set { sideMenuOnlineGameButtonVisibility = value; OnPropertyChanged(); } }
-
-        private string sideMenuEndOnlineGameButtonVisibility = "Hidden";
-        public string SideMenuEndOnlineGameButtonVisibility { 
-            get => sideMenuEndOnlineGameButtonVisibility; 
-            set { sideMenuEndOnlineGameButtonVisibility = value; OnPropertyChanged(); } }
-        // ENDTODO
-
-        // TODO: move to LobbyViewModel
-        private string lobbyOverlayPlayerNameVisibility = "Hidden";
-        public string LobbyOverlayPlayerNameVisibility { 
-            get => lobbyOverlayPlayerNameVisibility; 
-            set { lobbyOverlayPlayerNameVisibility = value; OnPropertyChanged(); } }
-
-        private string lobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
-        public string LobbyOverlayWaitingForInvitationAcceptedVisibility { 
-            get => lobbyOverlayWaitingForInvitationAcceptedVisibility; 
-            set { lobbyOverlayWaitingForInvitationAcceptedVisibility = value; OnPropertyChanged(); } }
-
-        private string lobbyOverlayOpponentAcceptedInvitationVisibility = "Hidden";
-        public string LobbyOverlayOpponentAcceptedInvitationVisibility { 
-            get => lobbyOverlayOpponentAcceptedInvitationVisibility; 
-            set { lobbyOverlayOpponentAcceptedInvitationVisibility = value; OnPropertyChanged(); } }
-
-        private string lobbyOverlayOpponentCanceledInvitationVisibility = "Hidden";
-        public string LobbyOverlayOpponentCanceledInvitationVisibility { 
-            get => lobbyOverlayOpponentCanceledInvitationVisibility; 
-            set { lobbyOverlayOpponentCanceledInvitationVisibility = value; OnPropertyChanged(); } }
-
-        private string labelPlayerNameConflict = "";
-        public string LabelPlayerNameConflict { 
-            get => labelPlayerNameConflict; 
-            set { labelPlayerNameConflict = value; OnPropertyChanged(); } }
-
-        private string lobbyOverlayPlayerNameOkButtonIsEnabled = "False";
-        public string LobbyOverlayPlayerNameOkButtonIsEnabled { 
-            get => lobbyOverlayPlayerNameOkButtonIsEnabled; 
-            set { lobbyOverlayPlayerNameOkButtonIsEnabled = value; OnPropertyChanged(); } }
-
-        private string lobbyInviteButtonIsEnabled = "False";
-        public string LobbyInviteButtonIsEnabled { 
-            get => lobbyInviteButtonIsEnabled; 
-            set { lobbyInviteButtonIsEnabled = value; OnPropertyChanged(); } }
-
-        private string lobbyAcceptInvitationButtonIsEnabled = "False";
-        public string LobbyAcceptInvitationButtonIsEnabled { 
-            get => lobbyAcceptInvitationButtonIsEnabled; 
-            set { lobbyAcceptInvitationButtonIsEnabled = value; OnPropertyChanged(); } }
-
-        private string lobbyOverLayPlayerNameTextBox = "";
-        public string LobbyOverLayPlayerNameTextBox
-        {
-            get => lobbyOverLayPlayerNameTextBox;
-            set
-            {
-                lobbyOverLayPlayerNameTextBox = value;
-                LabelPlayerNameConflict = "";
-                if (value != "")
-                {
-                    LobbyOverlayPlayerNameOkButtonIsEnabled = "True";
-                }
-                else
-                {
-                    LobbyOverlayPlayerNameOkButtonIsEnabled = "False";
-                }
-                OnPropertyChanged();
-            }
-        }
-        // ENDTODO
         #endregion Bindable Properties
 
         #region Commands
         public RelayCommand OpenSideMenuCommand { get; set; }
-        public RelayCommand SideMenuNewGameCommand { get; set; }
-        public RelayCommand SideMenuLocalGameCommand { get; set; }
-        public RelayCommand SideMenuOnlineGameCommand { get; set; }
-        public RelayCommand SideMenuGameModeGoBackCommand { get; set; }
-        public RelayCommand SideMenuLocalGameAsWhiteCommand { get; set; }
-        public RelayCommand SideMenuLocalGameAsBlackCommand { get; set; }
-        public RelayCommand SideMenuLocalGameGoBackCommand { get; set; }
-        public RelayCommand SideMenuOnlineGameEnterLobbyCommand { get; set; }
-        public RelayCommand SideMenuEndOnlineGameCommand { get; set; }
-        public RelayCommand SideMenuOnlineGameGoBackCommand { get; set; }
-        public RelayCommand SideMenuQuitProgramCommand { get; set; }
         public RelayCommand OnMainWindowClosingCommand { get; set; }
-        public RelayCommand LobbyInviteCommand { get; set; }
-        public RelayCommand LobbyAcceptInvitationCommand { get; set; }
-        public RelayCommand LobbyRefreshCommand { get; set; }
-        public RelayCommand LobbyCloseCommand { get; set; }
-        public RelayCommand<object> LobbyKeyboardCommand { get; set; }
-        public RelayCommand<object> OnLobbyDataGridAllPlayersLoadedCommand { get; set; }
-        public RelayCommand<object> OnLobbyDataGridInvitationsLoadedCommand { get; set; }
-        public RelayCommand OnLobbyDataGridAllPlayersSelectedCellsChangedCommand { get; set; }
-        public RelayCommand OnLobbyDataGridInvitationsSelectedCellsChangedCommand { get; set; }
-        public RelayCommand OnLobbyClosingCommand { get; set; }
-        public RelayCommand LobbyOverlayPlayerNameOkCommand { get; set; }
-        public RelayCommand LobbyOverlayPlayerNameCancelCommand { get; set; }
-        public RelayCommand LobbyOverlayOpponentAcceptedInvitationStartGameCommand { get; set; }
-        public RelayCommand LobbyOverlayOpponentCanceledInvitationCloseCommand { get; set; }
-        public RelayCommand LobbyOverlayWaitingForInvitationAcceptionCancelCommand { get; set; }
         public RelayCommand<object> OnMainWindowMouseMoveCommand { get; set; }
         public RelayCommand<object> OnMainWindowMouseLeftDownCommand { get; set; }
         public RelayCommand<object> OnMainWindowMouseLeftUpCommand { get; set; }
         public RelayCommand<object> OnChessPieceMouseLeftDownCommand { get; set; }
-        public RelayCommand<object> OnLobbyOverlayPlayerNameTextBoxFocusCommand { get; set; }
         public RelayCommand<object> OverlayPromotePawnSelectChessPieceCommand { get; set; }
         public RelayCommand OverlayOnlineGamePlayerQuitOkCommand { get; set; }
         #endregion Commands
@@ -308,10 +147,11 @@ namespace ChessDotNET.ViewModels
                 if (SideMenuVisibility != "Visible"
                     && OverlayPromotePawnVisibility == "Hidden")
                 {
-                    SideMenuGameModeVisibility = "Hidden";
-                    SideMenuLocalGameVisibility = "Hidden";
-                    SideMenuOnlineGameVisibility = "Hidden";
-                    SideMenuMainVisibility = "Visible";
+                    ChangePropertyStringValueSideMenuViewModel("SideMenuGameModeVisibility", "Hidden");
+                    ChangePropertyStringValueSideMenuViewModel("SideMenuLocalGameVisibility", "Hidden");
+                    ChangePropertyStringValueSideMenuViewModel("SideMenuOnlineGameVisibility", "Hidden");
+                    ChangePropertyStringValueSideMenuViewModel("SideMenuMainVisibility", "Visible");
+
                     SideMenuVisibility = "Visible";
                 }
                 else SideMenuVisibility = "Hidden";
@@ -375,8 +215,8 @@ namespace ChessDotNET.ViewModels
                 object param = ((CompositeCommandParameter)o).Parameter;
                 MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
                 currentlyDraggedChessPieceImage = null;
-                currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                globals.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
                 currentlyDraggedChessPieceImage = param as Image;
                 ChessPieceColor currentlyDraggedChessPieceColor = ChessPieceImages.GetImageColor(currentlyDraggedChessPieceImage.Source);
                 bool isFirstTurn = globals.MoveList.Count == 0;
@@ -403,12 +243,12 @@ namespace ChessDotNET.ViewModels
                 {
                     chessCanvas = VisualTreeHelper.GetParent(param as Image) as Canvas;
 
-                    if (currentlyDraggedChessPieceOriginalCanvasLeft < 0 && currentlyDraggedChessPieceOriginalCanvasTop < 0)
+                    if (globals.CurrentlyDraggedChessPieceOriginalCanvasLeft < 0 && globals.CurrentlyDraggedChessPieceOriginalCanvasTop < 0)
                     {
-                        currentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(
+                        globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = int.Parse(
                             currentlyDraggedChessPieceImage.GetValue(Canvas.LeftProperty).ToString()
                             );
-                        currentlyDraggedChessPieceOriginalCanvasTop = int.Parse(
+                        globals.CurrentlyDraggedChessPieceOriginalCanvasTop = int.Parse(
                             currentlyDraggedChessPieceImage.GetValue(Canvas.TopProperty).ToString()
                             );
                     }
@@ -440,15 +280,15 @@ namespace ChessDotNET.ViewModels
                         || dragOverCanvasPosition.Y < 0
                         || dragOverCanvasPosition.Y > 400)
                     {
-                        Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                        Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
-                        currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                        currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                        Canvas.SetLeft(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                        Canvas.SetTop(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasTop);
+                        globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                        globals.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
                     }
                     else
                     {
-                        Point oldPoint = new Point(currentlyDraggedChessPieceOriginalCanvasLeft,
-                            currentlyDraggedChessPieceOriginalCanvasTop);
+                        Point oldPoint = new Point(globals.CurrentlyDraggedChessPieceOriginalCanvasLeft,
+                            globals.CurrentlyDraggedChessPieceOriginalCanvasTop);
                         Coords oldCoords = Coords.CanvasPositionToCoords(oldPoint);
                         Coords newCoords = Coords.CanvasPositionToCoords(dragOverCanvasPosition);
 
@@ -484,8 +324,8 @@ namespace ChessDotNET.ViewModels
                                 && moveValidationData.IsValid)
                             {
                                 // reset the currently dragged image's position:
-                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasTop);
 
                                 // can an opponent's pawn be captured en passant?
                                 if (moveValidationData.CanCaptureEnPassant)
@@ -655,7 +495,7 @@ namespace ChessDotNET.ViewModels
                                     {
                                         await WebApiClientGamesCommands.PutCurrentGame(globals.CurrentOnlineGame.Id, globals.CurrentOnlineGame);
 
-                                        Services.BackgroundThreads.OnlineGameKeepCheckingForNextMove(globals, TileDict);
+                                        Services.BackgroundThreads.OnlineGameKeepCheckingForNextMove();
                                     }
                                 }
 
@@ -673,18 +513,18 @@ namespace ChessDotNET.ViewModels
                             }
                             else
                             {
-                                Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                                Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                                Canvas.SetLeft(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                                Canvas.SetTop(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasTop);
                             }
                         }
                         else
                         {
-                            Canvas.SetLeft(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasLeft);
-                            Canvas.SetTop(currentlyDraggedChessPieceImage, currentlyDraggedChessPieceOriginalCanvasTop);
+                            Canvas.SetLeft(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasLeft);
+                            Canvas.SetTop(currentlyDraggedChessPieceImage, globals.CurrentlyDraggedChessPieceOriginalCanvasTop);
                         }
                     }
-                    currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-                    currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+                    globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+                    globals.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
                     currentlyDraggedChessPieceImage.SetValue(Panel.ZIndexProperty, 10);
                 }
                 currentlyDraggedChessPieceImage = null;
@@ -736,419 +576,19 @@ namespace ChessDotNET.ViewModels
                 {
                     await WebApiClientGamesCommands.PutCurrentGame(globals.CurrentOnlineGame.Id, globals.CurrentOnlineGame);
 
-                    Services.BackgroundThreads.OnlineGameKeepCheckingForNextMove(globals, TileDict);
+                    Services.BackgroundThreads.OnlineGameKeepCheckingForNextMove();
                 }
             }
         }
         private void OverlayOnlineGamePlayerQuitOkAction()
         {
             OverlayOnlineGamePlayerQuitVisibility = "Hidden";
-            SideMenuEndOnlineGameButtonVisibility = "Hidden";
-            SideMenuOnlineGameButtonVisibility = "Visible";
+
+            ChangePropertyStringValueSideMenuViewModel("SideMenuEndOnlineGameButtonVisibility", "Hidden");
+            ChangePropertyStringValueSideMenuViewModel("SideMenuOnlineGameButtonVisibility", "Visible");
 
             Opponent = null;
             StartGame(false);
-        }
-        private void SideMenuNewGameAction()
-        {
-            SideMenuMainVisibility = "Hidden";
-            SideMenuGameModeVisibility = "Visible";
-        }
-        private void SideMenuQuitProgramAction()
-        {
-            Application.Current.Shutdown();
-        }
-        private void SideMenuGameModeGoBackAction()
-        {
-            SideMenuGameModeVisibility = "Hidden";
-            SideMenuMainVisibility = "Visible";
-        }
-        private void SideMenuLocalGameAction()
-        {
-            SideMenuGameModeVisibility = "Hidden";
-            SideMenuLocalGameVisibility = "Visible";
-        }
-        private void SideMenuOnlineGameAction()
-        {
-            SideMenuGameModeVisibility = "Hidden";
-            SideMenuOnlineGameVisibility = "Visible";
-        }
-        private void SideMenuLocalGameGoBackAction()
-        {
-            SideMenuLocalGameVisibility = "Hidden";
-            SideMenuGameModeVisibility = "Visible";
-        }
-        private void SideMenuOnlineGameGoBackAction()
-        {
-            SideMenuOnlineGameVisibility = "Hidden";
-            SideMenuGameModeVisibility = "Visible";
-        }
-        private void SideMenuLocalGameAsWhiteAction()
-        {
-            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-
-            SideMenuVisibility = "Hidden";
-            SideMenuMainVisibility = "Visible";
-            SideMenuGameModeVisibility = "Hidden";
-
-            StartGame(false);
-        }
-        private void SideMenuLocalGameAsBlackAction()
-        {
-            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
-
-            SideMenuVisibility = "Hidden";
-            SideMenuMainVisibility = "Visible";
-            SideMenuGameModeVisibility = "Hidden";
-
-            StartGame(true);
-        }
-        private void SideMenuOnlineGameEnterLobbyAction()
-        {
-            SideMenuOnlineGameVisibility = "Hidden";
-            SideMenuGameModeVisibility = "Hidden";
-            SideMenuVisibility = "Hidden";
-
-            if (globals.LobbyWindow== null)
-            {
-                globals.LobbyWindow= new Lobby
-                {
-                    DataContext = this
-                };
-                globals.LobbyWindow.Show();
-
-                PlayerList = new ObservableCollection<Player>();
-                InvitationList = new ObservableCollection<Player>();
-
-                LobbyOverlayPlayerNameVisibility = "Visible";
-
-
-                if (LocalPlayer != null)
-                {
-                    LobbyOverLayPlayerNameTextBox = LocalPlayer.Name;
-                }
-
-                var keepResettingCounterThreadStart = new ThreadStart(() => LobbyKeepResettingInactiveCounter());
-                var keepResettingCounterBackgroundThread = new Thread(keepResettingCounterThreadStart)
-                {
-                    IsBackground = true
-                };
-                keepResettingCounterBackgroundThread.Start();
-            }
-            else
-            {
-                globals.LobbyWindow.Focus();
-            }
-        }
-        private void SideMenuEndOnlineGameAction()
-        {
-            SideMenuEndOnlineGameButtonVisibility = "Hidden";
-            SideMenuOnlineGameButtonVisibility = "Visible";
-            globals.IsOnlineGame = false;
-            globals.IsWaitingForMove = false;
-
-            StartGame(false);
-        }
-
-        private void LobbyKeepResettingInactiveCounter()
-        {
-            while (globals.LobbyWindow!= null)
-            {
-                Task.Run(async () =>
-                {
-                    if (LocalPlayer != null)
-                    {
-                        try
-                        {
-                            await WebApiClientPlayersCommands.ResetInactiveCounterAsync(LocalPlayer.Id);
-                        }
-                        catch
-                        {
-                            MessageBox.Show(globals.LobbyWindow, "Cannot contact server...", "Error!");
-                            globals.LobbyWindow.Close();
-                            globals.LobbyWindow= null;
-                        }
-                    }
-                });
-                Thread.Sleep(1000);
-            }
-        }
-        private async void LobbyRefreshAction()
-        {
-            if (LobbyOverlayWaitingForInvitationAcceptedVisibility != "Visible")
-            {
-                var players = await WebApiClientPlayersCommands.GetAllPlayersAsync();
-
-                if (LocalPlayer != null)
-                {
-                    PlayerList = new ObservableCollection<Player>(players.Where(a => a.Name != LocalPlayer.Name).ToList());
-                    InvitationList = await WebApiClientInvitationsCommands.GetPlayerInvitationsAsync(LocalPlayer.Id);
-                }
-            }
-        }
-        private void LobbyCloseAction()
-        {
-            globals.LobbyWindow.Close();
-            globals.LobbyWindow= null;
-        }
-        private async void OnLobbyClosingAction()
-        {
-            globals.LobbyWindow= null;
-            if (LocalPlayer != null)
-            {
-                await WebApiClientPlayersCommands.DeletePlayerAsync(LocalPlayer.Id);
-
-                if (LobbyOverlayWaitingForInvitationAcceptedVisibility == "Visible")
-                {
-                    SideMenuEndOnlineGameButtonVisibility = "Hidden";
-                    SideMenuOnlineGameButtonVisibility = "Visible";
-                    LobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
-                    await WebApiClientInvitationsCommands.CancelInvitationAsync(Opponent.Id, LocalPlayer);
-                    Opponent = null;
-                }
-            }
-            if (!globals.IsOnlineGame)
-            {
-                SideMenuEndOnlineGameButtonVisibility = "Hidden";
-                SideMenuOnlineGameButtonVisibility = "Visible";
-            }
-        }
-        private async void LobbyInviteAction()
-        {
-            var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
-            string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
-            Opponent = PlayerList.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
-
-            OnPropertyChangedByPropertyName("Opponent");
-
-            LobbyOverlayWaitingForInvitationAcceptedVisibility = "Visible";
-
-            await WebApiClientInvitationsCommands.InvitePlayerAsync(Opponent.Id, LocalPlayer);
-
-            globals.CurrentOnlineGame = new Game();
-
-            var keepCheckingForOpponentAcceptionStart = new ThreadStart(() => LobbyKeepCheckingForOpponentAcception());
-            var keepCheckingForOpponentAcceptionBackgroundThread = new Thread(keepCheckingForOpponentAcceptionStart)
-            {
-                IsBackground = true
-            };
-            keepCheckingForOpponentAcceptionBackgroundThread.Start();
-        }
-        private void LobbyKeepCheckingForOpponentAcception()
-        {
-            int counter = 0;
-            while (LobbyOverlayWaitingForInvitationAcceptedVisibility == "Visible" && globals.CurrentOnlineGame.BlackId != LocalPlayer.Id)
-            {
-                Task.Run(() =>
-                {
-                    if (LocalPlayer != null)
-                    {
-                        try
-                        {
-                            DispatchService.Invoke(async () =>
-                            {
-                                globals.CurrentOnlineGame = await WebApiClientGamesCommands.GetNewGame(LocalPlayer.Id);
-                            });
-                        }
-                        catch
-                        {
-                            MessageBox.Show(globals.LobbyWindow, "Cannot contact server...", "Error!");
-                            globals.LobbyWindow.Close();
-                            globals.LobbyWindow= null;
-                        }
-                    }
-                });
-                Thread.Sleep(1000);
-                counter++;
-            }
-
-            DispatchService.Invoke(() =>
-            {
-            if (globals.LobbyWindow!= null)
-                {
-                    SideMenuOnlineGameButtonVisibility = "Hidden";
-                    SideMenuEndOnlineGameButtonVisibility = "Visible";
-                    LobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
-
-                    if (globals.LobbyWindow!= null)
-                    {
-                        globals.LobbyWindow.Close();
-                        globals.LobbyWindow= null;
-
-                        StartGame(true);
-
-                        LocalPlayer.Color = "Black";
-                        globals.IsOnlineGame = true;
-
-                        Services.BackgroundThreads.OnlineGameKeepCheckingForNextMove(globals, TileDict);
-                        Services.BackgroundThreads.OnlineGameKeepResettingWhiteInactiveCounter(globals);
-                    }
-                }
-            });
-        }
-        private async void LobbyAcceptInvitationAction()
-        {
-            SideMenuOnlineGameButtonVisibility = "Hidden";
-            SideMenuEndOnlineGameButtonVisibility = "Visible";
-
-            var selectedInfo = dataGridLobbyInvitations.SelectedCells[0];
-            string selectedPlayerName = ((TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item)).Text;
-            var selectedPlayer = PlayerList.Where(a => a.Name == selectedPlayerName).FirstOrDefault();
-
-            Opponent = selectedPlayer;
-            OnPropertyChangedByPropertyName("Opponent");
-
-            var invitations = await WebApiClientInvitationsCommands.GetPlayerInvitationsAsync(LocalPlayer.Id);
-            var opp = invitations.Where(a => a.Id == Opponent.Id).FirstOrDefault();
-
-            if (opp != null)
-            {
-                globals.CurrentOnlineGame = new Game
-                {
-                    BlackId = selectedPlayer.Id,
-                    WhiteId = LocalPlayer.Id
-                };
-
-                globals.CurrentOnlineGame = await WebApiClientGamesCommands.StartNewGameAsync(globals.CurrentOnlineGame);
-
-                globals.LobbyWindow.Close();
-                globals.LobbyWindow= null;
-
-                LocalPlayer.Color = "White";
-                globals.IsOnlineGame = true;
-                LabelMoveInfo = "It's white's turn...";
-                StartGame(false);
-
-                Services.BackgroundThreads.OnlineGameKeepResettingBlackInactiveCounter(globals);
-            }
-            else
-            {
-                LobbyOverlayOpponentCanceledInvitationVisibility = "Visible";
-            }
-        }
-        private void LobbyKeyboardAction(object o)
-        {
-            if ((string)o == "Enter")
-            {
-                if (hasLobbyOverlayPlayerNameTextBoxFocus && LobbyOverLayPlayerNameTextBox != "")
-                {
-                    LobbyOverlayPlayerNameOkAction();
-                }
-            }
-        }
-        private void OnLobbyDataGridAllPlayersLoadedAction(object o)
-        {
-            dataGridLobbyAllPlayers = (DataGrid)o;
-        }
-        private void OnLobbyDataGridInvitationsLoadedAction(object o)
-        {
-            dataGridLobbyInvitations = (DataGrid)o;
-        }
-        private void OnLobbyDataGridAllPlayersSelectedCellsChangedAction()
-        {
-            if (dataGridLobbyAllPlayers.SelectedCells.Count == 1)
-            {
-                var selectedInfo = dataGridLobbyAllPlayers.SelectedCells[0];
-                var selectedCell = (TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item);
-                if (selectedCell != null)
-                {
-                    LobbyInviteButtonIsEnabled = "True";
-                }
-                else
-                {
-                    LobbyInviteButtonIsEnabled = "False";
-                }
-            }
-            else
-            {
-                LobbyInviteButtonIsEnabled = "False";
-            }
-        }
-        private void OnLobbyDataGridInvitationsSelectedCellsChangedAction()
-        {
-            if (dataGridLobbyInvitations.SelectedCells.Count == 1)
-            {
-                var selectedInfo = dataGridLobbyInvitations.SelectedCells[0];
-                var selectedCell = (TextBlock)selectedInfo.Column.GetCellContent(selectedInfo.Item);
-                if (selectedCell != null)
-                {
-                    LobbyAcceptInvitationButtonIsEnabled = "True";
-                }
-                else
-                {
-                    LobbyAcceptInvitationButtonIsEnabled = "False";
-                }
-            }
-            else
-            {
-                LobbyAcceptInvitationButtonIsEnabled = "False";
-            }
-        }
-        private async void LobbyOverlayPlayerNameOkAction()
-        {
-            if (LocalPlayer == null)
-            {
-                LocalPlayer = new Player();
-            }
-
-            LocalPlayer.Name = LobbyOverLayPlayerNameTextBox;
-            OnPropertyChangedByPropertyName("LocalPlayer");
-
-            Player createPlayerResult = new Player();
-
-            try
-            {
-                createPlayerResult = await WebApiClientPlayersCommands.CreatePlayerAsync(LocalPlayer);
-            }
-            catch
-            {
-                MessageBox.Show(globals.LobbyWindow, "Please try again later...", "Error!");
-                globals.LobbyWindow.Close();
-                globals.LobbyWindow= null;
-            }
-
-            if (createPlayerResult.Name == null)
-            {
-                LabelPlayerNameConflict = "This name is already taken!";
-                LocalPlayer = null;
-            }
-            else
-            {
-                LabelPlayerNameConflict = "";
-                LobbyOverlayPlayerNameVisibility = "Hidden";
-
-                LocalPlayer = createPlayerResult;
-            }
-        }
-        private void LobbyOverlayPlayerNameCancelAction()
-        {
-            LobbyOverLayPlayerNameTextBox = "";
-            LabelPlayerNameConflict = "";
-            LobbyOverlayPlayerNameVisibility = "Hidden";
-        }
-        private void OnLobbyOverlayPlayerNameTextBoxFocusAction(object o)
-        {
-            string hasFocusString = (string)o;
-            hasLobbyOverlayPlayerNameTextBoxFocus = hasFocusString == "True";
-        }
-        private void LobbyOverlayOpponentAcceptedInvitationStartGameAction()
-        {
-            LobbyOverlayOpponentAcceptedInvitationVisibility = "Hidden";
-        }
-        private void LobbyOverlayOpponentCanceledInvitationCloseAction()
-        {
-            LobbyOverlayOpponentCanceledInvitationVisibility = "Hidden";
-            Opponent = null;
-        }
-        private async void LobbyOverlayWaitingForInvitationAcceptionCancelAction()
-        {
-            LobbyOverlayWaitingForInvitationAcceptedVisibility = "Hidden";
-
-            await WebApiClientInvitationsCommands.CancelInvitationAsync(Opponent.Id, LocalPlayer);
-
-            Opponent = null;
         }
         #endregion CommandActions
 
@@ -1166,48 +606,50 @@ namespace ChessDotNET.ViewModels
             OnChessPieceMouseLeftDownCommand = new RelayCommand<object>(o => OnChessPieceMouseleftDownAction(o));
 
             OpenSideMenuCommand = new RelayCommand(OpenSideMenuAction);
+        }
+        private void InitializeMessageHandlers()
+        {
+            WeakReferenceMessenger.Default.Register<MainWindowViewModel, PropertyTileDictValueRequestMessage>(this, (r, m) =>
+            {
+                m.Reply(r.TileDict);
+            });
 
-            SideMenuNewGameCommand = new RelayCommand(SideMenuNewGameAction);
+            WeakReferenceMessenger.Default.Register<MainWindowViewModel, PropertyLocalPlayerValueRequestMessage>(this, (r, m) =>
+            {
+                m.Reply(r.LocalPlayer);
+            });
 
-            SideMenuLocalGameCommand = new RelayCommand(SideMenuLocalGameAction);
-            SideMenuOnlineGameCommand = new RelayCommand(SideMenuOnlineGameAction);
-            SideMenuGameModeGoBackCommand = new RelayCommand(SideMenuGameModeGoBackAction);
+            WeakReferenceMessenger.Default.Register<MainWindowViewModel, PropertyOpponentValueRequestMessage>(this, (r, m) =>
+            {
+                m.Reply(r.Opponent);
+            });
 
-            SideMenuLocalGameAsWhiteCommand = new RelayCommand(SideMenuLocalGameAsWhiteAction);
-            SideMenuLocalGameAsBlackCommand = new RelayCommand(SideMenuLocalGameAsBlackAction);
-            SideMenuLocalGameGoBackCommand = new RelayCommand(SideMenuLocalGameGoBackAction);
+            WeakReferenceMessenger.Default.Register<PropertyStringValueChangedMessage>(this, (r, m) =>
+            {
+                PropertyInfo propertyName = GetType().GetProperty(m.Value.Item1);
+                propertyName.SetValue(this, m.Value.Item2);
+            });
 
-            SideMenuOnlineGameEnterLobbyCommand = new RelayCommand(SideMenuOnlineGameEnterLobbyAction);
-            SideMenuEndOnlineGameCommand = new RelayCommand(SideMenuEndOnlineGameAction);
-            SideMenuOnlineGameGoBackCommand = new RelayCommand(SideMenuOnlineGameGoBackAction);
+            WeakReferenceMessenger.Default.Register<PropertyPlayerValueChangedMessage>(this, (r, m) =>
+            {
+                PropertyInfo propertyName = GetType().GetProperty(m.Value.Item1);
+                propertyName.SetValue(this, m.Value.Item2);
+            });
 
-            SideMenuQuitProgramCommand = new RelayCommand(SideMenuQuitProgramAction);
+            WeakReferenceMessenger.Default.Register<StartGameMessage>(this, (r, m) =>
+            {
+                StartGame(m.Value);
+            });
 
-            LobbyRefreshCommand = new RelayCommand(LobbyRefreshAction);
-            LobbyCloseCommand = new RelayCommand(LobbyCloseAction);
-            LobbyInviteCommand = new RelayCommand(LobbyInviteAction);
-            LobbyAcceptInvitationCommand = new RelayCommand(LobbyAcceptInvitationAction);
-            LobbyKeyboardCommand = new RelayCommand<object>(o => LobbyKeyboardAction(o));
-
-            OnLobbyDataGridAllPlayersLoadedCommand = new RelayCommand<object>(o => OnLobbyDataGridAllPlayersLoadedAction(o));
-            OnLobbyDataGridInvitationsLoadedCommand = new RelayCommand<object>(o => OnLobbyDataGridInvitationsLoadedAction(o));
-            OnLobbyDataGridAllPlayersSelectedCellsChangedCommand = new RelayCommand(OnLobbyDataGridAllPlayersSelectedCellsChangedAction);
-            OnLobbyDataGridInvitationsSelectedCellsChangedCommand = new RelayCommand(OnLobbyDataGridInvitationsSelectedCellsChangedAction);
-            OnLobbyClosingCommand = new RelayCommand(OnLobbyClosingAction);
-
-            OnLobbyOverlayPlayerNameTextBoxFocusCommand = new RelayCommand<object>(o => OnLobbyOverlayPlayerNameTextBoxFocusAction(o));
-
-            LobbyOverlayPlayerNameOkCommand = new RelayCommand(LobbyOverlayPlayerNameOkAction);
-            LobbyOverlayPlayerNameCancelCommand = new RelayCommand(LobbyOverlayPlayerNameCancelAction);
-
-            LobbyOverlayOpponentAcceptedInvitationStartGameCommand = new RelayCommand(LobbyOverlayOpponentAcceptedInvitationStartGameAction);
-            LobbyOverlayOpponentCanceledInvitationCloseCommand = new RelayCommand(LobbyOverlayOpponentCanceledInvitationCloseAction);
-            LobbyOverlayWaitingForInvitationAcceptionCancelCommand = new RelayCommand(LobbyOverlayWaitingForInvitationAcceptionCancelAction);
+            WeakReferenceMessenger.Default.Register<OnPropertyChangedMessage>(this, (r, m) =>
+            {
+                OnPropertyChangedByPropertyName(m.Value);
+            });
         }
         private void CreateNotation()
         {
-            currentlyDraggedChessPieceOriginalCanvasLeft = -1000;
-            currentlyDraggedChessPieceOriginalCanvasTop = -1000;
+            globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            globals.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
 
             HorizontalNotationList = Enumerable.Repeat("0", 8).ToList();
             VerticalNotationList = Enumerable.Repeat("0", 8).ToList();
@@ -1352,17 +794,28 @@ namespace ChessDotNET.ViewModels
         #endregion Methods
 
         #region Message Handlers
-        internal class GlobalsRequestMessage : RequestMessage<Globals>
-        {
-        }
+        // RequestMessage Handlers:
+        internal class GlobalsRequestMessage : RequestMessage<Globals> { }
+        internal class PropertyTileDictValueRequestMessage : RequestMessage<TileDictionary> { }
         internal class PropertyLocalPlayerValueRequestMessage : RequestMessage<Player> { }
+        internal class PropertyOpponentValueRequestMessage : RequestMessage<Player> { }
+
+        // ValueChangedMessage Handlers:
         internal class PropertyStringValueChangedMessage : ValueChangedMessage<Tuple<string, string>>
         {
             internal PropertyStringValueChangedMessage(Tuple<string, string> tuple) : base(tuple) { }
         }
+        internal class PropertyPlayerValueChangedMessage : ValueChangedMessage<Tuple<string, Player>>
+        {
+            internal PropertyPlayerValueChangedMessage(Tuple<string, Player> tuple) : base(tuple) { }
+        }
         internal class OnPropertyChangedMessage : ValueChangedMessage<string>
         {
             internal OnPropertyChangedMessage(string propertyName) : base(propertyName) { }
+        }
+        internal class StartGameMessage : ValueChangedMessage<bool>
+        {
+            internal StartGameMessage(bool isRotated) : base(isRotated) { }
         }
         #endregion
     }

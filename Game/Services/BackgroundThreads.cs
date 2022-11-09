@@ -1,24 +1,136 @@
-﻿using ChessDotNET.Models;
-using ChessDotNET.ViewModels;
-using ChessDotNET.WebApiClient;
-using CommunityToolkit.Mvvm.Messaging;
-using Newtonsoft.Json.Linq;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using static System.Net.Mime.MediaTypeNames;
+
+using ChessDotNET.Models;
+using ChessDotNET.ViewModels;
+using ChessDotNET.WebApiClient;
+
 
 namespace ChessDotNET.Services
 {
     internal static class BackgroundThreads
     {
-        internal static void OnlineGameKeepResettingWhiteInactiveCounter(Globals globals)
+        internal static void LobbyKeepCheckingForOpponentAcception()
         {
-            var onlineGameKeepResettingInactiveCounterStart = new ThreadStart(() =>
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+            Player localPlayer = WeakReferenceMessenger.Default.Send<MainWindowViewModel.PropertyLocalPlayerValueRequestMessage>();
+
+            var threadStart = new ThreadStart(() =>
+            {
+                //while (WeakReferenceMessenger.Default.Send<LobbyViewModel.LobbyOverlayWaitingForInvitationAcceptedVisibilityRequestMessage>() == "Visible"
+                //&& globals.CurrentOnlineGame.BlackId != localPlayer.Id)
+
+                while (globals.CurrentOnlineGame.BlackId != localPlayer.Id)
+                {
+                    Task.Run(() =>
+                    {
+                        localPlayer = WeakReferenceMessenger.Default.Send<MainWindowViewModel.PropertyLocalPlayerValueRequestMessage>();
+                        if (localPlayer != null)
+                        {
+                            try
+                            {
+                                DispatchService.Invoke(async () =>
+                                {
+                                    globals.CurrentOnlineGame = await WebApiClientGamesCommands.GetNewGame(localPlayer.Id);
+                                });
+                            }
+                            catch
+                            {
+                                MessageBox.Show(globals.LobbyWindow, "Cannot contact server...", "Error!");
+                                globals.LobbyWindow.Close();
+                                globals.LobbyWindow = null;
+                            }
+                        }
+                    });
+                    Thread.Sleep(1000);
+                }
+
+                DispatchService.Invoke(() =>
+                {
+                    if (globals.LobbyWindow != null)
+                    {
+                        WeakReferenceMessenger.Default.Send(
+                                    new SideMenuViewModel.PropertyStringValueChangedMessage(
+                                        new Tuple<string, string>("SideMenuOnlineGameButtonVisibility", "Hidden")));
+
+                        WeakReferenceMessenger.Default.Send(
+                                    new SideMenuViewModel.PropertyStringValueChangedMessage(
+                                        new Tuple<string, string>("SideMenuEndOnlineGameButtonVisibility", "Visible")));
+
+                        WeakReferenceMessenger.Default.Send(
+                                    new LobbyViewModel.PropertyStringValueChangedMessage(
+                                        new Tuple<string, string>("LobbyOverlayWaitingForInvitationAcceptedVisibility", "Hidden")));
+
+                        if (globals.LobbyWindow != null)
+                        {
+                            globals.LobbyWindow.Close();
+                            globals.LobbyWindow = null;
+
+                            WeakReferenceMessenger.Default.Send(
+                                new MainWindowViewModel.StartGameMessage(true));
+
+                            localPlayer.Color = "Black";
+                            WeakReferenceMessenger.Default.Send(
+                                new MainWindowViewModel.OnPropertyChangedMessage("LocalPlayer"));
+
+                            globals.IsOnlineGame = true;
+
+                            OnlineGameKeepCheckingForNextMove();
+                            OnlineGameKeepResettingWhiteInactiveCounter();
+                        }
+                    }
+                });
+            });
+            var backgroundThread = new Thread(threadStart)
+            {
+                IsBackground = true
+            };
+            backgroundThread.Start();
+        }
+        internal static void LobbyKeepResettingInactiveCounter()
+        {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+
+            var threadStart = new ThreadStart(() =>
+            {
+                while (globals.LobbyWindow != null)
+                {
+                    Task.Run(async () =>
+                    {
+                        Player localPlayer = WeakReferenceMessenger.Default.Send<MainWindowViewModel.PropertyLocalPlayerValueRequestMessage>();
+
+                        if (localPlayer != null)
+                        {
+                            try
+                            {
+                                await WebApiClientPlayersCommands.ResetInactiveCounterAsync(localPlayer.Id);
+                            }
+                            catch
+                            {
+                                MessageBox.Show(globals.LobbyWindow, "Cannot contact server...", "Error!");
+                                globals.LobbyWindow.Close();
+                                globals.LobbyWindow = null;
+                            }
+                        }
+                    });
+                    Thread.Sleep(1000);
+                }
+            });
+
+            var backgroundThread = new Thread(threadStart)
+            {
+                IsBackground = true
+            };
+            backgroundThread.Start();
+        }
+        internal static void OnlineGameKeepResettingWhiteInactiveCounter()
+        {
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+
+            var threadStart = new ThreadStart(() =>
             {
                 while (globals.IsOnlineGame)
                 {
@@ -42,15 +154,17 @@ namespace ChessDotNET.Services
                 }
             });
 
-            var onlineGameKeepResettingInactiveCounterBackgroundThread = new Thread(onlineGameKeepResettingInactiveCounterStart)
+            var backgroundThread = new Thread(threadStart)
             {
                 IsBackground = true
             };
-            onlineGameKeepResettingInactiveCounterBackgroundThread.Start();
+            backgroundThread.Start();
         }
-        internal static void OnlineGameKeepResettingBlackInactiveCounter(Globals globals)
+        internal static void OnlineGameKeepResettingBlackInactiveCounter()
         {
-            var start = new ThreadStart(() =>
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
+
+            var threadStart = new ThreadStart(() =>
             {
                 while (globals.IsOnlineGame)
                 {
@@ -74,17 +188,20 @@ namespace ChessDotNET.Services
                 }
             });
 
-            var backgroundThread = new Thread(start)
+            var backgroundThread = new Thread(threadStart)
             {
                 IsBackground = true
             };
             backgroundThread.Start();
         }
-        internal static void OnlineGameKeepCheckingForNextMove(Globals globals, TileDictionary tileDict)
+        internal static void OnlineGameKeepCheckingForNextMove()
         {
-            globals.IsWaitingForMove = true;
+            Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
 
-            var keepCheckingForNextMoveStart = new ThreadStart(() =>
+            globals.IsWaitingForMove = true;
+            TileDictionary tileDict = WeakReferenceMessenger.Default.Send<MainWindowViewModel.PropertyTileDictValueRequestMessage>();
+
+            var threadStart = new ThreadStart(() =>
             {
                 bool isSuccess = false;
                 while (!isSuccess && globals.IsOnlineGame)
@@ -237,11 +354,11 @@ namespace ChessDotNET.Services
                 }
             });
 
-            var keepCheckingForNextMoveBackgroundThread = new Thread(keepCheckingForNextMoveStart)
+            var backgroundThread = new Thread(threadStart)
             {
                 IsBackground = true
             };
-            keepCheckingForNextMoveBackgroundThread.Start();
+            backgroundThread.Start();
         }
     }
 }

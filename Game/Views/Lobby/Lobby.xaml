@@ -10,7 +10,11 @@
         Title="Chess.NET Lobby" Height="500" Width="700" MinHeight="500" MinWidth="700"
         UseLayoutRounding="True"
         Background="#ffb366"
-        d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
+        d:DataContext="{d:DesignInstance Type=vm:LobbyViewModel}">
+
+    <Window.DataContext>
+        <vm:LobbyViewModel/>
+    </Window.DataContext>
     
     <Window.InputBindings>
         <KeyBinding Gesture="Return" Command="{Binding LobbyKeyboardCommand}" CommandParameter="Enter"/>

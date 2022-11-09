@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ChessDotNET.Views"
              xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}">
+             d:DataContext="{d:DesignInstance Type=vm:SideMenuViewModel}">
     
     <Grid>
         <Grid.RowDefinitions>

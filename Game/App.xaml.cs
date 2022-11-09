@@ -10,7 +10,7 @@ namespace ChessDotNET
     /// </summary>
     public partial class App : Application
     {
-        private Globals globals = new Globals();
+        private Globals globals = new Globals(@"http://qgj.ddns.net:7002");
 
         internal App()
         {
@@ -29,14 +29,10 @@ namespace ChessDotNET
                 m.Reply(r.globals);
             });
         }
-        internal class GlobalsRequestMessage : RequestMessage<Globals>
-        {
-        }
+        internal class GlobalsRequestMessage : RequestMessage<Globals> { }
         internal class GlobalsValueChangedMessage : ValueChangedMessage<Globals>
         {
-            internal GlobalsValueChangedMessage(Globals globals) : base(globals)
-            {
-            }
+            internal GlobalsValueChangedMessage(Globals globals) : base(globals) { }
         }
     }
 }

@@ -1,13 +1,11 @@
-﻿using ChessDotNET.Models;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+
+using ChessDotNET.Models;
+
 
 namespace ChessDotNET.WebApiClient
 {
@@ -18,7 +16,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             ObservableCollection<Player> invitations = new ObservableCollection<Player>();
 
-            HttpResponseMessage response = await globals.httpClient.GetAsync(
+            HttpResponseMessage response = await globals.Client.GetAsync(
                 $"api/invitations/{localPlayerId}");
 
             if (response.IsSuccessStatusCode)
@@ -35,7 +33,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Player playerJson;
 
-            var response = await globals.httpClient.PostAsJsonAsync(
+            var response = await globals.Client.PostAsJsonAsync(
                 $"api/invitations/{invitedId}", localPlayer);
 
             if (response.IsSuccessStatusCode)
@@ -54,7 +52,7 @@ namespace ChessDotNET.WebApiClient
         internal static async Task CancelInvitationAsync(int invitedId, Player localPlayer)
         {
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
-            await globals.httpClient.PutAsJsonAsync(
+            await globals.Client.PutAsJsonAsync(
                 $"api/invitations/cancel/{invitedId}", localPlayer);
         }
     }

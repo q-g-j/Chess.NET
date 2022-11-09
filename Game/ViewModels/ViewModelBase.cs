@@ -1,13 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
+
 
 namespace ChessDotNET.ViewModels
 {
@@ -28,21 +23,23 @@ namespace ChessDotNET.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-    }
-
-    internal static class DispatchService
-    {
-        public static void Invoke(Action action)
+        protected void ChangePropertyStringValueMainWindowViewModel(string propertyName, string propertyValue)
         {
-            Dispatcher dispatchObject = Application.Current.Dispatcher;
-            if (dispatchObject == null || dispatchObject.CheckAccess())
-            {
-                action();
-            }
-            else
-            {
-                dispatchObject.Invoke(action);
-            }
+            WeakReferenceMessenger.Default.Send(
+                        new MainWindowViewModel.PropertyStringValueChangedMessage(
+                            new Tuple<string, string>(propertyName, propertyValue)));
+        }
+        protected void ChangePropertyStringValueSideMenuViewModel(string propertyName, string propertyValue)
+        {
+            WeakReferenceMessenger.Default.Send(
+                        new SideMenuViewModel.PropertyStringValueChangedMessage(
+                            new Tuple<string, string>(propertyName, propertyValue)));
+        }
+        protected void ChangePropertyStringValueLobbyViewModel(string propertyName, string propertyValue)
+        {
+            WeakReferenceMessenger.Default.Send(
+                        new LobbyViewModel.PropertyStringValueChangedMessage(
+                            new Tuple<string, string>(propertyName, propertyValue)));
         }
     }
 }

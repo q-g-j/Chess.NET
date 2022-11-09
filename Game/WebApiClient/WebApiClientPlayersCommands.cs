@@ -1,16 +1,11 @@
-﻿using ChessDotNET.Models;
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+
+using ChessDotNET.Models;
+
 
 namespace ChessDotNET.WebApiClient
 {
@@ -21,7 +16,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             ObservableCollection<Player> playerList = new ObservableCollection<Player>();
 
-            HttpResponseMessage response = await globals.httpClient.GetAsync(
+            HttpResponseMessage response = await globals.Client.GetAsync(
                 "api/players");
 
             if (response.IsSuccessStatusCode)
@@ -38,7 +33,7 @@ namespace ChessDotNET.WebApiClient
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
             Player playerJson;
 
-            var response = await globals.httpClient.PostAsJsonAsync(
+            var response = await globals.Client.PostAsJsonAsync(
                 "api/players", player);
 
 
@@ -58,14 +53,14 @@ namespace ChessDotNET.WebApiClient
         internal static async Task ResetInactiveCounterAsync(int localPlayerId)
         {
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
-            await globals.httpClient.PutAsJsonAsync(
+            await globals.Client.PutAsJsonAsync(
                 $"api/players/{localPlayerId}", localPlayerId);
         }
 
         internal static async Task DeletePlayerAsync(int localPlayerId)
         {
             Globals globals = WeakReferenceMessenger.Default.Send<App.GlobalsRequestMessage>();
-            await globals.httpClient.DeleteAsync(
+            await globals.Client.DeleteAsync(
                 $"api/players/{localPlayerId}");
         }
     }
