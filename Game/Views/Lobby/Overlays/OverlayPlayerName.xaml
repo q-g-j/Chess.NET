@@ -52,7 +52,7 @@
                         VerticalContentAlignment="Center"
                         FontSize="15"
                         FontFamily="{StaticResource Main}"
-                        Text="{Binding TextBoxPlayerName, UpdateSourceTrigger=PropertyChanged}">
+                        Text="{Binding LobbyOverLayPlayerNameTextBox, UpdateSourceTrigger=PropertyChanged}">
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="GotFocus">
                                 <behaviors:InvokeCommandAction Command="{Binding OnLobbyOverlayPlayerNameTextBoxFocusCommand}" CommandParameter="True"/>
@@ -80,7 +80,7 @@
                     Grid.Row="4"
                     Content="OK"
                     Margin="0, 0, 10, 0"
-                    IsEnabled="{Binding IsLobbyOverlayPlayerNameOkButtonEnabled}"
+                    IsEnabled="{Binding LobbyOverlayPlayerNameOkButtonIsEnabled}"
                     Style="{StaticResource StyleOverlayButton}"
                     Command="{Binding LobbyOverlayPlayerNameOkCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}">

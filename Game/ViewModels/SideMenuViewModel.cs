@@ -14,6 +14,5 @@ namespace ChessDotNET.ViewModels
         public SideMenuViewModel()
         {
         }
-
     }
 }

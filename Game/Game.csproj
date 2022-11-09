@@ -101,6 +101,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Globals.cs" />
     <Compile Include="Services\BackgroundThreads.cs" />
+    <Compile Include="ViewModels\LobbyViewModel.cs" />
     <Compile Include="Views\Lobby\Overlays\OverlayOpponentCanceledInvitation.xaml.cs">
       <DependentUpon>OverlayOpponentCanceledInvitation.xaml</DependentUpon>
     </Compile>

@@ -85,7 +85,7 @@
             Margin="0, 10, 0, 10"
             Content="Invite"
             Command="{Binding LobbyInviteCommand}"
-            IsEnabled="{Binding IsLobbyInviteButtonEnabled, FallbackValue=False}">
+            IsEnabled="{Binding LobbyInviteButtonIsEnabled, FallbackValue=False}">
         </Button>
         <Button
             Grid.Column="1"
@@ -95,7 +95,7 @@
             Margin="0, 10, 0, 10"
             Content="Accept"
             Command="{Binding LobbyAcceptInvitationCommand}"
-            IsEnabled="{Binding IsLobbyAcceptInvitationButtonEnabled, FallbackValue=False}">
+            IsEnabled="{Binding LobbyAcceptInvitationButtonIsEnabled, FallbackValue=False}">
         </Button>
         <Grid
             Grid.Column="2"
