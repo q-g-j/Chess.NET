@@ -5,7 +5,7 @@ Copyright 2022 Jann Emken
 
 
 ### Features:
-- network play (a dedicated server / client REST API implementation)
+- play online using a lobby system (a dedicated server / client REST API implementation)
 - play alternately on the same computer
 - rotate the board
 - move validation
