@@ -11,6 +11,8 @@ namespace ChessDotNET.Views
         {
             InitializeComponent();
             GridSideMenu.Children.Add(new SideMenu());
+            GridOverlayPromotePawn.Children.Add(new OverlayPromotePawn());
+            GridOverlayOnlineGamePlayerQuit.Children.Add(new OverlayOnlineGamePlayerQuit());
         }
     }
 }

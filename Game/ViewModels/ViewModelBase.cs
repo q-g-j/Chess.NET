@@ -16,12 +16,7 @@ namespace ChessDotNET.ViewModels
         }
         protected void OnPropertyChangedByPropertyName(string propertyName)
         {
-
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         protected void ChangePropertyStringValueMainWindowViewModel(string propertyName, string propertyValue)
         {

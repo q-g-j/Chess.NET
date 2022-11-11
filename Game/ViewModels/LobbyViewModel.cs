@@ -429,11 +429,6 @@ namespace ChessDotNET.ViewModels
         }
         private void InitializeMessageHandlers()
         {
-            //WeakReferenceMessenger.Default.Register<LobbyViewModel, LobbyOverlayWaitingForInvitationAcceptedVisibilityRequestMessage>(this, (r, m) =>
-            //{
-            //    m.Reply(r.LobbyOverlayWaitingForInvitationAcceptedVisibility);
-            //});
-
             WeakReferenceMessenger.Default.Register<PropertyStringValueChangedMessage>(this, (r, m) =>
             {
                 var propertyName = GetType().GetProperty(m.Value.Item1);
@@ -453,10 +448,6 @@ namespace ChessDotNET.ViewModels
         #endregion
 
         #region Message Handlers
-        // RequestMessage Handlers:
-        //internal class LobbyOverlayWaitingForInvitationAcceptedVisibilityRequestMessage : RequestMessage<string> { }
-
-        // ValueChangedMessage Handlers:
         internal class PropertyStringValueChangedMessage : ValueChangedMessage<Tuple<string, string>>
         {
             internal PropertyStringValueChangedMessage(Tuple<string, string> tuple) : base(tuple) { }

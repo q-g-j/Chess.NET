@@ -62,11 +62,11 @@
                 <Label Content="{Binding LabelMoveInfo, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20, 0, 0, 0"/>
             </DockPanel>
             <Grid>
-                <Grid x:Name="GridSideMenu" Panel.ZIndex="40" Visibility="{Binding SideMenuVisibility, FallbackValue=Hidden}"/>
-                <local:OverlayPromotePawn Visibility="{Binding OverlayPromotePawnVisibility, FallbackValue=Hidden}"/>
-                <local:OverlayOnlineGamePlayerQuit Visibility="{Binding OverlayOnlineGamePlayerQuitVisibility, FallbackValue=Hidden}"/>
-                <!--<local:OverlaySettings Visibility="{Binding OverlaySettingsVisibility}"/>-->
                 <local:ChessBoard/>
+                <!-- instantiate the overlays in the code behind to avaid designer warnings: -->
+                <Grid x:Name="GridSideMenu" Panel.ZIndex="40" Visibility="{Binding SideMenuVisibility, FallbackValue=Hidden}"/>
+                <Grid x:Name="GridOverlayPromotePawn" Panel.ZIndex="40" Visibility="{Binding OverlayPromotePawnVisibility, FallbackValue=Hidden}"/>
+                <Grid x:Name="GridOverlayOnlineGamePlayerQuit" Panel.ZIndex="40" Visibility="{Binding OverlayOnlineGamePlayerQuitVisibility, FallbackValue=Hidden}"/>
             </Grid>
         </StackPanel>
     </Viewbox>
