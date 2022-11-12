@@ -33,5 +33,16 @@ namespace ChessDotNET
         internal bool IsCheckMate = false;
         internal int CurrentlyDraggedChessPieceOriginalCanvasLeft;
         internal int CurrentlyDraggedChessPieceOriginalCanvasTop;
+
+        internal void Reset()
+        {
+            IsOnlineGame= false;
+            IsWaitingForMove= false;
+            IsCheckMate= false;
+            MoveList= new List<Move>();
+            //CurrentOnlineGame = null;
+            CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
+            CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
+        }
     }
 }

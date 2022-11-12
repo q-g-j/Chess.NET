@@ -263,12 +263,12 @@ namespace ChessDotNET.ViewModels
 
                 LocalPlayer.Color = "White";
 
-                globals.IsOnlineGame = true;
-
                 ChangePropertyStringValueMainWindowViewModel("LabelMoveInfo", "It's white's turn...");
 
                 WeakReferenceMessenger.Default.Send(
                     new MainWindowViewModel.StartGameMessage(false));
+
+                globals.IsOnlineGame = true;
 
                 Services.BackgroundThreads.OnlineGameKeepResettingBlackInactiveCounter();
             }

@@ -776,7 +776,7 @@ namespace ChessDotNET.ViewModels
             OnPropertyChangedByPropertyName("TileDict");
 
             LabelMoveInfo = "It's white's turn...";
-            globals.MoveList = new List<Move>();
+            globals.Reset();
         }
         private bool IsInputAllowed()
         {

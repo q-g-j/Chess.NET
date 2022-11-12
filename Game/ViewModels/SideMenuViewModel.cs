@@ -144,6 +144,7 @@ namespace ChessDotNET.ViewModels
         }
         private void SideMenuOnlineGameEnterLobbyAction()
         {
+            globals.IsOnlineGame = false;
             SideMenuOnlineGameVisibility = "Hidden";
             SideMenuGameModeVisibility = "Hidden";
             ChangePropertyStringValueMainWindowViewModel("SideMenuVisibility", "Hidden");
@@ -180,8 +181,6 @@ namespace ChessDotNET.ViewModels
         {
             SideMenuEndOnlineGameButtonVisibility = "Hidden";
             SideMenuOnlineGameButtonVisibility = "Visible";
-            globals.IsOnlineGame = false;
-            globals.IsWaitingForMove = false;
 
             WeakReferenceMessenger.Default.Send(
                 new MainWindowViewModel.StartGameMessage(false));
