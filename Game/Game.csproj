@@ -277,7 +277,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="README.md" />
     <Resource Include="Resources\Fonts\BowlbyOne-Regular.otf" />
     <Resource Include="Resources\Fonts\JetBrainsMono-Regular.ttf" />
     <Resource Include="Resources\Fonts\selawk.ttf" />
