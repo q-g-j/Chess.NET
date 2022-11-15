@@ -13,7 +13,6 @@ using System.Reflection;
 using ChessDotNET.GameLogic;
 using ChessDotNET.WebApiClient;
 using ChessDotNET.Models;
-using ChessDotNET.ViewHelpers;
 
 
 namespace ChessDotNET.ViewModels
@@ -208,12 +207,10 @@ namespace ChessDotNET.ViewModels
                 }
             }
         }
-        private void OnChessPieceMouseleftDownAction(object o)
+        private void OnChessPieceMouseleftDownAction(object param)
         {
             if (IsInputAllowed())
             {
-                object param = ((CompositeCommandParameter)o).Parameter;
-                MouseEventArgs e = ((CompositeCommandParameter)o).EventArgs as MouseEventArgs;
                 currentlyDraggedChessPieceImage = null;
                 globals.CurrentlyDraggedChessPieceOriginalCanvasLeft = -1000;
                 globals.CurrentlyDraggedChessPieceOriginalCanvasTop = -1000;
@@ -260,7 +257,6 @@ namespace ChessDotNET.ViewModels
                 }
 
                 wasSideMenuOpen = false;
-                e.Handled = true;
             }
         }
         private async void OnMainWindowMouseLeftUpAction(object o)

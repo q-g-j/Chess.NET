@@ -209,9 +209,7 @@
     </Compile>
     <Compile Include="SaveGame\SaveCurrentGame.cs" />
     <Compile Include="SaveGame\SaveSlots.cs" />
-    <Compile Include="ViewHelpers\AdvancedInvokeCommandAction.cs" />
     <Compile Include="Models\ChessPieceImages.cs" />
-    <Compile Include="ViewHelpers\CompositeCommandParameter.cs" />
     <Compile Include="Models\Coords.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -279,6 +277,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
     <Resource Include="Resources\Fonts\BowlbyOne-Regular.otf" />
     <Resource Include="Resources\Fonts\JetBrainsMono-Regular.ttf" />
     <Resource Include="Resources\Fonts\selawk.ttf" />

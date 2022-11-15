@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChessDotNET.Views"
         xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-        xmlns:helpers="clr-namespace:ChessDotNET.ViewHelpers"
         xmlns:vm="clr-namespace:ChessDotNET.ViewModels"
         mc:Ignorable="d"
         ResizeMode="CanResize"
