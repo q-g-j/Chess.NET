@@ -3,6 +3,10 @@
 
 Copyright 2022 Jann Emken
 
+WILL NOT RECEIVE UPDATES. ABANDONED IN FAVOR OF:</br>
+
+### [ChessAvalonia](https://github.com/q-g-j/ChessAvalonia)
+___
 
 ### Features:
 - play online using a lobby system (a dedicated server / client REST API implementation)
@@ -14,7 +18,3 @@ Copyright 2022 Jann Emken
 - en passant
 - promote pawn
 - castling
- 
-### TODO:
-- draw validation
-- use UCI chess engines
